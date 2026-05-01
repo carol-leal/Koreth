@@ -11,9 +11,9 @@ importers:
       '@payloadcms/admin-bar':
         specifier: 3.84.1
         version: 3.84.1(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      '@payloadcms/db-vercel-postgres':
+      '@payloadcms/db-postgres':
         specifier: 3.84.1
-        version: 3.84.1(@types/pg@8.11.6)(payload@3.84.1(bufferutil@4.1.0)(graphql@16.13.2)(typescript@5.7.3))
+        version: 3.84.1(@vercel/postgres@0.10.0)(payload@3.84.1(bufferutil@4.1.0)(graphql@16.13.2)(typescript@5.7.3))
       '@payloadcms/live-preview-react':
         specifier: 3.84.1
         version: 3.84.1(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -1442,8 +1442,8 @@ packages:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.1 || ^19.1.2 || ^19.2.1
       react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.1 || ^19.1.2 || ^19.2.1
 
-  '@payloadcms/db-vercel-postgres@3.84.1':
-    resolution: {integrity: sha512-eyclDLIuNSpJ133SX8R7/Hum6UKoseFfmn8Imlrh0o3NP1oTWjjKfuPqAc4GRmbDuPMpb+2XHoLS9Rlo0s6Jug==}
+  '@payloadcms/db-postgres@3.84.1':
+    resolution: {integrity: sha512-/r1+7k58529ziTwqzySXsZb4x3FcfQIQH8R6gXLM3bTU9JA8wfLBraIgSyVKl6B3p+/EQYcaQ1DUlfrzVRxo1A==}
     peerDependencies:
       payload: 3.84.1
 
@@ -2195,6 +2195,9 @@ packages:
 
   '@types/pg@8.11.6':
     resolution: {integrity: sha512-/2WmmBXHLsfRqzfHW7BNZ8SbYzE8OSk7i3WjFYvfgRHj7S1xj+16Je5fUKv3lVdVzk/zn9TXOqf+avFCFIE0yQ==}
+
+  '@types/pg@8.20.0':
+    resolution: {integrity: sha512-bEPFOaMAHTEP1EzpvHTbmwR8UsFyHSKsRisLIHVMXnpNefSbGA1bD6CVy+qKjGSqmZqNqBDV2azOBo8TgkcVow==}
 
   '@types/prismjs@1.26.6':
     resolution: {integrity: sha512-vqlvI7qlMvcCBbVe0AKAb4f97//Hy0EBTaiW8AalRnG/xAN5zOiWWyrNqNXeq8+KAuvRewjCVY1+IPxk4RdNYw==}
@@ -6051,6 +6054,7 @@ snapshots:
   '@neondatabase/serverless@0.9.5':
     dependencies:
       '@types/pg': 8.11.6
+    optional: true
 
   '@next/env@13.5.11': {}
 
@@ -6105,13 +6109,13 @@ snapshots:
       react: 19.2.4
       react-dom: 19.2.4(react@19.2.4)
 
-  '@payloadcms/db-vercel-postgres@3.84.1(@types/pg@8.11.6)(payload@3.84.1(bufferutil@4.1.0)(graphql@16.13.2)(typescript@5.7.3))':
+  '@payloadcms/db-postgres@3.84.1(@vercel/postgres@0.10.0)(payload@3.84.1(bufferutil@4.1.0)(graphql@16.13.2)(typescript@5.7.3))':
     dependencies:
-      '@payloadcms/drizzle': 3.84.1(@types/pg@8.11.6)(@vercel/postgres@0.10.0)(payload@3.84.1(bufferutil@4.1.0)(graphql@16.13.2)(typescript@5.7.3))(pg@8.20.0)
-      '@vercel/postgres': 0.10.0
+      '@payloadcms/drizzle': 3.84.1(@types/pg@8.20.0)(@vercel/postgres@0.10.0)(payload@3.84.1(bufferutil@4.1.0)(graphql@16.13.2)(typescript@5.7.3))(pg@8.20.0)
+      '@types/pg': 8.20.0
       console-table-printer: 2.12.1
       drizzle-kit: 0.31.7
-      drizzle-orm: 0.45.2(@types/pg@8.11.6)(@vercel/postgres@0.10.0)(pg@8.20.0)
+      drizzle-orm: 0.45.2(@types/pg@8.20.0)(@vercel/postgres@0.10.0)(pg@8.20.0)
       payload: 3.84.1(bufferutil@4.1.0)(graphql@16.13.2)(typescript@5.7.3)
       pg: 8.20.0
       prompts: 2.4.2
@@ -6130,9 +6134,9 @@ snapshots:
       - '@prisma/client'
       - '@tidbcloud/serverless'
       - '@types/better-sqlite3'
-      - '@types/pg'
       - '@types/sql.js'
       - '@upstash/redis'
+      - '@vercel/postgres'
       - '@xata.io/client'
       - better-sqlite3
       - bun-types
@@ -6147,13 +6151,12 @@ snapshots:
       - sql.js
       - sqlite3
       - supports-color
-      - utf-8-validate
 
-  '@payloadcms/drizzle@3.84.1(@types/pg@8.11.6)(@vercel/postgres@0.10.0)(payload@3.84.1(bufferutil@4.1.0)(graphql@16.13.2)(typescript@5.7.3))(pg@8.20.0)':
+  '@payloadcms/drizzle@3.84.1(@types/pg@8.20.0)(@vercel/postgres@0.10.0)(payload@3.84.1(bufferutil@4.1.0)(graphql@16.13.2)(typescript@5.7.3))(pg@8.20.0)':
     dependencies:
       console-table-printer: 2.12.1
       dequal: 2.0.3
-      drizzle-orm: 0.45.2(@types/pg@8.11.6)(@vercel/postgres@0.10.0)(pg@8.20.0)
+      drizzle-orm: 0.45.2(@types/pg@8.20.0)(@vercel/postgres@0.10.0)(pg@8.20.0)
       payload: 3.84.1(bufferutil@4.1.0)(graphql@16.13.2)(typescript@5.7.3)
       prompts: 2.4.2
       to-snake-case: 1.0.0
@@ -6921,6 +6924,13 @@ snapshots:
       '@types/node': 22.19.9
       pg-protocol: 1.13.0
       pg-types: 4.1.0
+    optional: true
+
+  '@types/pg@8.20.0':
+    dependencies:
+      '@types/node': 22.19.9
+      pg-protocol: 1.13.0
+      pg-types: 2.2.0
 
   '@types/prismjs@1.26.6': {}
 
@@ -7106,6 +7116,7 @@ snapshots:
       ws: 8.20.0(bufferutil@4.1.0)
     transitivePeerDependencies:
       - utf-8-validate
+    optional: true
 
   '@vitejs/plugin-react@4.5.2(vite@7.3.2(@types/node@22.19.9)(jiti@2.6.1)(lightningcss@1.32.0)(sass@1.77.4)(tsx@4.21.0))':
     dependencies:
@@ -7345,6 +7356,7 @@ snapshots:
   bufferutil@4.1.0:
     dependencies:
       node-gyp-build: 4.8.4
+    optional: true
 
   busboy@1.6.0:
     dependencies:
@@ -7585,9 +7597,9 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  drizzle-orm@0.45.2(@types/pg@8.11.6)(@vercel/postgres@0.10.0)(pg@8.20.0):
+  drizzle-orm@0.45.2(@types/pg@8.20.0)(@vercel/postgres@0.10.0)(pg@8.20.0):
     optionalDependencies:
-      '@types/pg': 8.11.6
+      '@types/pg': 8.20.0
       '@vercel/postgres': 0.10.0
       pg: 8.20.0
 
@@ -8944,7 +8956,8 @@ snapshots:
       object.entries: 1.1.9
       semver: 6.3.1
 
-  node-gyp-build@4.8.4: {}
+  node-gyp-build@4.8.4:
+    optional: true
 
   node-releases@2.0.38: {}
 
@@ -8994,7 +9007,8 @@ snapshots:
       define-properties: 1.2.1
       es-object-atoms: 1.1.1
 
-  obuf@1.1.2: {}
+  obuf@1.1.2:
+    optional: true
 
   obug@2.1.1: {}
 
@@ -9111,7 +9125,8 @@ snapshots:
 
   pg-int8@1.0.1: {}
 
-  pg-numeric@1.0.2: {}
+  pg-numeric@1.0.2:
+    optional: true
 
   pg-pool@3.13.0(pg@8.20.0):
     dependencies:
@@ -9136,6 +9151,7 @@ snapshots:
       postgres-date: 2.1.0
       postgres-interval: 3.0.0
       postgres-range: 1.1.4
+    optional: true
 
   pg@8.20.0:
     dependencies:
@@ -9226,25 +9242,30 @@ snapshots:
 
   postgres-array@2.0.0: {}
 
-  postgres-array@3.0.4: {}
+  postgres-array@3.0.4:
+    optional: true
 
   postgres-bytea@1.0.1: {}
 
   postgres-bytea@3.0.0:
     dependencies:
       obuf: 1.1.2
+    optional: true
 
   postgres-date@1.0.7: {}
 
-  postgres-date@2.1.0: {}
+  postgres-date@2.1.0:
+    optional: true
 
   postgres-interval@1.2.0:
     dependencies:
       xtend: 4.0.2
 
-  postgres-interval@3.0.0: {}
+  postgres-interval@3.0.0:
+    optional: true
 
-  postgres-range@1.1.4: {}
+  postgres-range@1.1.4:
+    optional: true
 
   prelude-ls@1.2.1: {}
 
