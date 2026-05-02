@@ -1,4 +1,5 @@
 import { postgresAdapter } from '@payloadcms/db-postgres'
+import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
 import sharp from 'sharp'
 import path from 'path'
 import { buildConfig, PayloadRequest } from 'payload'
@@ -63,6 +64,17 @@ export default buildConfig({
     Lore,
   ],
   globals: [Campaign],
+  plugins: [
+    // Uploads land in Vercel Blob; on serverless the local /var/task FS is
+    // read-only so the default disk-write upload path doesn't work.
+    // BLOB_READ_WRITE_TOKEN is auto-injected by Vercel when a Blob store is
+    // connected to the project; for local dev set it via `vercel env pull`.
+    vercelBlobStorage({
+      enabled: Boolean(process.env.BLOB_READ_WRITE_TOKEN),
+      collections: { media: true },
+      token: process.env.BLOB_READ_WRITE_TOKEN || '',
+    }),
+  ],
   cors: [getServerSideURL()].filter(Boolean),
   secret: process.env.PAYLOAD_SECRET,
   sharp,
