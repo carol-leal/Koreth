@@ -46,9 +46,10 @@ export const Prologue: React.FC<Props> = ({ campaign, characters, goto }) => {
   }
 
   const currentSession = campaign.currentSession ?? 0
+  const activeChars = characters.filter((c) => !c.retired)
   const partyLevel =
     campaign.partyLevel ??
-    Math.round(characters.reduce((a, c) => a + (c.level ?? 0), 0) / Math.max(1, characters.length))
+    Math.round(activeChars.reduce((a, c) => a + (c.level ?? 0), 0) / Math.max(1, activeChars.length))
   const partyXp = campaign.partyXp ?? 0
   const nextLevelXp = campaign.nextLevelXp ?? 0
 
@@ -237,7 +238,7 @@ export const Prologue: React.FC<Props> = ({ campaign, characters, goto }) => {
           </div>
 
           <div className="party-roster">
-            {characters.map((c) => {
+            {characters.filter((c) => !c.retired).map((c) => {
               const portrait = `linear-gradient(135deg, oklch(0.42 0.18 ${c.accentHue ?? 285}), oklch(0.16 0.06 ${((c.accentHue ?? 285) + 60) % 360}))`
               const cur = c.vitals?.hpCurrent ?? 0
               const max = c.vitals?.hpMax ?? 1

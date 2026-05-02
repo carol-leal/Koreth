@@ -25,6 +25,15 @@ export const Characters: CollectionConfig = {
   fields: [
     { name: 'name', type: 'text', required: true },
     {
+      name: 'retired',
+      type: 'checkbox',
+      defaultValue: false,
+      admin: {
+        description:
+          'Hide from the active Party. The sheet is preserved so old chronicles still reference them.',
+      },
+    },
+    {
       name: 'player',
       type: 'relationship',
       relationTo: 'users',

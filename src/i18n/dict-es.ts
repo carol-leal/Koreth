@@ -177,6 +177,13 @@ export const es: Dictionary = {
   'sheet.btn.delete': 'Eliminar personaje',
   'sheet.btn.deleting': 'Eliminando…',
   'sheet.delete.confirm': '¿Eliminar este personaje? Esto no se puede deshacer.',
+  'sheet.f.retired': 'Marcar como retirado',
+  'sheet.f.retired.help': 'Se oculta de la Party activa. Las crónicas antiguas siguen enlazándolo.',
+
+  // Party retirados — toggle
+  'party.retired.show': '+ {n} retirados',
+  'party.retired.hide': '− ocultar retirados',
+  'party.retired.badge': 'retirado',
 
   // Folio delete (DM)
   'folio.btn.delete': 'Eliminar folio',
@@ -332,7 +339,6 @@ export const es: Dictionary = {
   // Party / Dramatis
   'party.eyebrow': 'Acto IV · Party',
   'party.headline.a': 'La Party',
-  'party.headline.b': 'Inquebrantable,',
   'party.headline.c': 'tal como se',
   'party.headline.d': 'vio por última vez.',
   'party.sub.one': 'Una voz.',

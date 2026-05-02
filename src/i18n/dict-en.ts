@@ -177,6 +177,13 @@ export const en = {
   'sheet.btn.delete': 'Delete character',
   'sheet.btn.deleting': 'Deleting…',
   'sheet.delete.confirm': 'Delete this character? This cannot be undone.',
+  'sheet.f.retired': 'Mark as retired',
+  'sheet.f.retired.help': 'Hidden from the active Party. Old chronicles still link to them.',
+
+  // Party retired toggle
+  'party.retired.show': '+ {n} retired',
+  'party.retired.hide': '− hide retired',
+  'party.retired.badge': 'retired',
 
   // Folio delete (DM only)
   'folio.btn.delete': 'Delete folio',
@@ -331,8 +338,7 @@ export const en = {
 
   // Party / Dramatis
   'party.eyebrow': 'Act IV · Party',
-  'party.headline.a': 'The Unbroken',
-  'party.headline.b': 'Choir,',
+  'party.headline.a': 'The Party,',
   'party.headline.c': 'as they were',
   'party.headline.d': 'last seen.',
   'party.sub.one': 'One voice.',

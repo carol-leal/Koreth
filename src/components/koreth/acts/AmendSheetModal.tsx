@@ -28,6 +28,7 @@ export const AmendSheetModal: React.FC<Props> = ({ character: c, onClose, onSubm
   const [quote, setQuote] = useState(c.quote || '')
   const [accentHue, setAccentHue] = useState(String(c.accentHue ?? 285))
   const [playerLabel, setPlayerLabel] = useState(c.playerLabel || '')
+  const [retired, setRetired] = useState<boolean>(!!c.retired)
   const [portrait, setPortrait] = useState<Media | number | string | null | undefined>(c.portrait ?? null)
   const [portraitId, setPortraitId] = useState<number | null>(
     typeof c.portrait === 'object' && c.portrait
@@ -100,6 +101,7 @@ export const AmendSheetModal: React.FC<Props> = ({ character: c, onClose, onSubm
           .filter(Boolean)
           .map((g) => ({ name: g })),
         portrait: portraitId,
+        retired,
       }
       if (auth.canEditAny) {
         data.playerLabel = playerLabel.trim()
@@ -123,7 +125,7 @@ export const AmendSheetModal: React.FC<Props> = ({ character: c, onClose, onSubm
   }
 
   return (
-    <div className="modal-bg2" onClick={onClose}>
+    <div className="modal-bg2">
       <div
         className="modal2"
         onClick={(e) => e.stopPropagation()}
@@ -222,6 +224,18 @@ export const AmendSheetModal: React.FC<Props> = ({ character: c, onClose, onSubm
               />
             </div>
           )}
+
+          <label className="f-checkbox-row">
+            <input
+              type="checkbox"
+              checked={retired}
+              onChange={(e) => setRetired(e.target.checked)}
+            />
+            <span>
+              <strong>{t('sheet.f.retired')}</strong>
+              <em>{t('sheet.f.retired.help')}</em>
+            </span>
+          </label>
 
           <div>
             <label className="f-label">{t('sheet.f.vitals')}</label>

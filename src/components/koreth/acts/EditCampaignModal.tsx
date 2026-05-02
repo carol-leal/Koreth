@@ -75,7 +75,7 @@ export const EditCampaignModal: React.FC<Props> = ({ campaign, onClose, onSubmit
   }
 
   return (
-    <div className="modal-bg2" onClick={onClose}>
+    <div className="modal-bg2">
       <div className="modal2" onClick={(e) => e.stopPropagation()} style={{ width: 'min(720px, 92vw)' }}>
         <div className="modal2-head">
           <div>

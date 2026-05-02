@@ -11,7 +11,8 @@ import type { Character } from '@/payload-types'
 
 const QUOTES: Record<string, string> = {
   'Ashryn Vael': 'If a god needs me to keep her from dying, perhaps she is no god of mine.',
-  'Halren Stoke': 'The other me died at the Throne of the Protector. I keep his sword sharp out of courtesy.',
+  'Halren Stoke':
+    'The other me died at the Throne of the Protector. I keep his sword sharp out of courtesy.',
   'Veska Tho': "You can't sing a god back. But you can keep their note from finishing.",
   'Drevan Kor': 'Below, I learned what bones whisper. They mostly complain about weather.',
 }
@@ -34,11 +35,16 @@ export const Dramatis: React.FC<{ characters: Character[] }> = ({ characters }) 
   const auth = useAuth3()
   const { t } = useT()
   const [sel, setSel] = useState<number | null>(null)
+  const [showRetired, setShowRetired] = useState(false)
 
   if (sel != null) {
     const c = characters.find((x) => x.id === sel)
     if (c) return <PartyDetail c={c} onBack={() => setSel(null)} />
   }
+
+  const active = characters.filter((c) => !c.retired)
+  const retired = characters.filter((c) => c.retired)
+  const visible = showRetired ? characters : active
 
   return (
     <div>
@@ -46,40 +52,71 @@ export const Dramatis: React.FC<{ characters: Character[] }> = ({ characters }) 
         <div>
           <div className="eyebrow-sm">{t('party.eyebrow')}</div>
           <h2>
-            {t('party.headline.a')} <em>{t('party.headline.b')}</em>
             <br /> {t('party.headline.c')} <em>{t('party.headline.d')}</em>
           </h2>
         </div>
         <div className="sub">
-          {characters.length === 1 ? t('party.sub.one') : t('party.sub.many', { n: characters.length })}{' '}
+          {active.length === 1 ? t('party.sub.one') : t('party.sub.many', { n: active.length })}{' '}
           {t('party.sub.tail')}
+          {retired.length > 0 && (
+            <>
+              {' '}
+              <button
+                type="button"
+                className="party-retired-toggle"
+                onClick={() => setShowRetired((v) => !v)}
+              >
+                {showRetired ? t('party.retired.hide') : t('party.retired.show', { n: retired.length })}
+              </button>
+            </>
+          )}
         </div>
       </div>
 
       <div className="dramatis-rail">
-        {characters.map((c) => {
+        {visible.map((c) => {
           const hue = c.accentHue ?? 285
           const portrait = `linear-gradient(135deg, oklch(0.42 0.18 ${hue}), oklch(0.16 0.06 ${(hue + 60) % 360}))`
           const mine = !!auth?.isPlayer && auth.user?.pcSlug === c.slug
-          const quote = c.quote || QUOTES[c.name] || (lexicalText(c.backstory).split('.')[0] || '') + '.'
+          const quote =
+            c.quote || QUOTES[c.name] || (lexicalText(c.backstory).split('.')[0] || '') + '.'
           return (
             <div
               key={c.id}
-              className={'persona persona-clickable' + (mine ? ' persona-mine' : '')}
+              className={
+                'persona persona-clickable' +
+                (mine ? ' persona-mine' : '') +
+                (c.retired ? ' persona-retired' : '')
+              }
               onClick={() => setSel(c.id as number)}
             >
               <div
                 className="persona-portrait"
-                style={{ ['--portrait-bg' as string]: portrait, background: portrait } as React.CSSProperties}
+                style={
+                  {
+                    ['--portrait-bg' as string]: portrait,
+                    background: portrait,
+                  } as React.CSSProperties
+                }
               >
                 {portraitUrl(c.portrait) ? (
-                  <img className="persona-portrait-image" src={portraitUrl(c.portrait)!} alt={c.name} />
+                  <img
+                    className="persona-portrait-image"
+                    src={portraitUrl(c.portrait)!}
+                    alt={c.name}
+                  />
                 ) : (
                   <div className="persona-glyph">
-                    {c.name.split(' ').map((w) => w[0]).join('')}
+                    {c.name
+                      .split(' ')
+                      .map((w) => w[0])
+                      .join('')}
                   </div>
                 )}
-                {mine && (
+                {c.retired && (
+                  <div className="persona-retired-badge">{t('party.retired.badge')}</div>
+                )}
+                {mine && !c.retired && (
                   <div className="persona-mark" title={t('party.yourCharacter.title')}>
                     {t('party.yourCharacter')}
                   </div>
@@ -89,7 +126,9 @@ export const Dramatis: React.FC<{ characters: Character[] }> = ({ characters }) 
                   <span>
                     {t('party.lvl', {
                       n: c.level ?? 1,
-                      player: c.playerLabel || (typeof c.player === 'object' && c.player ? c.player.name || '' : ''),
+                      player:
+                        c.playerLabel ||
+                        (typeof c.player === 'object' && c.player ? c.player.name || '' : ''),
                     })}
                   </span>
                 </div>
@@ -110,8 +149,12 @@ export const Dramatis: React.FC<{ characters: Character[] }> = ({ characters }) 
                   })}
                 </div>
                 <div className="persona-foot">
-                  <span>{t('party.k.hp')} {c.vitals?.hpCurrent ?? '?'}/{c.vitals?.hpMax ?? '?'}</span>
-                  <span>{t('party.k.ac')} {c.vitals?.ac ?? '?'}</span>
+                  <span>
+                    {t('party.k.hp')} {c.vitals?.hpCurrent ?? '?'}/{c.vitals?.hpMax ?? '?'}
+                  </span>
+                  <span>
+                    {t('party.k.ac')} {c.vitals?.ac ?? '?'}
+                  </span>
                   <span className="persona-open">{t('party.openSheet')}</span>
                 </div>
               </div>
@@ -133,7 +176,8 @@ const PartyDetail: React.FC<{ c: Character; onBack: () => void }> = ({ c, onBack
   const canEdit = auth.canEditPC(c.slug)
   const mine = !!auth?.isPlayer && auth.user?.pcSlug === c.slug
   const quote = c.quote || QUOTES[c.name]
-  const playerName = c.playerLabel || (typeof c.player === 'object' && c.player ? c.player.name || '' : '')
+  const playerName =
+    c.playerLabel || (typeof c.player === 'object' && c.player ? c.player.name || '' : '')
 
   return (
     <div className="party-detail">
@@ -141,12 +185,20 @@ const PartyDetail: React.FC<{ c: Character; onBack: () => void }> = ({ c, onBack
         {t('party.back')}
       </div>
 
-      <div className="party-detail-grid">
+      <div className={'party-detail-grid' + (c.retired ? ' party-detail-retired' : '')}>
         <div className="pd-portrait" style={{ background: portrait }}>
           {portraitUrl(c.portrait) ? (
             <img className="persona-portrait-image" src={portraitUrl(c.portrait)!} alt={c.name} />
           ) : (
-            <div className="pd-portrait-glyph">{c.name.split(' ').map((w) => w[0]).join('')}</div>
+            <div className="pd-portrait-glyph">
+              {c.name
+                .split(' ')
+                .map((w) => w[0])
+                .join('')}
+            </div>
+          )}
+          {c.retired && (
+            <div className="persona-retired-badge pd-retired-badge">{t('party.retired.badge')}</div>
           )}
           {mine && <div className="persona-mark">{t('party.yourCharacter')}</div>}
         </div>
@@ -177,7 +229,9 @@ const PartyDetail: React.FC<{ c: Character; onBack: () => void }> = ({ c, onBack
             </div>
             <div className="pd-vital">
               <div className="k">{t('party.k.player')}</div>
-              <div className="v" style={{ fontSize: 22 }}>{playerName}</div>
+              <div className="v" style={{ fontSize: 22 }}>
+                {playerName}
+              </div>
             </div>
           </div>
 
@@ -191,7 +245,10 @@ const PartyDetail: React.FC<{ c: Character; onBack: () => void }> = ({ c, onBack
                   <div key={k} className="pd-stat">
                     <div className="k">{k}</div>
                     <div className="v">{v}</div>
-                    <div className="m">{m >= 0 ? '+' : ''}{m}</div>
+                    <div className="m">
+                      {m >= 0 ? '+' : ''}
+                      {m}
+                    </div>
                   </div>
                 )
               })}
@@ -207,7 +264,8 @@ const PartyDetail: React.FC<{ c: Character; onBack: () => void }> = ({ c, onBack
 
           <div className="pd-section">
             <div className="pd-section-title">
-              {t('party.section.gear')} <span className="pd-section-count">{(c.gear || []).length}</span>
+              {t('party.section.gear')}{' '}
+              <span className="pd-section-count">{(c.gear || []).length}</span>
             </div>
             <ul className="pd-gear">
               {(c.gear || []).map((g, i) => (

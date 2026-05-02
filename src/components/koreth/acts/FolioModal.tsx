@@ -101,7 +101,7 @@ export const FolioModal: React.FC<Props> = ({ session, onClose, onSubmitted, onD
   }
 
   return (
-    <div className="modal-bg2" onClick={onClose}>
+    <div className="modal-bg2">
       <div className="modal2" onClick={(e) => e.stopPropagation()}>
         <div className="modal2-head">
           <div>

@@ -313,6 +313,10 @@ export interface Character {
   id: number;
   name: string;
   /**
+   * Hide from the active Party. The sheet is preserved so old chronicles still reference them.
+   */
+  retired?: boolean | null;
+  /**
    * Owning user; only that user (or admin) can edit this PC.
    */
   player?: (number | null) | User;
@@ -1175,6 +1179,7 @@ export interface DeitiesSelect<T extends boolean = true> {
  */
 export interface CharactersSelect<T extends boolean = true> {
   name?: T;
+  retired?: T;
   player?: T;
   playerLabel?: T;
   class?: T;
