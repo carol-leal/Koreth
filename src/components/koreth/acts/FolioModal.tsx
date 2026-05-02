@@ -10,13 +10,16 @@ type Props = {
   session?: Session
   onClose: () => void
   onSubmitted: () => void
+  /** Called after a successful delete. */
+  onDeleted?: () => void
 }
 
-export const FolioModal: React.FC<Props> = ({ session, onClose, onSubmitted }) => {
+export const FolioModal: React.FC<Props> = ({ session, onClose, onSubmitted, onDeleted }) => {
   const auth = useAuth3()
   const { t } = useT()
   const isEdit = !!session
   const author = auth.user?.name || 'Anonymous'
+  const canDelete = isEdit && auth.canEditAny
 
   const [title, setTitle] = useState(session?.title || '')
   const [date, setDate] = useState(session?.inWorldDate || 'Yr 350, late spring')
@@ -24,7 +27,27 @@ export const FolioModal: React.FC<Props> = ({ session, onClose, onSubmitted }) =
   const [body, setBody] = useState(lexicalToText(session?.body))
   const [marginalia, setMarginalia] = useState(lexicalToText(session?.marginalia))
   const [busy, setBusy] = useState(false)
+  const [deleting, setDeleting] = useState(false)
   const [err, setErr] = useState('')
+
+  const remove = async () => {
+    if (!canDelete || !session?.id) return
+    if (!confirm(t('folio.delete.confirm'))) return
+    setDeleting(true)
+    setErr('')
+    try {
+      const res = await fetch(`/api/sessions/${session.id}`, { method: 'DELETE', credentials: 'include' })
+      if (!res.ok) {
+        const j = await res.json().catch(() => ({}))
+        throw new Error(j?.errors?.[0]?.message || j?.message || t('folio.err.generic'))
+      }
+      ;(onDeleted || onSubmitted)()
+    } catch (e) {
+      setErr((e as Error).message)
+    } finally {
+      setDeleting(false)
+    }
+  }
 
   const submit = async () => {
     if (!title.trim()) return
@@ -188,22 +211,28 @@ export const FolioModal: React.FC<Props> = ({ session, onClose, onSubmitted }) =
         </div>
 
         <div className="modal2-foot">
-          <span
-            style={{
-              fontFamily: 'var(--mono)',
-              fontSize: 10,
-              letterSpacing: '.18em',
-              color: 'var(--ink-4)',
-              textTransform: 'uppercase',
-            }}
-          >
-            {isEdit ? t('folio.foot.amend') : t('folio.foot.add')}
-          </span>
+          {canDelete ? (
+            <button className="btn3 btn3-danger" onClick={remove} disabled={busy || deleting} type="button">
+              {deleting ? t('folio.btn.deleting') : t('folio.btn.delete')}
+            </button>
+          ) : (
+            <span
+              style={{
+                fontFamily: 'var(--mono)',
+                fontSize: 10,
+                letterSpacing: '.18em',
+                color: 'var(--ink-4)',
+                textTransform: 'uppercase',
+              }}
+            >
+              {isEdit ? t('folio.foot.amend') : t('folio.foot.add')}
+            </span>
+          )}
           <div style={{ display: 'flex', gap: 10 }}>
             <button className="btn3 btn3-ghost" onClick={onClose}>
               {t('folio.btn.cancel')}
             </button>
-            <button className="btn3 btn3-primary" onClick={submit} disabled={busy}>
+            <button className="btn3 btn3-primary" onClick={submit} disabled={busy || deleting}>
               {busy
                 ? isEdit
                   ? t('folio.btn.saving')

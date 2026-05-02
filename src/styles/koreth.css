@@ -1215,12 +1215,14 @@ body {
 }
 .cd-hero::before {
   content: ""; position: absolute; inset: 0;
+  pointer-events: none;
   background:
     radial-gradient(ellipse at 75% 20%, oklch(1 0 0 / 0.18), transparent 60%),
     radial-gradient(ellipse at 50% 110%, oklch(0 0 0 / 0.6), transparent 60%);
 }
 .cd-hero::after {
   content: ""; position: absolute; inset: 0;
+  pointer-events: none;
   background-image: repeating-linear-gradient(135deg, oklch(0 0 0 / 0.05) 0 1px, transparent 1px 8px);
   mix-blend-mode: overlay;
 }
@@ -1422,6 +1424,26 @@ body {
   box-shadow: 0 6px 20px -8px var(--accent-glow);
 }
 .btn3-primary:hover { box-shadow: 0 8px 28px -6px var(--accent-glow); }
+
+.btn3-danger {
+  background: transparent;
+  border: 1px solid oklch(0.6 0.18 25 / 0.5);
+  color: oklch(0.78 0.16 25);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding: 9px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 160ms, border-color 160ms, color 160ms;
+}
+.btn3-danger:hover {
+  background: oklch(0.6 0.18 25 / 0.1);
+  border-color: var(--status-danger);
+  color: oklch(0.85 0.16 25);
+}
+.btn3-danger:disabled { opacity: 0.5; cursor: default; }
 
 /* "Add session" affordance on chronicle page */
 .chr-add {
@@ -1676,13 +1698,14 @@ body {
 /* ===== Codex amend (DM only) ===== */
 .cd-amend {
   position: absolute; right: 22px; top: 22px;
+  z-index: 3;
   font-family: var(--mono); font-size: 10px;
   letter-spacing: 0.18em; text-transform: uppercase;
   padding: 5px 11px; border-radius: 999px;
   background: oklch(0 0 0 / 0.5);
   border: 1px solid var(--line-strong);
   color: var(--ink);
-  cursor: default;
+  cursor: pointer;
   backdrop-filter: blur(8px);
   transition: border-color 180ms, color 180ms;
 }
@@ -3026,6 +3049,24 @@ body {
   line-height: 1.45;
 }
 
+.campaign-edit-link {
+  margin-left: 12px;
+  cursor: pointer;
+  color: var(--ink-3);
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 11px;
+  border: 1px solid var(--line);
+  padding: 2px 8px;
+  border-radius: 999px;
+  transition: color 160ms, border-color 160ms, background 160ms;
+}
+.campaign-edit-link:hover {
+  color: var(--accent);
+  border-color: var(--accent-soft);
+  background: var(--accent-faint);
+}
+
 /* ============================================================ */
 /* TIMELINE                                                      */
 /* ============================================================ */
@@ -3231,3 +3272,129 @@ body {
   .tl-row { grid-template-columns: 36px 1fr; gap: 14px; }
   .tl-marker { justify-self: center; }
 }
+
+/* ============================================================ */
+/* CODEX + PANTHEON create buttons                               */
+/* ============================================================ */
+.codex-new {
+  appearance: none;
+  width: calc(100% - 24px);
+  margin: 12px 12px 0;
+  background: var(--accent-faint);
+  border: 1px dashed var(--accent-soft);
+  color: var(--accent);
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 9px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 160ms, border-color 160ms;
+}
+.codex-new:hover {
+  background: oklch(0.66 0.17 295 / 0.32);
+  border-color: var(--accent);
+}
+
+.pantheon-add-row {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0 88px;
+  max-width: 1480px;
+  margin: 0 auto 18px;
+}
+
+/* ============================================================ */
+/* PORTRAIT upload                                               */
+/* ============================================================ */
+.portrait-upload {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-start;
+}
+.portrait-thumb {
+  appearance: none;
+  position: relative;
+  border-radius: 12px;
+  border: 1px dashed var(--line-strong);
+  background: oklch(1 0 0 / 0.03);
+  overflow: hidden;
+  cursor: pointer;
+  padding: 0;
+  transition: border-color 160ms, background 160ms;
+}
+.portrait-thumb:hover {
+  border-color: var(--accent-soft);
+  background: var(--accent-faint);
+}
+.portrait-thumb img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+}
+.portrait-empty {
+  position: absolute;
+  inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-4);
+  text-align: center;
+  padding: 4px;
+}
+.portrait-busy {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  background: oklch(0 0 0 / 0.6);
+  color: oklch(1 0 0 / 0.8);
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding: 3px 0;
+  text-align: center;
+}
+.portrait-actions {
+  display: flex; gap: 6px;
+}
+.portrait-action {
+  appearance: none;
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--ink-2);
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: color 160ms, border-color 160ms, background 160ms;
+}
+.portrait-action:hover { color: var(--ink); border-color: var(--line-strong); }
+.portrait-action:disabled { opacity: 0.5; cursor: default; }
+.portrait-action-danger { color: oklch(0.78 0.16 25 / 0.85); border-color: oklch(0.6 0.18 25 / 0.4); }
+.portrait-action-danger:hover { color: oklch(0.85 0.16 25); border-color: var(--status-danger); background: oklch(0.6 0.18 25 / 0.08); }
+.portrait-err {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: oklch(0.7 0.16 28);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* When a portrait fills a hero/persona, the procedural one is replaced.
+   Pushed above pseudo-elements that decorate the parent. */
+.cd-portrait-image,
+.persona-portrait-image,
+.god-modal-portrait-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 2;
+}
+.god-modal-portrait-image { border-radius: inherit; }

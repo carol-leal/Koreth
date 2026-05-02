@@ -1,11 +1,14 @@
 'use client'
 
 import React, { useMemo, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { LinkText } from '../LinkText'
 import { useTip } from '../TipContext'
 import { useAuth3 } from '../AuthContext'
 import { PantheonByTier } from './PantheonByTier'
 import { CodexPortrait } from './CodexPortrait'
+import { CodexAmendModal } from './CodexAmendModal'
+import { portraitUrl } from '../portrait'
 import { useT } from '@/i18n/LocaleContext'
 import type { DictKey } from '@/i18n'
 import type { CodexTabId, KorethData } from '../types'
@@ -26,6 +29,7 @@ const CODEX_TABS: TabDef[] = [
   { id: 'factions', labelKey: 'codex.tab.factions', pluralKey: 'codex.plural.factions', glyph: '✕', hue: 25 },
   { id: 'items', labelKey: 'codex.tab.items', pluralKey: 'codex.plural.items', glyph: '◈', hue: 145 },
   { id: 'pantheon', labelKey: 'codex.tab.pantheon', pluralKey: 'codex.plural.pantheon', glyph: '☼', hue: 75 },
+  { id: 'lore', labelKey: 'codex.tab.lore', pluralKey: 'codex.plural.lore', glyph: '❖', hue: 320 },
 ]
 
 const initials = (name: string) =>
@@ -55,6 +59,8 @@ const subOf = (item: any, tab: CodexTabId): string => {
       return item.tone || ''
     case 'items':
       return item.kind || ''
+    case 'lore':
+      return item.kind || ''
     default:
       return ''
   }
@@ -68,6 +74,8 @@ const metaOf = (item: any, tab: CodexTabId): string => {
       return item.rarity || ''
     case 'factions':
       return item.tone || ''
+    case 'lore':
+      return item.era || ''
     default:
       return ''
   }
@@ -75,9 +83,12 @@ const metaOf = (item: any, tab: CodexTabId): string => {
 
 export const Codex: React.FC<{ data: KorethData }> = ({ data }) => {
   const { t } = useT()
+  const auth = useAuth3()
+  const router = useRouter()
   const [tab, setTab] = useState<CodexTabId>('npcs')
   const [q, setQ] = useState('')
   const [selByTab, setSelByTab] = useState<Record<string, any>>({})
+  const [createOpen, setCreateOpen] = useState(false)
 
   const tabDef = CODEX_TABS.find((td) => td.id === tab)!
 
@@ -87,6 +98,7 @@ export const Codex: React.FC<{ data: KorethData }> = ({ data }) => {
     tab === 'locations' ? data.locations :
     tab === 'factions' ? data.factions :
     tab === 'items' ? data.items :
+    tab === 'lore' ? data.lore :
     []
 
   const counts: Record<CodexTabId, number> = {
@@ -96,6 +108,7 @@ export const Codex: React.FC<{ data: KorethData }> = ({ data }) => {
     factions: data.factions.length,
     items: data.items.length,
     pantheon: data.pantheon.length,
+    lore: data.lore.length,
   }
 
   const filtered = useMemo(() => {
@@ -178,6 +191,12 @@ export const Codex: React.FC<{ data: KorethData }> = ({ data }) => {
             )}
           </div>
 
+          {auth.canEditAny && (
+            <button className="codex-new" onClick={() => setCreateOpen(true)} type="button">
+              {t('codex.new', { kind: t(tabDef.labelKey).toLowerCase() })}
+            </button>
+          )}
+
           <div className="codex-rows">
             {filtered.length === 0 && <div className="codex-empty">{t('codex.empty', { q })}</div>}
             {filtered.map((it: any, i: number) => {
@@ -208,9 +227,34 @@ export const Codex: React.FC<{ data: KorethData }> = ({ data }) => {
         </div>
 
         <div className="codex-detail" key={(sel?.id ?? sel?.name) + tab}>
-          {sel && <CodexDetail item={sel} tab={tab} data={data} />}
+          {sel && (
+            <CodexDetail
+              item={sel}
+              tab={tab}
+              data={data}
+              onDeleted={() => {
+                setSelByTab((s) => {
+                  const next = { ...s }
+                  delete next[tab]
+                  return next
+                })
+              }}
+            />
+          )}
         </div>
       </div>
+
+      {createOpen && (
+        <CodexAmendModal
+          tab={tab}
+          data={data}
+          onClose={() => setCreateOpen(false)}
+          onSubmitted={() => {
+            setCreateOpen(false)
+            router.refresh()
+          }}
+        />
+      )}
     </div>
   )
 }
@@ -222,12 +266,20 @@ const EYEBROW_KEY: Record<CodexTabId, DictKey> = {
   factions: 'codex.eyebrowFor.factions',
   items: 'codex.eyebrowFor.items',
   pantheon: 'codex.eyebrowFor.entry',
+  lore: 'codex.eyebrowFor.lore',
 }
 
-const CodexDetail: React.FC<{ item: any; tab: CodexTabId; data: KorethData }> = ({ item, tab, data }) => {
+const CodexDetail: React.FC<{
+  item: any
+  tab: CodexTabId
+  data: KorethData
+  onDeleted?: () => void
+}> = ({ item, tab, data, onDeleted }) => {
   const auth = useAuth3()
+  const router = useRouter()
   const { t } = useT()
   const { show, hide, index } = useTip()
+  const [amendOpen, setAmendOpen] = useState(false)
 
   const hue = item.accentHue ?? stableHash(item.name) % 360
   const bg = `linear-gradient(135deg, oklch(0.45 0.18 ${hue}), oklch(0.16 0.06 ${(hue + 60) % 360}))`
@@ -235,7 +287,9 @@ const CodexDetail: React.FC<{ item: any; tab: CodexTabId; data: KorethData }> = 
   const subtitle =
     item.title || item.tagline || (typeof item.region === 'object' ? item.region?.name : '') || item.kind || ''
 
-  const bodyText = lexicalText(item.bio) || lexicalText(item.description) || ''
+  // Lore stores its prose in `body` (textarea, not richText).
+  const bodyText: string =
+    lexicalText(item.bio) || lexicalText(item.description) || (typeof item.body === 'string' ? item.body : '')
 
   const kv: [string, string][] = []
   if (tab === 'npcs') {
@@ -256,6 +310,9 @@ const CodexDetail: React.FC<{ item: any; tab: CodexTabId; data: KorethData }> = 
     if (item.kind) kv.push([t('codex.kv.kind'), item.kind])
     if (item.rarity) kv.push([t('codex.kv.rarity'), item.rarity])
     if (item.ownerLabel) kv.push([t('codex.kv.bearer'), item.ownerLabel])
+  } else if (tab === 'lore') {
+    if (item.kind) kv.push([t('codex.kv.kind'), item.kind])
+    if (item.era) kv.push([t('codex.kv.era'), item.era])
   }
 
   const related: { name: string; kind: string }[] = []
@@ -269,14 +326,27 @@ const CodexDetail: React.FC<{ item: any; tab: CodexTabId; data: KorethData }> = 
     <>
       <div className="cd-hero" style={{ ['--cd-bg' as string]: bg, background: bg } as React.CSSProperties}>
         <div className="cd-portrait">
-          <CodexPortrait name={item.name} hue={hue} kind={tab} symbol={item.symbol} />
+          {portraitUrl(item.portrait) ? (
+            <img className="cd-portrait-image" src={portraitUrl(item.portrait)!} alt={item.name} />
+          ) : (
+            <CodexPortrait name={item.name} hue={hue} kind={tab} symbol={item.symbol} />
+          )}
         </div>
         <div className="cd-hero-text">
           <div className="cd-hero-eye">{t(EYEBROW_KEY[tab])}</div>
           <h1>{item.name}</h1>
           {subtitle && <div className="sub">{subtitle}</div>}
         </div>
-        {auth?.canEditAny && <div className="cd-amend" title={t('codex.amend.title')}>✎ {t('codex.amend')}</div>}
+        {auth?.canEditAny && tab !== 'pantheon' && (
+          <div
+            className="cd-amend"
+            title={t('codex.amend.title')}
+            onClick={() => setAmendOpen(true)}
+            style={{ cursor: 'pointer' }}
+          >
+            ✎ {t('codex.amend')}
+          </div>
+        )}
       </div>
 
       <div className="cd-body">
@@ -330,6 +400,24 @@ const CodexDetail: React.FC<{ item: any; tab: CodexTabId; data: KorethData }> = 
           </div>
         )}
       </div>
+
+      {amendOpen && tab !== 'pantheon' && (
+        <CodexAmendModal
+          item={item}
+          tab={tab}
+          data={data}
+          onClose={() => setAmendOpen(false)}
+          onSubmitted={() => {
+            setAmendOpen(false)
+            router.refresh()
+          }}
+          onDeleted={() => {
+            setAmendOpen(false)
+            onDeleted?.()
+            router.refresh()
+          }}
+        />
+      )}
     </>
   )
 }

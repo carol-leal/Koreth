@@ -210,6 +210,7 @@ export const Chronicle: React.FC<Props> = ({ sel, setSel, sessions }) => {
           session={s}
           onClose={() => setAmendOpen(false)}
           onSubmitted={closeAndRefresh(() => setAmendOpen(false))}
+          onDeleted={closeAndRefresh(() => setAmendOpen(false))}
         />
       )}
       {addOpen && (

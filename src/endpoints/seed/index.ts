@@ -32,6 +32,7 @@ export const seed = async ({ payload, req }: { payload: Payload; req?: PayloadRe
 
   // 0. Wipe existing rows for idempotent reseeds.
   for (const slug of [
+    'lore',
     'events',
     'leads',
     'quests',

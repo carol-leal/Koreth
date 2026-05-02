@@ -17,6 +17,7 @@ import { Sessions } from './collections/Sessions'
 import { Quests } from './collections/Quests'
 import { Leads } from './collections/Leads'
 import { Events } from './collections/Events'
+import { Lore } from './collections/Lore'
 import { Campaign } from './globals/Campaign'
 import { defaultLexical } from '@/fields/defaultLexical'
 import { getServerSideURL } from './utilities/getURL'
@@ -59,6 +60,7 @@ export default buildConfig({
     Quests,
     Leads,
     Events,
+    Lore,
   ],
   globals: [Campaign],
   cors: [getServerSideURL()].filter(Boolean),

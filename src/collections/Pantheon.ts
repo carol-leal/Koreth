@@ -45,6 +45,7 @@ export const Pantheon: CollectionConfig = {
     { name: 'alignment', type: 'text', localized: true },
     { name: 'description', type: 'richText', localized: true },
     { name: 'accentHue', type: 'number', min: 0, max: 360 },
+    { name: 'portrait', type: 'upload', relationTo: 'media' },
     ...slugField('name'),
   ],
 }

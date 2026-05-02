@@ -24,21 +24,23 @@ export default async function Home() {
     quests,
     leads,
     events,
+    lore,
     user,
     entities,
   ] = await Promise.all([
     payload.findGlobal({ slug: 'campaign', depth: 1, locale, fallbackLocale: DEFAULT_LOCALE }),
-    payload.find({ collection: 'regions', limit: 200, depth: 0, sort: 'name', locale, fallbackLocale: DEFAULT_LOCALE }),
+    payload.find({ collection: 'regions', limit: 200, depth: 1, sort: 'name', locale, fallbackLocale: DEFAULT_LOCALE }),
     payload.find({ collection: 'locations', limit: 200, depth: 1, sort: 'name', locale, fallbackLocale: DEFAULT_LOCALE }),
     payload.find({ collection: 'factions', limit: 200, depth: 1, sort: 'name', locale, fallbackLocale: DEFAULT_LOCALE }),
     payload.find({ collection: 'npcs', limit: 200, depth: 1, sort: 'name', locale, fallbackLocale: DEFAULT_LOCALE }),
     payload.find({ collection: 'items', limit: 200, depth: 1, sort: 'name', locale, fallbackLocale: DEFAULT_LOCALE }),
-    payload.find({ collection: 'deities', limit: 200, depth: 0, sort: 'name', locale, fallbackLocale: DEFAULT_LOCALE }),
+    payload.find({ collection: 'deities', limit: 200, depth: 1, sort: 'name', locale, fallbackLocale: DEFAULT_LOCALE }),
     payload.find({ collection: 'characters', limit: 50, depth: 2, sort: 'name', locale, fallbackLocale: DEFAULT_LOCALE }),
     payload.find({ collection: 'sessions', limit: 100, depth: 1, sort: '-number', locale, fallbackLocale: DEFAULT_LOCALE }),
     payload.find({ collection: 'quests', limit: 200, depth: 0, locale, fallbackLocale: DEFAULT_LOCALE }),
     payload.find({ collection: 'leads', limit: 200, depth: 1, sort: '-updatedAt', locale, fallbackLocale: DEFAULT_LOCALE }),
     payload.find({ collection: 'events', limit: 500, depth: 1, sort: 'sortOrder', locale, fallbackLocale: DEFAULT_LOCALE }),
+    payload.find({ collection: 'lore', limit: 500, depth: 1, sort: 'title', locale, fallbackLocale: DEFAULT_LOCALE }),
     getOptionalUser(),
     getCachedEntityIndex(locale),
   ])
@@ -68,6 +70,7 @@ export default async function Home() {
         quests: quests.docs,
         leads: leads.docs,
         events: events.docs,
+        lore: lore.docs,
       }}
       user={sessionUser}
       entities={entities}

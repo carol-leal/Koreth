@@ -3,23 +3,39 @@
 import React, { useState } from 'react'
 import { textToLexical, lexicalToText } from '../textLexical'
 import { useT } from '@/i18n/LocaleContext'
-import type { Character } from '@/payload-types'
+import { useAuth3 } from '../AuthContext'
+import { PortraitUpload } from '../PortraitUpload'
+import type { Character, Media } from '@/payload-types'
 
 type Props = {
   character: Character
   onClose: () => void
   onSubmitted: () => void
+  /** Called after a successful delete. Parent should clear its selection. */
+  onDeleted?: () => void
 }
 
 const ABILITIES = ['STR', 'DEX', 'CON', 'INT', 'WIS', 'CHA'] as const
 
-export const AmendSheetModal: React.FC<Props> = ({ character: c, onClose, onSubmitted }) => {
+export const AmendSheetModal: React.FC<Props> = ({ character: c, onClose, onSubmitted, onDeleted }) => {
   const { t } = useT()
+  const auth = useAuth3()
   const [name, setName] = useState(c.name)
   const [klass, setKlass] = useState(c.class)
+  const [subclass, setSubclass] = useState(c.subclass || '')
   const [race, setRace] = useState(c.race || '')
   const [level, setLevel] = useState(String(c.level ?? 1))
   const [quote, setQuote] = useState(c.quote || '')
+  const [accentHue, setAccentHue] = useState(String(c.accentHue ?? 285))
+  const [playerLabel, setPlayerLabel] = useState(c.playerLabel || '')
+  const [portrait, setPortrait] = useState<Media | number | string | null | undefined>(c.portrait ?? null)
+  const [portraitId, setPortraitId] = useState<number | null>(
+    typeof c.portrait === 'object' && c.portrait
+      ? (c.portrait.id as number)
+      : typeof c.portrait === 'number'
+        ? c.portrait
+        : null,
+  )
   const [hpCur, setHpCur] = useState(String(c.vitals?.hpCurrent ?? ''))
   const [hpMax, setHpMax] = useState(String(c.vitals?.hpMax ?? ''))
   const [ac, setAc] = useState(String(c.vitals?.ac ?? ''))
@@ -31,7 +47,27 @@ export const AmendSheetModal: React.FC<Props> = ({ character: c, onClose, onSubm
   const initialGear = (c.gear || []).map((g) => g.name).join('\n')
   const [gear, setGear] = useState(initialGear)
   const [busy, setBusy] = useState(false)
+  const [deleting, setDeleting] = useState(false)
   const [err, setErr] = useState('')
+
+  const remove = async () => {
+    if (!auth.canEditAny) return
+    if (!confirm(t('sheet.delete.confirm'))) return
+    setDeleting(true)
+    setErr('')
+    try {
+      const res = await fetch(`/api/characters/${c.id}`, { method: 'DELETE', credentials: 'include' })
+      if (!res.ok) {
+        const j = await res.json().catch(() => ({}))
+        throw new Error(j?.errors?.[0]?.message || j?.message || t('sheet.err.generic'))
+      }
+      ;(onDeleted || onSubmitted)()
+    } catch (e) {
+      setErr((e as Error).message)
+    } finally {
+      setDeleting(false)
+    }
+  }
 
   const num = (s: string): number | null => {
     const n = Number(s)
@@ -46,9 +82,11 @@ export const AmendSheetModal: React.FC<Props> = ({ character: c, onClose, onSubm
       const data: Record<string, unknown> = {
         name: name.trim(),
         class: klass.trim(),
+        subclass: subclass.trim(),
         race: race.trim(),
         level: num(level) ?? 1,
         quote: quote.trim(),
+        accentHue: num(accentHue) ?? 285,
         vitals: {
           hpCurrent: num(hpCur),
           hpMax: num(hpMax),
@@ -61,6 +99,10 @@ export const AmendSheetModal: React.FC<Props> = ({ character: c, onClose, onSubm
           .map((g) => g.trim())
           .filter(Boolean)
           .map((g) => ({ name: g })),
+        portrait: portraitId,
+      }
+      if (auth.canEditAny) {
+        data.playerLabel = playerLabel.trim()
       }
       const res = await fetch(`/api/characters/${c.id}`, {
         method: 'PATCH',
@@ -108,24 +150,57 @@ export const AmendSheetModal: React.FC<Props> = ({ character: c, onClose, onSubm
         </div>
 
         <div className="modal2-body">
-          <div className="f-row">
+          <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
             <div>
-              <label className="f-label">{t('sheet.f.name')}</label>
-              <input className="f-input" value={name} onChange={(e) => setName(e.target.value)} />
+              <label className="f-label">{t('portrait.label')}</label>
+              <PortraitUpload
+                value={portrait}
+                alt={name}
+                onChange={(id) => {
+                  setPortraitId(id)
+                  if (id == null) setPortrait(null)
+                }}
+              />
             </div>
-            <div>
-              <label className="f-label">{t('sheet.f.class')}</label>
-              <input className="f-input" value={klass} onChange={(e) => setKlass(e.target.value)} />
+            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 14 }}>
+              <div>
+                <label className="f-label">{t('sheet.f.name')}</label>
+                <input className="f-input" value={name} onChange={(e) => setName(e.target.value)} />
+              </div>
+              <div>
+                <label className="f-label">{t('sheet.f.class')}</label>
+                <input className="f-input" value={klass} onChange={(e) => setKlass(e.target.value)} />
+              </div>
             </div>
           </div>
           <div className="f-row">
             <div>
+              <label className="f-label">{t('sheet.f.subclass')}</label>
+              <input className="f-input" value={subclass} onChange={(e) => setSubclass(e.target.value)} />
+            </div>
+            <div>
               <label className="f-label">{t('sheet.f.race')}</label>
               <input className="f-input" value={race} onChange={(e) => setRace(e.target.value)} />
             </div>
+          </div>
+          <div className="f-row">
             <div>
               <label className="f-label">{t('sheet.f.level')}</label>
-              <input className="f-input" inputMode="numeric" value={level} onChange={(e) => setLevel(e.target.value)} />
+              <input
+                className="f-input"
+                inputMode="numeric"
+                value={level}
+                onChange={(e) => setLevel(e.target.value)}
+              />
+            </div>
+            <div>
+              <label className="f-label">{t('sheet.f.accentHue')}</label>
+              <input
+                className="f-input"
+                inputMode="numeric"
+                value={accentHue}
+                onChange={(e) => setAccentHue(e.target.value)}
+              />
             </div>
           </div>
           <div>
@@ -137,6 +212,16 @@ export const AmendSheetModal: React.FC<Props> = ({ character: c, onClose, onSubm
               placeholder={t('sheet.f.quotePlaceholder')}
             />
           </div>
+          {auth.canEditAny && (
+            <div>
+              <label className="f-label">{t('sheet.f.playerLabel')}</label>
+              <input
+                className="f-input"
+                value={playerLabel}
+                onChange={(e) => setPlayerLabel(e.target.value)}
+              />
+            </div>
+          )}
 
           <div>
             <label className="f-label">{t('sheet.f.vitals')}</label>
@@ -226,22 +311,28 @@ export const AmendSheetModal: React.FC<Props> = ({ character: c, onClose, onSubm
         </div>
 
         <div className="modal2-foot">
-          <span
-            style={{
-              fontFamily: 'var(--mono)',
-              fontSize: 10,
-              letterSpacing: '.18em',
-              color: 'var(--ink-4)',
-              textTransform: 'uppercase',
-            }}
-          >
-            {t('sheet.foot')}
-          </span>
+          {auth.canEditAny ? (
+            <button className="btn3 btn3-danger" onClick={remove} disabled={busy || deleting} type="button">
+              {deleting ? t('sheet.btn.deleting') : t('sheet.btn.delete')}
+            </button>
+          ) : (
+            <span
+              style={{
+                fontFamily: 'var(--mono)',
+                fontSize: 10,
+                letterSpacing: '.18em',
+                color: 'var(--ink-4)',
+                textTransform: 'uppercase',
+              }}
+            >
+              {t('sheet.foot')}
+            </span>
+          )}
           <div style={{ display: 'flex', gap: 10 }}>
             <button className="btn3 btn3-ghost" onClick={onClose}>
               {t('sheet.btn.cancel')}
             </button>
-            <button className="btn3 btn3-primary" onClick={submit} disabled={busy}>
+            <button className="btn3 btn3-primary" onClick={submit} disabled={busy || deleting}>
               {busy ? t('sheet.btn.saving') : t('sheet.btn.save')}
             </button>
           </div>

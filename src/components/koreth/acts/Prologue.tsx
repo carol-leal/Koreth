@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { LinkText } from '../LinkText'
 import { useTip } from '../TipContext'
 import { useAuth3 } from '../AuthContext'
+import { EditCampaignModal } from './EditCampaignModal'
 import { useT } from '@/i18n/LocaleContext'
 import type { Character, Campaign } from '@/payload-types'
 
@@ -24,6 +25,7 @@ export const Prologue: React.FC<Props> = ({ campaign, characters, goto }) => {
   const canEdit = auth.canEditAny
   const [next, setNext] = useState<NonNullable<Campaign['nextSession']>>(campaign.nextSession ?? {})
   const [editing, setEditing] = useState<NextSessionField | null>(null)
+  const [editCampaignOpen, setEditCampaignOpen] = useState(false)
 
   const saveNext = async (field: NextSessionField, value: string) => {
     const trimmed = value.trim()
@@ -53,7 +55,18 @@ export const Prologue: React.FC<Props> = ({ campaign, characters, goto }) => {
   return (
     <div className="prologue">
       <div className="prologue-left">
-        <div className="eyebrow-sm">{t('prologue.eyebrow')}</div>
+        <div className="eyebrow-sm">
+          {t('prologue.eyebrow')}
+          {canEdit && (
+            <span
+              className="campaign-edit-link"
+              onClick={() => setEditCampaignOpen(true)}
+              title={t('campaign.edit.title')}
+            >
+              {t('campaign.edit.button')}
+            </span>
+          )}
+        </div>
         <h1 className="prologue-title">
           <span className="prologue-title-main">Koreth</span>
           <span className="prologue-title-sub">
@@ -77,7 +90,7 @@ export const Prologue: React.FC<Props> = ({ campaign, characters, goto }) => {
           </div>
           <div className="item">
             <div className="k">{t('prologue.k.era')}</div>
-            <div className="v">Yr 350</div>
+            <div className="v">{campaign.era || '—'}</div>
           </div>
           <div className="item">
             <div className="k">{t('prologue.k.lastEntry')}</div>
@@ -266,15 +279,15 @@ export const Prologue: React.FC<Props> = ({ campaign, characters, goto }) => {
         <div className="prol-details">
           <div className="prol-detail">
             <div className="k">{t('prologue.detail.inWorld')}</div>
-            <div className="v">Yr 350, late spring</div>
+            <div className="v">{campaign.currentInWorldDate || '—'}</div>
           </div>
           <div className="prol-detail">
             <div className="k">{t('prologue.detail.currentlyIn')}</div>
-            <div className="v">Aureth, capital of Aurion</div>
+            <div className="v">{campaign.currentlyIn || '—'}</div>
           </div>
           <div className="prol-detail">
             <div className="k">{t('prologue.detail.holding')}</div>
-            <div className="v">Awaiting the trial of Jayn’t</div>
+            <div className="v">{campaign.holding || '—'}</div>
           </div>
         </div>
 
@@ -284,6 +297,17 @@ export const Prologue: React.FC<Props> = ({ campaign, characters, goto }) => {
           <ChapterCue n="IV" label={t('prologue.cue.party')} onClick={() => goto(3)} />
         </div>
       </div>
+
+      {editCampaignOpen && (
+        <EditCampaignModal
+          campaign={campaign}
+          onClose={() => setEditCampaignOpen(false)}
+          onSubmitted={() => {
+            setEditCampaignOpen(false)
+            router.refresh()
+          }}
+        />
+      )}
     </div>
   )
 }

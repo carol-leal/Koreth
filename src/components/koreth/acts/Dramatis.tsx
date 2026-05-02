@@ -6,6 +6,7 @@ import { LinkText } from '../LinkText'
 import { useAuth3 } from '../AuthContext'
 import { AmendSheetModal } from './AmendSheetModal'
 import { useT } from '@/i18n/LocaleContext'
+import { portraitUrl } from '../portrait'
 import type { Character } from '@/payload-types'
 
 const QUOTES: Record<string, string> = {
@@ -71,9 +72,13 @@ export const Dramatis: React.FC<{ characters: Character[] }> = ({ characters }) 
                 className="persona-portrait"
                 style={{ ['--portrait-bg' as string]: portrait, background: portrait } as React.CSSProperties}
               >
-                <div className="persona-glyph">
-                  {c.name.split(' ').map((w) => w[0]).join('')}
-                </div>
+                {portraitUrl(c.portrait) ? (
+                  <img className="persona-portrait-image" src={portraitUrl(c.portrait)!} alt={c.name} />
+                ) : (
+                  <div className="persona-glyph">
+                    {c.name.split(' ').map((w) => w[0]).join('')}
+                  </div>
+                )}
                 {mine && (
                   <div className="persona-mark" title={t('party.yourCharacter.title')}>
                     {t('party.yourCharacter')}
@@ -138,7 +143,11 @@ const PartyDetail: React.FC<{ c: Character; onBack: () => void }> = ({ c, onBack
 
       <div className="party-detail-grid">
         <div className="pd-portrait" style={{ background: portrait }}>
-          <div className="pd-portrait-glyph">{c.name.split(' ').map((w) => w[0]).join('')}</div>
+          {portraitUrl(c.portrait) ? (
+            <img className="persona-portrait-image" src={portraitUrl(c.portrait)!} alt={c.name} />
+          ) : (
+            <div className="pd-portrait-glyph">{c.name.split(' ').map((w) => w[0]).join('')}</div>
+          )}
           {mine && <div className="persona-mark">{t('party.yourCharacter')}</div>}
         </div>
 
@@ -234,6 +243,12 @@ const PartyDetail: React.FC<{ c: Character; onBack: () => void }> = ({ c, onBack
           onSubmitted={() => {
             setEditing(false)
             router.refresh()
+          }}
+          onDeleted={() => {
+            setEditing(false)
+            router.refresh()
+            // Pop back to the party grid; this character no longer exists.
+            onBack()
           }}
         />
       )}

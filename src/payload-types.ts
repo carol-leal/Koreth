@@ -80,6 +80,7 @@ export interface Config {
     quests: Quest;
     leads: Lead;
     events: Event;
+    lore: Lore;
     'payload-kv': PayloadKv;
     'payload-folders': FolderInterface;
     'payload-locked-documents': PayloadLockedDocument;
@@ -105,6 +106,7 @@ export interface Config {
     quests: QuestsSelect<false> | QuestsSelect<true>;
     leads: LeadsSelect<false> | LeadsSelect<true>;
     events: EventsSelect<false> | EventsSelect<true>;
+    lore: LoreSelect<false> | LoreSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-folders': PayloadFoldersSelect<false> | PayloadFoldersSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
@@ -588,6 +590,7 @@ export interface Deity {
     [k: string]: unknown;
   } | null;
   accentHue?: number | null;
+  portrait?: (number | null) | Media;
   /**
    * Auto-generated from name; edit only if you know what you are doing.
    */
@@ -773,6 +776,31 @@ export interface Event {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "lore".
+ */
+export interface Lore {
+  id: number;
+  title: string;
+  kind?: ('general' | 'cosmology' | 'history' | 'religion' | 'magic' | 'planes' | 'custom' | 'mystery') | null;
+  /**
+   * When this fact applies — free text, e.g. "Before the Sundering".
+   */
+  era?: string | null;
+  /**
+   * Names of NPCs, gods, places, factions, etc. auto-link as you write.
+   */
+  body?: string | null;
+  accentHue?: number | null;
+  portrait?: (number | null) | Media;
+  /**
+   * Auto-generated from name; edit only if you know what you are doing.
+   */
+  slug?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -846,6 +874,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'events';
         value: number | Event;
+      } | null)
+    | ({
+        relationTo: 'lore';
+        value: number | Lore;
       } | null)
     | ({
         relationTo: 'payload-folders';
@@ -1132,6 +1164,7 @@ export interface DeitiesSelect<T extends boolean = true> {
   alignment?: T;
   description?: T;
   accentHue?: T;
+  portrait?: T;
   slug?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -1271,6 +1304,21 @@ export interface EventsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "lore_select".
+ */
+export interface LoreSelect<T extends boolean = true> {
+  title?: T;
+  kind?: T;
+  era?: T;
+  body?: T;
+  accentHue?: T;
+  portrait?: T;
+  slug?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv_select".
  */
 export interface PayloadKvSelect<T extends boolean = true> {
@@ -1349,6 +1397,22 @@ export interface Campaign {
     [k: string]: unknown;
   } | null;
   currentSession?: number | null;
+  /**
+   * In-world era badge, e.g. "Yr 350".
+   */
+  era?: string | null;
+  /**
+   * Free-form, e.g. "Yr 350, late spring".
+   */
+  currentInWorldDate?: string | null;
+  /**
+   * Where the Choir is right now, e.g. "Aureth, capital of Aurion".
+   */
+  currentlyIn?: string | null;
+  /**
+   * What they are waiting on right now.
+   */
+  holding?: string | null;
   partyName?: string | null;
   partyLevel?: number | null;
   partyXp?: number | null;
@@ -1387,6 +1451,10 @@ export interface CampaignSelect<T extends boolean = true> {
   tagSource?: T;
   summary?: T;
   currentSession?: T;
+  era?: T;
+  currentInWorldDate?: T;
+  currentlyIn?: T;
+  holding?: T;
   partyName?: T;
   partyLevel?: T;
   partyXp?: T;

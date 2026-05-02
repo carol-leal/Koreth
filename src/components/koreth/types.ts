@@ -10,6 +10,7 @@ import type {
   Quest,
   Lead,
   Event,
+  Lore,
   Campaign,
 } from '@/payload-types'
 
@@ -26,9 +27,10 @@ export type KorethData = {
   quests: Quest[]
   leads: Lead[]
   events: Event[]
+  lore: Lore[]
 }
 
-export type CodexTabId = 'npcs' | 'regions' | 'locations' | 'factions' | 'items' | 'pantheon'
+export type CodexTabId = 'npcs' | 'regions' | 'locations' | 'factions' | 'items' | 'pantheon' | 'lore'
 
 export const ACTS = [
   { id: 'prologue', labelKey: 'act.prologue' },

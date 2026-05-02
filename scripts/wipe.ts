@@ -3,6 +3,7 @@ import { getPayload } from 'payload'
 import config from '../src/payload.config'
 
 const CONTENT_COLLECTIONS = [
+  'lore',
   'events',
   'leads',
   'quests',
