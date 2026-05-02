@@ -51,7 +51,6 @@ export default async function Home() {
         name: user.name || user.email,
         email: user.email,
         role: user.role,
-        pcSlug: typeof user.pc === 'object' && user.pc ? user.pc.slug ?? null : null,
       }
     : null
 

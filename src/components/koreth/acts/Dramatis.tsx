@@ -52,6 +52,7 @@ export const Dramatis: React.FC<{ characters: Character[] }> = ({ characters }) 
         <div>
           <div className="eyebrow-sm">{t('party.eyebrow')}</div>
           <h2>
+            {t('party.headline.a')}
             <br /> {t('party.headline.c')} <em>{t('party.headline.d')}</em>
           </h2>
         </div>
@@ -66,7 +67,9 @@ export const Dramatis: React.FC<{ characters: Character[] }> = ({ characters }) 
                 className="party-retired-toggle"
                 onClick={() => setShowRetired((v) => !v)}
               >
-                {showRetired ? t('party.retired.hide') : t('party.retired.show', { n: retired.length })}
+                {showRetired
+                  ? t('party.retired.hide')
+                  : t('party.retired.show', { n: retired.length })}
               </button>
             </>
           )}
@@ -77,7 +80,7 @@ export const Dramatis: React.FC<{ characters: Character[] }> = ({ characters }) 
         {visible.map((c) => {
           const hue = c.accentHue ?? 285
           const portrait = `linear-gradient(135deg, oklch(0.42 0.18 ${hue}), oklch(0.16 0.06 ${(hue + 60) % 360}))`
-          const mine = !!auth?.isPlayer && auth.user?.pcSlug === c.slug
+          const mine = auth.isMyPC(c)
           const quote =
             c.quote || QUOTES[c.name] || (lexicalText(c.backstory).split('.')[0] || '') + '.'
           return (
@@ -173,8 +176,8 @@ const PartyDetail: React.FC<{ c: Character; onBack: () => void }> = ({ c, onBack
   const [editing, setEditing] = useState(false)
   const hue = c.accentHue ?? 285
   const portrait = `linear-gradient(135deg, oklch(0.42 0.18 ${hue}), oklch(0.16 0.06 ${(hue + 60) % 360}))`
-  const canEdit = auth.canEditPC(c.slug)
-  const mine = !!auth?.isPlayer && auth.user?.pcSlug === c.slug
+  const canEdit = auth.canEditPC(c)
+  const mine = auth.isMyPC(c)
   const quote = c.quote || QUOTES[c.name]
   const playerName =
     c.playerLabel || (typeof c.player === 'object' && c.player ? c.player.name || '' : '')
