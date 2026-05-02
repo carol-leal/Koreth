@@ -4,6 +4,8 @@ import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth3 } from '../AuthContext'
 import { LinkText } from '../LinkText'
+import { useT } from '@/i18n/LocaleContext'
+import type { DictKey } from '@/i18n'
 import type { Lead, Session } from '@/payload-types'
 
 type Status = 'open' | 'following' | 'resolved' | 'dead-end'
@@ -15,11 +17,11 @@ const NEXT_STATUS: Record<Status, Status> = {
   'dead-end': 'open',
 }
 
-const STATUS_LABEL: Record<Status, string> = {
-  open: 'open',
-  following: 'following',
-  resolved: 'resolved',
-  'dead-end': 'dead end',
+const STATUS_KEY: Record<Status, DictKey> = {
+  open: 'leads.status.open',
+  following: 'leads.status.following',
+  resolved: 'leads.status.resolved',
+  'dead-end': 'leads.status.deadEnd',
 }
 
 const formatRelative = (iso?: string | null) => {
@@ -42,6 +44,7 @@ type LeadNote = NonNullable<Lead['notes']>[number]
 export const LeadsBoard: React.FC<{ leads: Lead[]; sessions: Session[] }> = ({ leads: initial, sessions }) => {
   const auth = useAuth3()
   const router = useRouter()
+  const { t } = useT()
   const canEdit = !!auth?.user
   const [leads, setLeads] = useState<Lead[]>(initial)
   const [filter, setFilter] = useState<Status | 'all'>('all')
@@ -75,7 +78,7 @@ export const LeadsBoard: React.FC<{ leads: Lead[]; sessions: Session[] }> = ({ l
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        title: 'Untitled lead',
+        title: t('leads.untitled'),
         body: '',
         status: 'open',
       }),
@@ -90,7 +93,7 @@ export const LeadsBoard: React.FC<{ leads: Lead[]; sessions: Session[] }> = ({ l
   }
 
   const remove = async (id: number) => {
-    if (!confirm('Delete this lead?')) return
+    if (!confirm(t('leads.delete.confirm'))) return
     setLeads((ls) => ls.filter((l) => l.id !== id))
     await fetch(`/api/leads/${id}`, { method: 'DELETE', credentials: 'include' })
     router.refresh()
@@ -113,18 +116,14 @@ export const LeadsBoard: React.FC<{ leads: Lead[]; sessions: Session[] }> = ({ l
     <div className="leads-act">
       <div className="leads-head">
         <div>
-          <div className="eyebrow-sm">Leads</div>
+          <div className="eyebrow-sm">{t('leads.eyebrow')}</div>
           <h2>
-            Hunches, half-clues, <em>and threads we'd lose</em>
+            {t('leads.headline.a')} <em>{t('leads.headline.b')}</em>
             <br />
-            if no one wrote them down.
+            {t('leads.headline.c')}
           </h2>
         </div>
-        <div className="sub">
-          {canEdit
-            ? 'Anyone in the Choir can add or amend a lead. Move it along as the picture clears.'
-            : 'Sign in to scribble a hunch.'}
-        </div>
+        <div className="sub">{canEdit ? t('leads.sub.canEdit') : t('leads.sub.locked')}</div>
       </div>
 
       <div className="leads-filter">
@@ -134,13 +133,13 @@ export const LeadsBoard: React.FC<{ leads: Lead[]; sessions: Session[] }> = ({ l
             className={'lf-chip' + (filter === k ? ' active' : '') + (k !== 'all' ? ' s-' + k : '')}
             onClick={() => setFilter(k)}
           >
-            {k === 'all' ? 'all' : STATUS_LABEL[k]}
+            {k === 'all' ? t('leads.filter.all') : t(STATUS_KEY[k])}
             <span className="lf-count">{counts[k]}</span>
           </button>
         ))}
         {canEdit && (
           <button className="lf-add" onClick={create}>
-            + new lead
+            {t('leads.add')}
           </button>
         )}
       </div>
@@ -148,8 +147,10 @@ export const LeadsBoard: React.FC<{ leads: Lead[]; sessions: Session[] }> = ({ l
       {visible.length === 0 && (
         <div className="leads-empty">
           {leads.length === 0
-            ? 'No leads yet. The first hunch lives here.'
-            : `Nothing under "${filter === 'all' ? 'all' : STATUS_LABEL[filter as Status]}".`}
+            ? t('leads.empty.none')
+            : t('leads.empty.filter', {
+                label: filter === 'all' ? t('leads.filter.all') : t(STATUS_KEY[filter as Status]),
+              })}
         </div>
       )}
 
@@ -163,13 +164,13 @@ export const LeadsBoard: React.FC<{ leads: Lead[]; sessions: Session[] }> = ({ l
                 <button
                   className={'lead-status s-' + status}
                   onClick={canEdit ? () => patch(l.id as number, { status: NEXT_STATUS[status] }) : undefined}
-                  title={canEdit ? 'click to advance status' : ''}
+                  title={canEdit ? t('leads.status.click') : ''}
                   disabled={!canEdit}
                 >
-                  {STATUS_LABEL[status]}
+                  {t(STATUS_KEY[status])}
                 </button>
                 {canEdit && (
-                  <button className="lead-x" onClick={() => remove(l.id as number)} title="delete lead">
+                  <button className="lead-x" onClick={() => remove(l.id as number)} title={t('leads.delete.title')}>
                     ✕
                   </button>
                 )}
@@ -181,7 +182,7 @@ export const LeadsBoard: React.FC<{ leads: Lead[]; sessions: Session[] }> = ({ l
                   defaultValue={l.title}
                   autoFocus
                   onBlur={(e) => {
-                    const v = e.currentTarget.value.trim() || 'Untitled lead'
+                    const v = e.currentTarget.value.trim() || t('leads.untitled')
                     setEditingTitle(null)
                     if (v !== l.title) patch(l.id as number, { title: v })
                   }}
@@ -194,7 +195,7 @@ export const LeadsBoard: React.FC<{ leads: Lead[]; sessions: Session[] }> = ({ l
                 <h4
                   className="lead-title"
                   onClick={canEdit ? () => setEditingTitle(l.id as number) : undefined}
-                  title={canEdit ? 'click to edit' : ''}
+                  title={canEdit ? t('leads.title.click') : ''}
                 >
                   {l.title}
                 </h4>
@@ -206,7 +207,7 @@ export const LeadsBoard: React.FC<{ leads: Lead[]; sessions: Session[] }> = ({ l
                   defaultValue={l.body || ''}
                   autoFocus
                   rows={4}
-                  placeholder="What's the hunch?"
+                  placeholder={t('leads.body.editPlaceholder')}
                   onBlur={(e) => {
                     const v = e.currentTarget.value
                     setEditingBody(null)
@@ -220,15 +221,15 @@ export const LeadsBoard: React.FC<{ leads: Lead[]; sessions: Session[] }> = ({ l
                 <div
                   className={'lead-body' + (!l.body ? ' empty' : '')}
                   onClick={canEdit ? () => setEditingBody(l.id as number) : undefined}
-                  title={canEdit ? 'click to edit' : ''}
+                  title={canEdit ? t('leads.title.click') : ''}
                 >
-                  {l.body ? <LinkText text={l.body} /> : canEdit ? <span className="lead-placeholder">add a description…</span> : null}
+                  {l.body ? <LinkText text={l.body} /> : canEdit ? <span className="lead-placeholder">{t('leads.body.placeholder')}</span> : null}
                 </div>
               )}
 
               {sessionRef && (
                 <div className="lead-meta">
-                  <span className="lead-chip">session {String(sessionRef.number ?? 0).padStart(2, '0')}</span>
+                  <span className="lead-chip">{t('leads.session', { num: String(sessionRef.number ?? 0).padStart(2, '0') })}</span>
                 </div>
               )}
 
@@ -239,7 +240,13 @@ export const LeadsBoard: React.FC<{ leads: Lead[]; sessions: Session[] }> = ({ l
               />
 
               <div className="lead-foot">
-                <span>by {l.authorLabel || (typeof l.author === 'object' && l.author ? l.author.name : 'unknown')}</span>
+                <span>
+                  {t('leads.foot.by', {
+                    name:
+                      l.authorLabel ||
+                      (typeof l.author === 'object' && l.author ? l.author.name || t('leads.foot.unknown') : t('leads.foot.unknown')),
+                  })}
+                </span>
                 <span>{formatRelative(l.updatedAt)}</span>
               </div>
             </div>
@@ -258,6 +265,7 @@ const NotesThread: React.FC<{
   canEdit: boolean
   onAdd: (text: string) => Promise<void>
 }> = ({ lead, canEdit, onAdd }) => {
+  const { t } = useT()
   const notes = (lead.notes as LeadNote[]) || []
   const [open, setOpen] = useState(notes.length > 0 && notes.length <= 3)
   const [draft, setDraft] = useState('')
@@ -277,7 +285,7 @@ const NotesThread: React.FC<{
   return (
     <div className="lead-notes">
       <button className="lead-notes-toggle" onClick={() => setOpen((o) => !o)}>
-        {open ? '−' : '+'} {notes.length} {notes.length === 1 ? 'note' : 'notes'}
+        {open ? '−' : '+'} {notes.length === 1 ? t('leads.notes.one', { n: notes.length }) : t('leads.notes.many', { n: notes.length })}
       </button>
       {open && (
         <>
@@ -286,7 +294,9 @@ const NotesThread: React.FC<{
               {notes.map((n, i) => (
                 <li key={i} className="lead-note">
                   <div className="lead-note-by">
-                    <span>{n.authorLabel || (typeof n.author === 'object' && n.author ? n.author.name : 'someone')}</span>
+                    <span>
+                      {n.authorLabel || (typeof n.author === 'object' && n.author ? n.author.name : t('leads.note.someone'))}
+                    </span>
                     <span>{formatRelative(n.createdAt)}</span>
                   </div>
                   <div className="lead-note-text">
@@ -300,7 +310,7 @@ const NotesThread: React.FC<{
             <div className="lead-add-note">
               <textarea
                 rows={2}
-                placeholder="add a note…"
+                placeholder={t('leads.notes.placeholder')}
                 value={draft}
                 onChange={(e) => setDraft(e.target.value)}
                 onKeyDown={(e) => {
@@ -311,7 +321,7 @@ const NotesThread: React.FC<{
                 }}
               />
               <button onClick={submit} disabled={busy || !draft.trim()}>
-                {busy ? '…' : 'post'}
+                {busy ? t('leads.notes.posting') : t('leads.notes.post')}
               </button>
             </div>
           )}

@@ -2,6 +2,7 @@ import { unstable_cache } from 'next/cache'
 import { getPayload } from 'payload'
 import config from '@payload-config'
 import { lexicalToPlainText } from './lexicalToPlainText'
+import { DEFAULT_LOCALE, type Locale } from '@/i18n'
 
 export type EntityKind =
   | 'npc'
@@ -26,17 +27,18 @@ const summarise = (raw: unknown, fallback?: string): string => {
   return (fallback || '').slice(0, 280)
 }
 
-const buildIndex = async (): Promise<EntityIndexEntry[]> => {
+const buildIndex = async (locale: Locale): Promise<EntityIndexEntry[]> => {
   const payload = await getPayload({ config })
   const limit = 500
+  const opts = { limit, depth: 0, locale, fallbackLocale: DEFAULT_LOCALE } as const
   const [npcs, characters, locations, regions, factions, items, deities] = await Promise.all([
-    payload.find({ collection: 'npcs', limit, depth: 0 }),
-    payload.find({ collection: 'characters', limit, depth: 0 }),
-    payload.find({ collection: 'locations', limit, depth: 0 }),
-    payload.find({ collection: 'regions', limit, depth: 0 }),
-    payload.find({ collection: 'factions', limit, depth: 0 }),
-    payload.find({ collection: 'items', limit, depth: 0 }),
-    payload.find({ collection: 'deities', limit, depth: 0 }),
+    payload.find({ collection: 'npcs', ...opts }),
+    payload.find({ collection: 'characters', ...opts }),
+    payload.find({ collection: 'locations', ...opts }),
+    payload.find({ collection: 'regions', ...opts }),
+    payload.find({ collection: 'factions', ...opts }),
+    payload.find({ collection: 'items', ...opts }),
+    payload.find({ collection: 'deities', ...opts }),
   ])
 
   const out: EntityIndexEntry[] = []
@@ -54,7 +56,10 @@ const buildIndex = async (): Promise<EntityIndexEntry[]> => {
   return [...map.values()].sort((a, b) => b.name.length - a.name.length)
 }
 
-export const getCachedEntityIndex = unstable_cache(buildIndex, ['koreth-entities'], {
-  tags: ['koreth-entities'],
-  revalidate: 3600,
-})
+const cachedByLocale = (locale: Locale) =>
+  unstable_cache(() => buildIndex(locale), ['koreth-entities', locale], {
+    tags: ['koreth-entities'],
+    revalidate: 3600,
+  })
+
+export const getCachedEntityIndex = (locale: Locale) => cachedByLocale(locale)()

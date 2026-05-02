@@ -29,12 +29,12 @@ export type KorethData = {
 export type CodexTabId = 'npcs' | 'regions' | 'locations' | 'factions' | 'items' | 'pantheon'
 
 export const ACTS = [
-  { id: 'prologue', label: 'Prologue' },
-  { id: 'codex', label: 'Codex' },
-  { id: 'chronicle', label: 'Chronicle' },
-  { id: 'dramatis', label: 'Party' },
-  { id: 'quests', label: 'Quests' },
-  { id: 'carto', label: 'Cartography' },
+  { id: 'prologue', labelKey: 'act.prologue' },
+  { id: 'codex', labelKey: 'act.codex' },
+  { id: 'chronicle', labelKey: 'act.chronicle' },
+  { id: 'dramatis', labelKey: 'act.dramatis' },
+  { id: 'quests', labelKey: 'act.quests' },
+  { id: 'carto', labelKey: 'act.carto' },
 ] as const
 
 export type ActId = (typeof ACTS)[number]['id']

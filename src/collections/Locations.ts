@@ -24,8 +24,8 @@ export const Locations: CollectionConfig = {
   fields: [
     { name: 'name', type: 'text', required: true },
     { name: 'region', type: 'relationship', relationTo: 'regions', required: true },
-    { name: 'kind', type: 'text', required: true },
-    { name: 'description', type: 'richText' },
+    { name: 'kind', type: 'text', required: true, localized: true },
+    { name: 'description', type: 'richText', localized: true },
     {
       name: 'mapPosition',
       type: 'group',

@@ -4,13 +4,21 @@ import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth3 } from '../AuthContext'
 import { LeadsBoard } from './LeadsBoard'
+import { useT } from '@/i18n/LocaleContext'
+import type { DictKey } from '@/i18n'
 import type { Quest, Lead, Session } from '@/payload-types'
 
-const QUEST_SECTIONS: { id: NonNullable<Quest['status']>; title: string; sub: string }[] = [
-  { id: 'active', title: 'Active', sub: 'in pursuit, not yet ended' },
-  { id: 'open', title: 'Open threads', sub: 'loose, dangling, waiting' },
-  { id: 'complete', title: 'Closed', sub: 'concluded, for the chronicle' },
+const QUEST_SECTIONS: { id: NonNullable<Quest['status']>; titleKey: DictKey; subKey: DictKey }[] = [
+  { id: 'active', titleKey: 'quests.section.active.title', subKey: 'quests.section.active.sub' },
+  { id: 'open', titleKey: 'quests.section.open.title', subKey: 'quests.section.open.sub' },
+  { id: 'complete', titleKey: 'quests.section.complete.title', subKey: 'quests.section.complete.sub' },
 ]
+
+const PRIORITY_KEY: Record<NonNullable<Quest['priority']>, DictKey> = {
+  main: 'quests.priority.main',
+  side: 'quests.priority.side',
+  mystery: 'quests.priority.mystery',
+}
 
 const PRIORITY_NEXT: Record<NonNullable<Quest['priority']>, NonNullable<Quest['priority']>> = {
   main: 'side',
@@ -23,6 +31,7 @@ export const Quests: React.FC<{ quests: Quest[]; leads: Lead[]; sessions: Sessio
   leads,
   sessions,
 }) => {
+  const { t } = useT()
   const [tab, setTab] = useState<'quests' | 'leads'>('quests')
 
   return (
@@ -32,13 +41,13 @@ export const Quests: React.FC<{ quests: Quest[]; leads: Lead[]; sessions: Sessio
           className={'qs-tab' + (tab === 'quests' ? ' active' : '')}
           onClick={() => setTab('quests')}
         >
-          Quests <span className="qs-tab-count">{quests.length}</span>
+          {t('qs.tab.quests')} <span className="qs-tab-count">{quests.length}</span>
         </button>
         <button
           className={'qs-tab' + (tab === 'leads' ? ' active' : '')}
           onClick={() => setTab('leads')}
         >
-          Leads <span className="qs-tab-count">{leads.length}</span>
+          {t('qs.tab.leads')} <span className="qs-tab-count">{leads.length}</span>
         </button>
       </div>
       {tab === 'quests' ? <QuestsBoard quests={quests} /> : <LeadsBoard leads={leads} sessions={sessions} />}
@@ -48,6 +57,7 @@ export const Quests: React.FC<{ quests: Quest[]; leads: Lead[]; sessions: Sessio
 
 const QuestsBoard: React.FC<{ quests: Quest[] }> = ({ quests: initial }) => {
   const auth = useAuth3()
+  const { t } = useT()
   const canEdit = auth.isDM || auth.isPlayer
   const router = useRouter()
   const [quests, setQuests] = useState<Quest[]>(initial)
@@ -69,10 +79,10 @@ const QuestsBoard: React.FC<{ quests: Quest[] }> = ({ quests: initial }) => {
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        title: 'Untitled quest',
+        title: t('quests.untitled'),
         status,
         priority: 'side',
-        summary: "Add a brief description of what's at stake.",
+        summary: t('quests.placeholder.summary'),
         steps: [],
       }),
     })
@@ -94,31 +104,30 @@ const QuestsBoard: React.FC<{ quests: Quest[] }> = ({ quests: initial }) => {
     <div className="quests">
       <div className="quests-head">
         <div>
-          <div className="eyebrow-sm">Act VI · Quests</div>
+          <div className="eyebrow-sm">{t('quests.eyebrow')}</div>
           <h2>
-            Threads <em>currently held</em>
+            {t('quests.headline.a')} <em>{t('quests.headline.b')}</em>
             <br />
-            by the Choir.
+            {t('quests.headline.c')}
           </h2>
         </div>
-        <div className="sub">
-          {canEdit
-            ? 'Click any field to edit. Steps cross off when met. Hover a card for actions.'
-            : 'Sign in as a player or the Chronicler to amend.'}
-        </div>
+        <div className="sub">{canEdit ? t('quests.sub.canEdit') : t('quests.sub.locked')}</div>
       </div>
 
       {QUEST_SECTIONS.map((sec) => {
         const list = quests.filter((q) => q.status === sec.id)
+        const sectionTitle = t(sec.titleKey)
         return (
           <div className="quests-section" key={sec.id}>
             <div className="quests-section-title">
               <h3>
-                {sec.title}{' '}
-                <span style={{ color: 'var(--ink-4)', fontSize: 14, marginLeft: 8 }}>· {sec.sub}</span>
+                {sectionTitle}{' '}
+                <span style={{ color: 'var(--ink-4)', fontSize: 14, marginLeft: 8 }}>· {t(sec.subKey)}</span>
               </h3>
               <span className="count">
-                {list.length} {list.length === 1 ? 'quest' : 'quests'}
+                {list.length === 1
+                  ? t('quests.section.count.one', { n: list.length })
+                  : t('quests.section.count.many', { n: list.length })}
               </span>
             </div>
 
@@ -134,11 +143,13 @@ const QuestsBoard: React.FC<{ quests: Quest[] }> = ({ quests: initial }) => {
               />
             ))}
 
-            {list.length === 0 && <div className="quest-locked">no {sec.title.toLowerCase()} quests</div>}
+            {list.length === 0 && (
+              <div className="quest-locked">{t('quests.empty', { section: sectionTitle.toLowerCase() })}</div>
+            )}
 
             {canEdit && sec.id !== 'complete' && (
               <div className="quest-add-card" onClick={() => create(sec.id)}>
-                + add quest to “{sec.title}”
+                {t('quests.add', { section: sectionTitle })}
               </div>
             )}
           </div>
@@ -156,6 +167,7 @@ const QuestCard: React.FC<{
   onCyclePriority: () => void
   onToggleComplete: () => void
 }> = ({ quest: q, canEdit, onUpdate, onRemove, onCyclePriority, onToggleComplete }) => {
+  const { t } = useT()
   const editable = canEdit ? 'true' : 'false'
   const steps = q.steps || []
   return (
@@ -163,9 +175,9 @@ const QuestCard: React.FC<{
       <div
         className={'quest-priority ' + q.priority}
         onClick={canEdit ? onCyclePriority : undefined}
-        title={canEdit ? 'click to change priority' : ''}
+        title={canEdit ? t('quests.priority.title') : ''}
       >
-        {q.priority}
+        {t(PRIORITY_KEY[q.priority])}
       </div>
 
       <div className="quest-body">
@@ -219,9 +231,9 @@ const QuestCard: React.FC<{
             {canEdit && (
               <div
                 className="quest-add-step"
-                onClick={() => onUpdate({ steps: [...steps, { text: 'New step…', done: false }] })}
+                onClick={() => onUpdate({ steps: [...steps, { text: t('quests.step.new'), done: false }] })}
               >
-                + add step
+                {t('quests.step.add')}
               </div>
             )}
           </ul>
@@ -232,16 +244,16 @@ const QuestCard: React.FC<{
         <div className="quest-actions">
           {q.status !== 'complete' && (
             <span className="quest-action" onClick={onToggleComplete}>
-              ✓ complete
+              {t('quests.action.complete')}
             </span>
           )}
           {q.status === 'complete' && (
             <span className="quest-action" onClick={onToggleComplete}>
-              ↺ reopen
+              {t('quests.action.reopen')}
             </span>
           )}
           <span className="quest-action danger" onClick={onRemove}>
-            ✕ remove
+            {t('quests.action.remove')}
           </span>
         </div>
       )}

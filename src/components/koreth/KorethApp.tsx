@@ -6,6 +6,9 @@ import { Tip } from './Tip'
 import { TipProvider } from './TipContext'
 import { AuthProvider, type SessionUser } from './AuthContext'
 import { PersonaPill } from './PersonaPill'
+import { LocaleSwitcher } from './LocaleSwitcher'
+import { useT } from '@/i18n/LocaleContext'
+import type { DictKey } from '@/i18n'
 import { Prologue } from './acts/Prologue'
 import { Codex } from './acts/Codex'
 import { Chronicle } from './acts/Chronicle'
@@ -22,6 +25,17 @@ type Props = {
 }
 
 export const KorethApp: React.FC<Props> = ({ data, user, entities }) => {
+  return (
+    <AuthProvider user={user}>
+      <TipProvider entities={entities}>
+        <KorethShell data={data} />
+      </TipProvider>
+    </AuthProvider>
+  )
+}
+
+const KorethShell: React.FC<{ data: KorethData }> = ({ data }) => {
+  const { t } = useT()
   const [act, setAct] = useState(0)
   const spreadRef = useRef<HTMLDivElement>(null)
   const sortedSessions = [...data.sessions].sort((a, b) => (b.number ?? 0) - (a.number ?? 0))
@@ -60,70 +74,69 @@ export const KorethApp: React.FC<Props> = ({ data, user, entities }) => {
   }, [act])
 
   return (
-    <AuthProvider user={user}>
-      <TipProvider entities={entities}>
-        <Atmo />
-        <div className="shell">
-          <div className="rail">
-            <div className="rail-brand">
-              <div className="rail-mark" />
-              <div>
-                <div className="rail-name">Koreth</div>
-                <div className="rail-sub">A Reader · Session {data.campaign.currentSession ?? 0}</div>
+    <>
+      <Atmo />
+      <div className="shell">
+        <div className="rail">
+          <div className="rail-brand">
+            <div className="rail-mark" />
+            <div>
+              <div className="rail-name">Koreth</div>
+              <div className="rail-sub">{t('rail.brandSub', { n: data.campaign.currentSession ?? 0 })}</div>
+            </div>
+          </div>
+          <div className="acts">
+            {ACTS.map((a, i) => (
+              <div
+                key={a.id}
+                className={'act' + (i === act ? ' active' : '')}
+                onClick={() => setAct(i)}
+              >
+                <span className="act-num">{String(i + 1).padStart(2, '0')}</span>
+                {t(a.labelKey as DictKey)}
               </div>
-            </div>
-            <div className="acts">
-              {ACTS.map((a, i) => (
-                <div
-                  key={a.id}
-                  className={'act' + (i === act ? ' active' : '')}
-                  onClick={() => setAct(i)}
-                >
-                  <span className="act-num">{String(i + 1).padStart(2, '0')}</span>
-                  {a.label}
-                </div>
-              ))}
-            </div>
-            <div className="rail-meta">
-              <span className="v live">live</span>
-              <PersonaPill />
-            </div>
+            ))}
           </div>
-
-          <div className="spread" ref={spreadRef}>
-            <div className="act-pane">
-              <Prologue
-                campaign={data.campaign}
-                characters={data.characters}
-                goto={(i) => setAct(i)}
-              />
-            </div>
-            <div className="act-pane">
-              <Codex data={data} />
-            </div>
-            <div className="act-pane">
-              <Chronicle sel={chrSel} setSel={setChrSel} sessions={data.sessions} />
-            </div>
-            <div className="act-pane">
-              <Dramatis characters={data.characters} />
-            </div>
-            <div className="act-pane">
-              <Quests quests={data.quests} leads={data.leads} sessions={data.sessions} />
-            </div>
-            <div className="act-pane">
-              <Cartography />
-            </div>
+          <div className="rail-meta">
+            <span className="v live">{t('rail.live')}</span>
+            <PersonaPill />
+            <LocaleSwitcher />
           </div>
         </div>
 
-        <Tip />
-
-        <div className="foot-hint">
-          <span className="kbd-key">←</span>
-          <span className="kbd-key">→</span>
-          <span>turn the page</span>
+        <div className="spread" ref={spreadRef}>
+          <div className="act-pane">
+            <Prologue
+              campaign={data.campaign}
+              characters={data.characters}
+              goto={(i) => setAct(i)}
+            />
+          </div>
+          <div className="act-pane">
+            <Codex data={data} />
+          </div>
+          <div className="act-pane">
+            <Chronicle sel={chrSel} setSel={setChrSel} sessions={data.sessions} />
+          </div>
+          <div className="act-pane">
+            <Dramatis characters={data.characters} />
+          </div>
+          <div className="act-pane">
+            <Quests quests={data.quests} leads={data.leads} sessions={data.sessions} />
+          </div>
+          <div className="act-pane">
+            <Cartography />
+          </div>
         </div>
-      </TipProvider>
-    </AuthProvider>
+      </div>
+
+      <Tip />
+
+      <div className="foot-hint">
+        <span className="kbd-key">←</span>
+        <span className="kbd-key">→</span>
+        <span>{t('foot.turnPage')}</span>
+      </div>
+    </>
   )
 }

@@ -3,11 +3,14 @@ import config from '@payload-config'
 import { KorethApp } from '@/components/koreth/KorethApp'
 import { getOptionalUser } from '@/utilities/getOptionalUser'
 import { getCachedEntityIndex } from '@/utilities/getEntityIndex'
+import { getServerLocale } from '@/i18n/getServerLocale'
+import { DEFAULT_LOCALE } from '@/i18n'
 import type { Character, Session as SessionDoc } from '@/payload-types'
 import type { SessionUser } from '@/components/koreth/AuthContext'
 
 export default async function Home() {
   const payload = await getPayload({ config })
+  const locale = await getServerLocale()
   const [
     campaign,
     regions,
@@ -23,19 +26,19 @@ export default async function Home() {
     user,
     entities,
   ] = await Promise.all([
-    payload.findGlobal({ slug: 'campaign', depth: 1 }),
-    payload.find({ collection: 'regions', limit: 200, depth: 0, sort: 'name' }),
-    payload.find({ collection: 'locations', limit: 200, depth: 1, sort: 'name' }),
-    payload.find({ collection: 'factions', limit: 200, depth: 1, sort: 'name' }),
-    payload.find({ collection: 'npcs', limit: 200, depth: 1, sort: 'name' }),
-    payload.find({ collection: 'items', limit: 200, depth: 1, sort: 'name' }),
-    payload.find({ collection: 'deities', limit: 200, depth: 0, sort: 'name' }),
-    payload.find({ collection: 'characters', limit: 50, depth: 2, sort: 'name' }),
-    payload.find({ collection: 'sessions', limit: 100, depth: 1, sort: '-number' }),
-    payload.find({ collection: 'quests', limit: 200, depth: 0 }),
-    payload.find({ collection: 'leads', limit: 200, depth: 1, sort: '-updatedAt' }),
+    payload.findGlobal({ slug: 'campaign', depth: 1, locale, fallbackLocale: DEFAULT_LOCALE }),
+    payload.find({ collection: 'regions', limit: 200, depth: 0, sort: 'name', locale, fallbackLocale: DEFAULT_LOCALE }),
+    payload.find({ collection: 'locations', limit: 200, depth: 1, sort: 'name', locale, fallbackLocale: DEFAULT_LOCALE }),
+    payload.find({ collection: 'factions', limit: 200, depth: 1, sort: 'name', locale, fallbackLocale: DEFAULT_LOCALE }),
+    payload.find({ collection: 'npcs', limit: 200, depth: 1, sort: 'name', locale, fallbackLocale: DEFAULT_LOCALE }),
+    payload.find({ collection: 'items', limit: 200, depth: 1, sort: 'name', locale, fallbackLocale: DEFAULT_LOCALE }),
+    payload.find({ collection: 'deities', limit: 200, depth: 0, sort: 'name', locale, fallbackLocale: DEFAULT_LOCALE }),
+    payload.find({ collection: 'characters', limit: 50, depth: 2, sort: 'name', locale, fallbackLocale: DEFAULT_LOCALE }),
+    payload.find({ collection: 'sessions', limit: 100, depth: 1, sort: '-number', locale, fallbackLocale: DEFAULT_LOCALE }),
+    payload.find({ collection: 'quests', limit: 200, depth: 0, locale, fallbackLocale: DEFAULT_LOCALE }),
+    payload.find({ collection: 'leads', limit: 200, depth: 1, sort: '-updatedAt', locale, fallbackLocale: DEFAULT_LOCALE }),
     getOptionalUser(),
-    getCachedEntityIndex(),
+    getCachedEntityIndex(locale),
   ])
 
   const sessionUser: SessionUser = user

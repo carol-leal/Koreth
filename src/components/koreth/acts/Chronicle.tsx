@@ -6,6 +6,7 @@ import { LinkText } from '../LinkText'
 import { useAuth3 } from '../AuthContext'
 import { lexicalToText } from '../textLexical'
 import { FolioModal } from './FolioModal'
+import { useT } from '@/i18n/LocaleContext'
 import type { Session } from '@/payload-types'
 
 type Props = {
@@ -32,6 +33,7 @@ const formatRelative = (iso?: string | null) => {
 export const Chronicle: React.FC<Props> = ({ sel, setSel, sessions }) => {
   const auth = useAuth3()
   const router = useRouter()
+  const { t } = useT()
   const [amendOpen, setAmendOpen] = useState(false)
   const [addOpen, setAddOpen] = useState(false)
 
@@ -47,16 +49,16 @@ export const Chronicle: React.FC<Props> = ({ sel, setSel, sessions }) => {
     return (
       <div className="chronicle">
         <div className="chr-toc">
-          <div className="eyebrow-sm">Act III · The Chronicle</div>
-          <h2>The book is empty.</h2>
-          <p className="chr-toc-intro">No folio has been inscribed yet.</p>
+          <div className="eyebrow-sm">{t('chronicle.eyebrow')}</div>
+          <h2>{t('chronicle.empty.title')}</h2>
+          <p className="chr-toc-intro">{t('chronicle.empty.sub')}</p>
           <div className="chr-add-row">
             {auth?.canAddSession ? (
               <button className="btn3 btn3-primary" onClick={() => setAddOpen(true)}>
-                + Add session log
+                {t('chronicle.add')}
               </button>
             ) : (
-              <span className="chr-add-locked">Sign in to inscribe.</span>
+              <span className="chr-add-locked">{t('chronicle.locked')}</span>
             )}
           </div>
         </div>
@@ -79,29 +81,25 @@ export const Chronicle: React.FC<Props> = ({ sel, setSel, sessions }) => {
   return (
     <div className="chronicle">
       <div className="chr-toc">
-        <div className="eyebrow-sm">Act III · The Chronicle</div>
+        <div className="eyebrow-sm">{t('chronicle.eyebrow')}</div>
         <h2>
-          Sessions <em>recently kept,</em>
+          {t('chronicle.headline.a')} <em>{t('chronicle.headline.b')}</em>
           <br />
-          in the voice of the Choir.
+          {t('chronicle.headline.c')}
         </h2>
-        <p className="chr-toc-intro">
-          Each session is written by one of the Choir, in present tense, before they sleep. Marginalia in the warmer
-          hand are scribes' afterthoughts, added the next day. Any of the Choir may amend a folio — every amendment is
-          kept in the version history.
-        </p>
+        <p className="chr-toc-intro">{t('chronicle.intro')}</p>
 
         <div className="chr-stats">
           <div className="chr-stat">
-            <div className="k">Sessions kept</div>
+            <div className="k">{t('chronicle.stat.kept')}</div>
             <div className="v">{sessions.length}</div>
           </div>
           <div className="chr-stat">
-            <div className="k">Last entry</div>
+            <div className="k">{t('chronicle.stat.lastEntry')}</div>
             <div className="v">{formatRelative(sorted[0]?.updatedAt) || '—'}</div>
           </div>
           <div className="chr-stat">
-            <div className="k">In-world</div>
+            <div className="k">{t('chronicle.stat.inWorld')}</div>
             <div className="v">Yr 350</div>
           </div>
         </div>
@@ -109,14 +107,14 @@ export const Chronicle: React.FC<Props> = ({ sel, setSel, sessions }) => {
         <div className="chr-add-row">
           {auth?.canAddSession ? (
             <button className="btn3 btn3-primary" onClick={() => setAddOpen(true)}>
-              + Add session log
+              {t('chronicle.add')}
             </button>
           ) : (
-            <span className="chr-add-locked">Sign in to inscribe.</span>
+            <span className="chr-add-locked">{t('chronicle.locked')}</span>
           )}
           {auth?.user && (
             <span className="chr-add-as">
-              writing as <em>{auth.user.name}</em>
+              {t('chronicle.writingAs')} <em>{auth.user.name}</em>
             </span>
           )}
         </div>
@@ -137,12 +135,12 @@ export const Chronicle: React.FC<Props> = ({ sel, setSel, sessions }) => {
                   <div className="chr-title">
                     {x.title}
                     {mine && (
-                      <span className="folio-yours" title="written in your hand">
-                        your folio
+                      <span className="folio-yours" title={t('chronicle.yourFolio.title')}>
+                        {t('chronicle.yourFolio')}
                       </span>
                     )}
                   </div>
-                  <div className="chr-by">scribed by {xAuthor}</div>
+                  <div className="chr-by">{t('chronicle.scribedBy', { name: xAuthor })}</div>
                 </div>
                 <div className="chr-date">{(x.inWorldDate || '').split(',')[0]}</div>
               </div>
@@ -155,22 +153,22 @@ export const Chronicle: React.FC<Props> = ({ sel, setSel, sessions }) => {
         <div className="chr-spine" />
         <div className="chr-folio">
           <span>
-            folio · session {String(s.number ?? 0).padStart(2, '0')} · {s.inWorldDate}
+            {t('chronicle.folioMeta', { num: String(s.number ?? 0).padStart(2, '0'), date: s.inWorldDate || '' })}
           </span>
           <span>{authorName}</span>
         </div>
         <h1 className="chr-headline">{s.title}</h1>
         <div className="chr-byline">
-          <span>scribed by {authorName}</span>
+          <span>{t('chronicle.scribedBy', { name: authorName })}</span>
           {wasAmended && (
             <span style={{ fontSize: 13, color: 'var(--ink-4)', marginLeft: 14 }}>
-              · last amended by <em>{lastAmendedLabel}</em>
+              {t('chronicle.lastAmendedBy')} <em>{lastAmendedLabel}</em>
               {lastAmendedRel && <span style={{ marginLeft: 6 }}>{lastAmendedRel}</span>}
             </span>
           )}
           {auth?.canAddSession && (
-            <span className="chr-amend" title="amend this folio" onClick={() => setAmendOpen(true)}>
-              ✎ amend
+            <span className="chr-amend" title={t('chronicle.amend.title')} onClick={() => setAmendOpen(true)}>
+              {t('chronicle.amend')}
             </span>
           )}
         </div>
@@ -178,7 +176,7 @@ export const Chronicle: React.FC<Props> = ({ sel, setSel, sessions }) => {
         <div className="chr-body">
           {bodyParas.length === 0 ? (
             <p className="dropcap" style={{ color: 'var(--ink-3)', fontStyle: 'italic' }}>
-              {s.excerpt || 'The page is begun, but unfinished.'}
+              {s.excerpt || t('chronicle.unfinished')}
             </p>
           ) : (
             bodyParas.map((p, idx) => (
@@ -197,13 +195,13 @@ export const Chronicle: React.FC<Props> = ({ sel, setSel, sessions }) => {
         <div className="chr-foot">
           <span>
             {i < sorted.length - 1
-              ? `previous · session ${String(sorted[i + 1].number ?? 0).padStart(2, '0')}`
-              : 'first session'}
+              ? t('chronicle.previous', { num: String(sorted[i + 1].number ?? 0).padStart(2, '0') })
+              : t('chronicle.first')}
           </span>
+          <span>{t('chronicle.folioOf', { i: i + 1, n: sorted.length })}</span>
           <span>
-            folio {i + 1} of {sorted.length}
+            {i > 0 ? t('chronicle.next', { num: String(sorted[i - 1].number ?? 0).padStart(2, '0') }) : t('chronicle.current')}
           </span>
-          <span>{i > 0 ? `next · session ${String(sorted[i - 1].number ?? 0).padStart(2, '0')}` : 'current'}</span>
         </div>
       </div>
 

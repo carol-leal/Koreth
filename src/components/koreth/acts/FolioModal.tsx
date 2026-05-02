@@ -3,6 +3,7 @@
 import React, { useState } from 'react'
 import { textToLexical, lexicalToText } from '../textLexical'
 import { useAuth3 } from '../AuthContext'
+import { useT } from '@/i18n/LocaleContext'
 import type { Session } from '@/payload-types'
 
 type Props = {
@@ -13,6 +14,7 @@ type Props = {
 
 export const FolioModal: React.FC<Props> = ({ session, onClose, onSubmitted }) => {
   const auth = useAuth3()
+  const { t } = useT()
   const isEdit = !!session
   const author = auth.user?.name || 'Anonymous'
 
@@ -33,7 +35,7 @@ export const FolioModal: React.FC<Props> = ({ session, onClose, onSubmitted }) =
         title: title.trim(),
         inWorldDate: date,
         excerpt: excerpt.trim(),
-        body: body.trim() ? textToLexical(body) : textToLexical(excerpt.trim() || 'The page is begun, but unfinished.'),
+        body: body.trim() ? textToLexical(body) : textToLexical(excerpt.trim() || t('chronicle.unfinished')),
         marginalia: marginalia.trim() ? textToLexical(marginalia) : null,
       }
 
@@ -57,7 +59,7 @@ export const FolioModal: React.FC<Props> = ({ session, onClose, onSubmitted }) =
       }
       if (!res.ok) {
         const j = await res.json().catch(() => ({}))
-        throw new Error(j?.errors?.[0]?.message || j?.message || 'Could not save folio')
+        throw new Error(j?.errors?.[0]?.message || j?.message || t('folio.err.generic'))
       }
       onSubmitted()
     } catch (e) {
@@ -81,16 +83,16 @@ export const FolioModal: React.FC<Props> = ({ session, onClose, onSubmitted }) =
         <div className="modal2-head">
           <div>
             <div style={monoEye}>
-              {isEdit ? `Amend folio · session ${String(session!.number ?? 0).padStart(2, '0')}` : 'New folio'}
+              {isEdit ? t('folio.amend', { num: String(session!.number ?? 0).padStart(2, '0') }) : t('folio.new')}
             </div>
             <h2>
               {isEdit ? (
                 <>
-                  {session!.title} <em>· edit</em>
+                  {session!.title} <em>{t('folio.titleEdit')}</em>
                 </>
               ) : (
                 <>
-                  Add a session <em>log</em>
+                  {t('folio.titleAdd.a')} <em>{t('folio.titleAdd.b')}</em>
                 </>
               )}
             </h2>
@@ -104,33 +106,33 @@ export const FolioModal: React.FC<Props> = ({ session, onClose, onSubmitted }) =
           {isEdit ? (
             <div className="f-row">
               <div>
-                <label className="f-label">Title</label>
+                <label className="f-label">{t('folio.f.title')}</label>
                 <input className="f-input" value={title} onChange={(e) => setTitle(e.target.value)} />
               </div>
               <div>
-                <label className="f-label">In-world date</label>
+                <label className="f-label">{t('folio.f.inWorldDate')}</label>
                 <input className="f-input" value={date} onChange={(e) => setDate(e.target.value)} />
               </div>
             </div>
           ) : (
             <>
               <div>
-                <label className="f-label">Title</label>
+                <label className="f-label">{t('folio.f.title')}</label>
                 <input
                   className="f-input"
                   autoFocus
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  placeholder="e.g. The Trial Begins"
+                  placeholder={t('folio.f.titlePlaceholder')}
                 />
               </div>
               <div className="f-row">
                 <div>
-                  <label className="f-label">Scribed by</label>
+                  <label className="f-label">{t('folio.f.scribed')}</label>
                   <div className="f-fixed">{author}</div>
                 </div>
                 <div>
-                  <label className="f-label">In-world date</label>
+                  <label className="f-label">{t('folio.f.inWorldDate')}</label>
                   <input className="f-input" value={date} onChange={(e) => setDate(e.target.value)} />
                 </div>
               </div>
@@ -138,35 +140,35 @@ export const FolioModal: React.FC<Props> = ({ session, onClose, onSubmitted }) =
           )}
 
           <div>
-            <label className="f-label">Opening line</label>
+            <label className="f-label">{t('folio.f.opening')}</label>
             <textarea
               className="f-textarea"
               rows={2}
               value={excerpt}
               onChange={(e) => setExcerpt(e.target.value)}
-              placeholder="The dropcap line."
+              placeholder={t('folio.f.openingPlaceholder')}
             />
           </div>
 
           <div>
-            <label className="f-label">Body — paragraphs separated by a blank line</label>
+            <label className="f-label">{t('folio.f.body')}</label>
             <textarea
               className="f-textarea"
               rows={10}
               value={body}
               onChange={(e) => setBody(e.target.value)}
-              placeholder="What was witnessed, in present tense."
+              placeholder={t('folio.f.bodyPlaceholder')}
             />
           </div>
 
           <div>
-            <label className="f-label">Marginalia — a note in the warmer hand</label>
+            <label className="f-label">{t('folio.f.marginalia')}</label>
             <textarea
               className="f-textarea"
               rows={3}
               value={marginalia}
               onChange={(e) => setMarginalia(e.target.value)}
-              placeholder="Added the next day, in someone else's hand."
+              placeholder={t('folio.f.marginaliaPlaceholder')}
             />
           </div>
 
@@ -195,14 +197,20 @@ export const FolioModal: React.FC<Props> = ({ session, onClose, onSubmitted }) =
               textTransform: 'uppercase',
             }}
           >
-            {isEdit ? 'amendments are kept in the version history' : 'saves to the chronicle'}
+            {isEdit ? t('folio.foot.amend') : t('folio.foot.add')}
           </span>
           <div style={{ display: 'flex', gap: 10 }}>
             <button className="btn3 btn3-ghost" onClick={onClose}>
-              Cancel
+              {t('folio.btn.cancel')}
             </button>
             <button className="btn3 btn3-primary" onClick={submit} disabled={busy}>
-              {busy ? (isEdit ? 'Saving…' : 'Inscribing…') : isEdit ? 'Save amendment' : 'Inscribe'}
+              {busy
+                ? isEdit
+                  ? t('folio.btn.saving')
+                  : t('folio.btn.inscribing')
+                : isEdit
+                  ? t('folio.btn.save')
+                  : t('folio.btn.inscribe')}
             </button>
           </div>
         </div>

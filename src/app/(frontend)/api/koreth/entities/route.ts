@@ -1,6 +1,8 @@
 import { getCachedEntityIndex } from '@/utilities/getEntityIndex'
+import { getServerLocale } from '@/i18n/getServerLocale'
 
 export async function GET() {
-  const entities = await getCachedEntityIndex()
+  const locale = await getServerLocale()
+  const entities = await getCachedEntityIndex(locale)
   return Response.json({ entities, generatedAt: new Date().toISOString() })
 }

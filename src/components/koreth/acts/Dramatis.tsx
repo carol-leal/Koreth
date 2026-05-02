@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { LinkText } from '../LinkText'
 import { useAuth3 } from '../AuthContext'
 import { AmendSheetModal } from './AmendSheetModal'
+import { useT } from '@/i18n/LocaleContext'
 import type { Character } from '@/payload-types'
 
 const QUOTES: Record<string, string> = {
@@ -30,6 +31,7 @@ const lexicalText = (data: unknown): string => {
 
 export const Dramatis: React.FC<{ characters: Character[] }> = ({ characters }) => {
   const auth = useAuth3()
+  const { t } = useT()
   const [sel, setSel] = useState<number | null>(null)
 
   if (sel != null) {
@@ -41,13 +43,16 @@ export const Dramatis: React.FC<{ characters: Character[] }> = ({ characters }) 
     <div>
       <div className="dramatis-head">
         <div>
-          <div className="eyebrow-sm">Act IV · Party</div>
+          <div className="eyebrow-sm">{t('party.eyebrow')}</div>
           <h2>
-            The Unbroken <em>Choir,</em>
-            <br /> as they were <em>last seen.</em>
+            {t('party.headline.a')} <em>{t('party.headline.b')}</em>
+            <br /> {t('party.headline.c')} <em>{t('party.headline.d')}</em>
           </h2>
         </div>
-        <div className="sub">{characters.length === 1 ? 'One voice.' : `${characters.length} voices.`} One vow. Click any to open their full sheet.</div>
+        <div className="sub">
+          {characters.length === 1 ? t('party.sub.one') : t('party.sub.many', { n: characters.length })}{' '}
+          {t('party.sub.tail')}
+        </div>
       </div>
 
       <div className="dramatis-rail">
@@ -70,14 +75,17 @@ export const Dramatis: React.FC<{ characters: Character[] }> = ({ characters }) 
                   {c.name.split(' ').map((w) => w[0]).join('')}
                 </div>
                 {mine && (
-                  <div className="persona-mark" title="this is your character">
-                    your character
+                  <div className="persona-mark" title={t('party.yourCharacter.title')}>
+                    {t('party.yourCharacter')}
                   </div>
                 )}
                 <div className="persona-meta">
                   <span>{c.race}</span>
                   <span>
-                    LVL {c.level} · {c.playerLabel || (typeof c.player === 'object' && c.player ? c.player.name : '')}
+                    {t('party.lvl', {
+                      n: c.level ?? 1,
+                      player: c.playerLabel || (typeof c.player === 'object' && c.player ? c.player.name || '' : ''),
+                    })}
                   </span>
                 </div>
               </div>
@@ -97,9 +105,9 @@ export const Dramatis: React.FC<{ characters: Character[] }> = ({ characters }) 
                   })}
                 </div>
                 <div className="persona-foot">
-                  <span>HP {c.vitals?.hpCurrent ?? '?'}/{c.vitals?.hpMax ?? '?'}</span>
-                  <span>AC {c.vitals?.ac ?? '?'}</span>
-                  <span className="persona-open">open sheet →</span>
+                  <span>{t('party.k.hp')} {c.vitals?.hpCurrent ?? '?'}/{c.vitals?.hpMax ?? '?'}</span>
+                  <span>{t('party.k.ac')} {c.vitals?.ac ?? '?'}</span>
+                  <span className="persona-open">{t('party.openSheet')}</span>
                 </div>
               </div>
             </div>
@@ -113,6 +121,7 @@ export const Dramatis: React.FC<{ characters: Character[] }> = ({ characters }) 
 const PartyDetail: React.FC<{ c: Character; onBack: () => void }> = ({ c, onBack }) => {
   const auth = useAuth3()
   const router = useRouter()
+  const { t } = useT()
   const [editing, setEditing] = useState(false)
   const hue = c.accentHue ?? 285
   const portrait = `linear-gradient(135deg, oklch(0.42 0.18 ${hue}), oklch(0.16 0.06 ${(hue + 60) % 360}))`
@@ -124,47 +133,47 @@ const PartyDetail: React.FC<{ c: Character; onBack: () => void }> = ({ c, onBack
   return (
     <div className="party-detail">
       <div className="party-detail-back" onClick={onBack}>
-        ← back to Party
+        {t('party.back')}
       </div>
 
       <div className="party-detail-grid">
         <div className="pd-portrait" style={{ background: portrait }}>
           <div className="pd-portrait-glyph">{c.name.split(' ').map((w) => w[0]).join('')}</div>
-          {mine && <div className="persona-mark">your character</div>}
+          {mine && <div className="persona-mark">{t('party.yourCharacter')}</div>}
         </div>
 
         <div className="pd-main">
           <div className="eyebrow-sm">
-            {c.race} · {c.class} · level {c.level}
+            {t('party.subhead', { race: c.race || '', klass: c.class, lvl: c.level ?? 1 })}
           </div>
           <h1 className="pd-name">{c.name}</h1>
-          <div className="pd-class">played by {playerName}</div>
+          <div className="pd-class">{t('party.playedBy', { name: playerName })}</div>
 
           {quote && <div className="pd-quote">“{quote}”</div>}
 
           <div className="pd-vitals">
             <div className="pd-vital">
-              <div className="k">HP</div>
+              <div className="k">{t('party.k.hp')}</div>
               <div className="v">
                 {c.vitals?.hpCurrent ?? '?'} <span className="m">/ {c.vitals?.hpMax ?? '?'}</span>
               </div>
             </div>
             <div className="pd-vital">
-              <div className="k">AC</div>
+              <div className="k">{t('party.k.ac')}</div>
               <div className="v">{c.vitals?.ac ?? '?'}</div>
             </div>
             <div className="pd-vital">
-              <div className="k">Level</div>
+              <div className="k">{t('party.k.level')}</div>
               <div className="v">{c.level}</div>
             </div>
             <div className="pd-vital">
-              <div className="k">Player</div>
+              <div className="k">{t('party.k.player')}</div>
               <div className="v" style={{ fontSize: 22 }}>{playerName}</div>
             </div>
           </div>
 
           <div className="pd-section">
-            <div className="pd-section-title">Ability scores</div>
+            <div className="pd-section-title">{t('party.section.abilities')}</div>
             <div className="pd-stats">
               {(['STR', 'DEX', 'CON', 'INT', 'WIS', 'CHA'] as const).map((k) => {
                 const v = (c.stats as Record<string, number> | null | undefined)?.[k] ?? 10
@@ -181,7 +190,7 @@ const PartyDetail: React.FC<{ c: Character; onBack: () => void }> = ({ c, onBack
           </div>
 
           <div className="pd-section">
-            <div className="pd-section-title">Backstory</div>
+            <div className="pd-section-title">{t('party.section.backstory')}</div>
             <p className="pd-backstory">
               <LinkText text={lexicalText(c.backstory)} />
             </p>
@@ -189,7 +198,7 @@ const PartyDetail: React.FC<{ c: Character; onBack: () => void }> = ({ c, onBack
 
           <div className="pd-section">
             <div className="pd-section-title">
-              Gear &amp; relics <span className="pd-section-count">{(c.gear || []).length}</span>
+              {t('party.section.gear')} <span className="pd-section-count">{(c.gear || []).length}</span>
             </div>
             <ul className="pd-gear">
               {(c.gear || []).map((g, i) => (
@@ -207,11 +216,11 @@ const PartyDetail: React.FC<{ c: Character; onBack: () => void }> = ({ c, onBack
                 style={{ cursor: 'pointer' }}
                 onClick={() => setEditing(true)}
               >
-                ✎ {mine ? 'amend your sheet' : 'amend sheet'}
+                {mine ? t('party.amend.your') : t('party.amend.other')}
               </span>
             ) : (
               <span className="persona-edit-muted">
-                amended only by {playerName} or the Chronicler
+                {t('party.amend.locked', { name: playerName })}
               </span>
             )}
           </div>

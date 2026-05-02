@@ -2,9 +2,11 @@
 
 import { useRouter } from 'next/navigation'
 import React, { useState } from 'react'
+import { useT } from '@/i18n/LocaleContext'
 
 export const LoginForm: React.FC = () => {
   const router = useRouter()
+  const { t } = useT()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [err, setErr] = useState('')
@@ -23,7 +25,7 @@ export const LoginForm: React.FC = () => {
       })
       if (!res.ok) {
         const j = await res.json().catch(() => ({}))
-        throw new Error(j?.message || j?.errors?.[0]?.message || 'Sign in failed')
+        throw new Error(j?.message || j?.errors?.[0]?.message || t('login.failed'))
       }
       router.push('/')
       router.refresh()
@@ -36,7 +38,7 @@ export const LoginForm: React.FC = () => {
 
   return (
     <form className="login-form" onSubmit={submit}>
-      <label className="f-label" htmlFor="login-email">Email</label>
+      <label className="f-label" htmlFor="login-email">{t('login.email')}</label>
       <input
         id="login-email"
         className="f-input"
@@ -48,7 +50,7 @@ export const LoginForm: React.FC = () => {
         placeholder="you@koreth.tale"
       />
 
-      <label className="f-label" htmlFor="login-pw" style={{ marginTop: 14 }}>Password</label>
+      <label className="f-label" htmlFor="login-pw" style={{ marginTop: 14 }}>{t('login.password')}</label>
       <input
         id="login-pw"
         className="f-input"
@@ -62,7 +64,7 @@ export const LoginForm: React.FC = () => {
       {err && <div className="login-err">{err}</div>}
 
       <button type="submit" className="btn3 btn3-primary login-submit" disabled={busy}>
-        {busy ? 'Signing in…' : 'Sign in'}
+        {busy ? t('login.signingIn') : t('login.signin')}
       </button>
     </form>
   )

@@ -6,6 +6,8 @@ import { useTip } from '../TipContext'
 import { useAuth3 } from '../AuthContext'
 import { PantheonByTier } from './PantheonByTier'
 import { CodexPortrait } from './CodexPortrait'
+import { useT } from '@/i18n/LocaleContext'
+import type { DictKey } from '@/i18n'
 import type { CodexTabId, KorethData } from '../types'
 import type { Region, Location, Faction, Npc, Item, Deity } from '@/payload-types'
 
@@ -16,14 +18,14 @@ type Item_ =
   | (Npc & { __kind: 'npcs' })
   | (Item & { __kind: 'items' })
 
-type TabDef = { id: CodexTabId; label: string; plural: string; glyph: string; hue: number }
+type TabDef = { id: CodexTabId; labelKey: DictKey; pluralKey: DictKey; glyph: string; hue: number }
 const CODEX_TABS: TabDef[] = [
-  { id: 'npcs', label: 'NPCs', plural: 'non-player characters', glyph: '◐', hue: 285 },
-  { id: 'regions', label: 'Regions', plural: 'lands of Korêth', glyph: '◇', hue: 200 },
-  { id: 'locations', label: 'Places', plural: 'cities, ruins, hideouts', glyph: '✦', hue: 50 },
-  { id: 'factions', label: 'Factions', plural: 'orders & cabals', glyph: '✕', hue: 25 },
-  { id: 'items', label: 'Items', plural: 'weapons & relics', glyph: '◈', hue: 145 },
-  { id: 'pantheon', label: 'Pantheon', plural: 'the gods, by tier', glyph: '☼', hue: 75 },
+  { id: 'npcs', labelKey: 'codex.tab.npcs', pluralKey: 'codex.plural.npcs', glyph: '◐', hue: 285 },
+  { id: 'regions', labelKey: 'codex.tab.regions', pluralKey: 'codex.plural.regions', glyph: '◇', hue: 200 },
+  { id: 'locations', labelKey: 'codex.tab.locations', pluralKey: 'codex.plural.locations', glyph: '✦', hue: 50 },
+  { id: 'factions', labelKey: 'codex.tab.factions', pluralKey: 'codex.plural.factions', glyph: '✕', hue: 25 },
+  { id: 'items', labelKey: 'codex.tab.items', pluralKey: 'codex.plural.items', glyph: '◈', hue: 145 },
+  { id: 'pantheon', labelKey: 'codex.tab.pantheon', pluralKey: 'codex.plural.pantheon', glyph: '☼', hue: 75 },
 ]
 
 const initials = (name: string) =>
@@ -72,11 +74,12 @@ const metaOf = (item: any, tab: CodexTabId): string => {
 }
 
 export const Codex: React.FC<{ data: KorethData }> = ({ data }) => {
+  const { t } = useT()
   const [tab, setTab] = useState<CodexTabId>('npcs')
   const [q, setQ] = useState('')
   const [selByTab, setSelByTab] = useState<Record<string, any>>({})
 
-  const tabDef = CODEX_TABS.find((t) => t.id === tab)!
+  const tabDef = CODEX_TABS.find((td) => td.id === tab)!
 
   const list: any[] =
     tab === 'npcs' ? data.npcs :
@@ -106,22 +109,22 @@ export const Codex: React.FC<{ data: KorethData }> = ({ data }) => {
 
   const Tabs = (
     <div className="codex2-kinds" role="tablist">
-      {CODEX_TABS.map((t) => (
+      {CODEX_TABS.map((td) => (
         <button
-          key={t.id}
-          className={'k-card' + (t.id === tab ? ' active' : '')}
+          key={td.id}
+          className={'k-card' + (td.id === tab ? ' active' : '')}
           onClick={() => {
-            setTab(t.id)
+            setTab(td.id)
             setQ('')
           }}
-          style={{ ['--k-hue' as string]: t.hue } as React.CSSProperties}
+          style={{ ['--k-hue' as string]: td.hue } as React.CSSProperties}
         >
-          <span className="k-glyph">{t.glyph}</span>
+          <span className="k-glyph">{td.glyph}</span>
           <span className="k-text">
-            <span className="k-label">{t.label}</span>
-            <span className="k-plural">{t.plural}</span>
+            <span className="k-label">{t(td.labelKey)}</span>
+            <span className="k-plural">{t(td.pluralKey)}</span>
           </span>
-          <span className="k-count">{counts[t.id]}</span>
+          <span className="k-count">{counts[td.id]}</span>
         </button>
       ))}
     </div>
@@ -132,9 +135,9 @@ export const Codex: React.FC<{ data: KorethData }> = ({ data }) => {
       <div className="codex2">
         <div className="codex2-top">
           <div className="codex2-head">
-            <div className="eye">Act II · Codex</div>
+            <div className="eye">{t('codex.eyebrow')}</div>
             <h2>
-              The world, <em>indexed.</em>
+              {t('codex.headline.a')} <em>{t('codex.headline.b')}</em>
             </h2>
           </div>
           {Tabs}
@@ -148,9 +151,9 @@ export const Codex: React.FC<{ data: KorethData }> = ({ data }) => {
     <div className="codex2">
       <div className="codex2-top">
         <div className="codex2-head">
-          <div className="eye">Act II · Codex</div>
+          <div className="eye">{t('codex.eyebrow')}</div>
           <h2>
-            The world, <em>indexed.</em>
+            {t('codex.headline.a')} <em>{t('codex.headline.b')}</em>
           </h2>
         </div>
         {Tabs}
@@ -161,7 +164,7 @@ export const Codex: React.FC<{ data: KorethData }> = ({ data }) => {
           <div className="codex2-search">
             <span className="cs-glyph">{tabDef.glyph}</span>
             <input
-              placeholder={`Search ${tabDef.label.toLowerCase()}…`}
+              placeholder={t('codex.search.placeholder', { what: t(tabDef.labelKey).toLowerCase() })}
               value={q}
               onChange={(e) => setQ(e.target.value)}
             />
@@ -176,7 +179,7 @@ export const Codex: React.FC<{ data: KorethData }> = ({ data }) => {
           </div>
 
           <div className="codex-rows">
-            {filtered.length === 0 && <div className="codex-empty">No entries match “{q}”.</div>}
+            {filtered.length === 0 && <div className="codex-empty">{t('codex.empty', { q })}</div>}
             {filtered.map((it: any, i: number) => {
               const id = it.id ?? it.name
               const isActive = sel && (sel.id ?? sel.name) === id
@@ -212,25 +215,18 @@ export const Codex: React.FC<{ data: KorethData }> = ({ data }) => {
   )
 }
 
-const eyebrowFor = (tab: CodexTabId): string => {
-  switch (tab) {
-    case 'npcs':
-      return 'non-player character'
-    case 'regions':
-      return 'region of Koreth'
-    case 'locations':
-      return 'place'
-    case 'factions':
-      return 'faction'
-    case 'items':
-      return 'item'
-    default:
-      return 'entry'
-  }
+const EYEBROW_KEY: Record<CodexTabId, DictKey> = {
+  npcs: 'codex.eyebrowFor.npcs',
+  regions: 'codex.eyebrowFor.regions',
+  locations: 'codex.eyebrowFor.locations',
+  factions: 'codex.eyebrowFor.factions',
+  items: 'codex.eyebrowFor.items',
+  pantheon: 'codex.eyebrowFor.entry',
 }
 
 const CodexDetail: React.FC<{ item: any; tab: CodexTabId; data: KorethData }> = ({ item, tab, data }) => {
   const auth = useAuth3()
+  const { t } = useT()
   const { show, hide, index } = useTip()
 
   const hue = item.accentHue ?? stableHash(item.name) % 360
@@ -243,23 +239,23 @@ const CodexDetail: React.FC<{ item: any; tab: CodexTabId; data: KorethData }> = 
 
   const kv: [string, string][] = []
   if (tab === 'npcs') {
-    if (item.currentLocationLabel) kv.push(['Last seen', item.currentLocationLabel])
+    if (item.currentLocationLabel) kv.push([t('codex.kv.lastSeen'), item.currentLocationLabel])
     else if (typeof item.currentLocation === 'object' && item.currentLocation)
-      kv.push(['Last seen', item.currentLocation.name])
+      kv.push([t('codex.kv.lastSeen'), item.currentLocation.name])
     if (Array.isArray(item.tags) && item.tags.length)
-      kv.push(['Tags', item.tags.map((t: any) => t.tag).join(' · ')])
+      kv.push([t('codex.kv.tags'), item.tags.map((tg: any) => tg.tag).join(' · ')])
   } else if (tab === 'regions') {
-    if (item.area) kv.push(['Area', item.area])
-    if (item.kind) kv.push(['Type', item.kind])
+    if (item.area) kv.push([t('codex.kv.area'), item.area])
+    if (item.kind) kv.push([t('codex.kv.type'), item.kind])
   } else if (tab === 'locations') {
-    if (typeof item.region === 'object' && item.region) kv.push(['Region', item.region.name])
-    if (item.kind) kv.push(['Type', item.kind])
+    if (typeof item.region === 'object' && item.region) kv.push([t('codex.kv.region'), item.region.name])
+    if (item.kind) kv.push([t('codex.kv.type'), item.kind])
   } else if (tab === 'factions') {
-    if (item.tone) kv.push(['Disposition', item.tone])
+    if (item.tone) kv.push([t('codex.kv.disposition'), item.tone])
   } else if (tab === 'items') {
-    if (item.kind) kv.push(['Kind', item.kind])
-    if (item.rarity) kv.push(['Rarity', item.rarity])
-    if (item.ownerLabel) kv.push(['Bearer', item.ownerLabel])
+    if (item.kind) kv.push([t('codex.kv.kind'), item.kind])
+    if (item.rarity) kv.push([t('codex.kv.rarity'), item.rarity])
+    if (item.ownerLabel) kv.push([t('codex.kv.bearer'), item.ownerLabel])
   }
 
   const related: { name: string; kind: string }[] = []
@@ -276,11 +272,11 @@ const CodexDetail: React.FC<{ item: any; tab: CodexTabId; data: KorethData }> = 
           <CodexPortrait name={item.name} hue={hue} kind={tab} symbol={item.symbol} />
         </div>
         <div className="cd-hero-text">
-          <div className="cd-hero-eye">{eyebrowFor(tab)}</div>
+          <div className="cd-hero-eye">{t(EYEBROW_KEY[tab])}</div>
           <h1>{item.name}</h1>
           {subtitle && <div className="sub">{subtitle}</div>}
         </div>
-        {auth?.canEditAny && <div className="cd-amend" title="Chronicler may amend this entry">✎ amend entry</div>}
+        {auth?.canEditAny && <div className="cd-amend" title={t('codex.amend.title')}>✎ {t('codex.amend')}</div>}
       </div>
 
       <div className="cd-body">
@@ -317,7 +313,7 @@ const CodexDetail: React.FC<{ item: any; tab: CodexTabId; data: KorethData }> = 
 
         {related.length > 0 && (
           <div className="cd-section">
-            <div className="ttl">Connections</div>
+            <div className="ttl">{t('codex.connections')}</div>
             <div className="cd-related">
               {related.map((r) => (
                 <div

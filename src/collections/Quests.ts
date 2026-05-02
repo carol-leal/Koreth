@@ -22,7 +22,7 @@ export const Quests: CollectionConfig = {
     afterDelete: [revalidateKorethDelete(() => ['/quests'])],
   },
   fields: [
-    { name: 'title', type: 'text', required: true },
+    { name: 'title', type: 'text', required: true, localized: true },
     {
       name: 'status',
       type: 'select',
@@ -37,12 +37,12 @@ export const Quests: CollectionConfig = {
       defaultValue: 'side',
       options: ['main', 'side', 'mystery'].map((v) => ({ label: v, value: v })),
     },
-    { name: 'summary', type: 'textarea' },
+    { name: 'summary', type: 'textarea', localized: true },
     {
       name: 'steps',
       type: 'array',
       fields: [
-        { name: 'text', type: 'text', required: true },
+        { name: 'text', type: 'text', required: true, localized: true },
         { name: 'done', type: 'checkbox', defaultValue: false },
       ],
     },

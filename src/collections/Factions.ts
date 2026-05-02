@@ -30,7 +30,7 @@ export const Factions: CollectionConfig = {
       defaultValue: 'Neutral',
       options: ['Ally', 'Antagonist', 'Neutral', 'Historical', 'Mystery'].map((v) => ({ label: v, value: v })),
     },
-    { name: 'description', type: 'richText' },
+    { name: 'description', type: 'richText', localized: true },
     { name: 'seatLocation', type: 'relationship', relationTo: 'locations' },
     {
       name: 'relatedFactions',

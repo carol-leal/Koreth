@@ -3,6 +3,7 @@
 import React from 'react'
 import { LinkText } from '../LinkText'
 import { useTip } from '../TipContext'
+import { useT } from '@/i18n/LocaleContext'
 import type { Character, Campaign } from '@/payload-types'
 
 type Props = {
@@ -22,6 +23,7 @@ const NEXT_SESSION = {
 
 export const Prologue: React.FC<Props> = ({ campaign, characters, goto }) => {
   const { show, hide } = useTip()
+  const { t } = useT()
   const currentSession = campaign.currentSession ?? 0
   const partyLevel = campaign.partyLevel ?? Math.round(characters.reduce((a, c) => a + (c.level ?? 0), 0) / Math.max(1, characters.length))
   const partyXp = campaign.partyXp ?? 0
@@ -30,11 +32,11 @@ export const Prologue: React.FC<Props> = ({ campaign, characters, goto }) => {
   return (
     <div className="prologue">
       <div className="prologue-left">
-        <div className="eyebrow-sm">A high-fantasy chronicle · in progress</div>
+        <div className="eyebrow-sm">{t('prologue.eyebrow')}</div>
         <h1 className="prologue-title">
           <span className="prologue-title-main">Korêth</span>
           <span className="prologue-title-sub">
-            <em>a reader for the chronicle</em>
+            <em>{t('prologue.subtitle')}</em>
           </span>
         </h1>
         <div className="prologue-tag">
@@ -45,19 +47,19 @@ export const Prologue: React.FC<Props> = ({ campaign, characters, goto }) => {
         </div>
         <div className="prologue-meta">
           <div className="item">
-            <div className="k">Session</div>
+            <div className="k">{t('prologue.k.session')}</div>
             <div className="v">{currentSession}</div>
           </div>
           <div className="item">
-            <div className="k">Party</div>
-            <div className="v">Lvl {partyLevel}</div>
+            <div className="k">{t('prologue.k.party')}</div>
+            <div className="v">{t('prologue.lvl', { n: partyLevel })}</div>
           </div>
           <div className="item">
-            <div className="k">Era</div>
+            <div className="k">{t('prologue.k.era')}</div>
             <div className="v">Yr 350</div>
           </div>
           <div className="item">
-            <div className="k">Last entry</div>
+            <div className="k">{t('prologue.k.lastEntry')}</div>
             <div className="v">2h ago</div>
           </div>
         </div>
@@ -67,17 +69,17 @@ export const Prologue: React.FC<Props> = ({ campaign, characters, goto }) => {
         {/* NEXT SESSION CARD */}
         <div className="next-card">
           <div className="next-head">
-            <div className="next-eye">Next session — planned</div>
+            <div className="next-eye">{t('prologue.next.eye')}</div>
             <div className="next-num">№ {String(currentSession + 1).padStart(2, '0')}</div>
           </div>
           <h3 className="next-title">{NEXT_SESSION.title}</h3>
           <div className="next-meta-row">
             <div className="next-meta">
-              <div className="k">When</div>
+              <div className="k">{t('prologue.next.k.when')}</div>
               <div className="v">{NEXT_SESSION.when}</div>
             </div>
             <div className="next-meta">
-              <div className="k">Where</div>
+              <div className="k">{t('prologue.next.k.where')}</div>
               <div className="v">{NEXT_SESSION.where}</div>
             </div>
           </div>
@@ -90,17 +92,18 @@ export const Prologue: React.FC<Props> = ({ campaign, characters, goto }) => {
         <div className="party-card">
           <div className="party-card-head">
             <h3>
-              {campaign.partyName || 'The Choir'} <em>· current roster</em>
+              {campaign.partyName || t('prologue.party.defaultName')} <em>· {t('prologue.party.rosterEm')}</em>
             </h3>
-            <span className="party-card-meta">shared level</span>
+            <span className="party-card-meta">{t('prologue.party.sharedMeta')}</span>
           </div>
 
           <div className="party-shared">
             <div className="party-shared-level">{partyLevel}</div>
             <div className="party-shared-info">
-              <div className="party-shared-title">Party level · shared</div>
+              <div className="party-shared-title">{t('prologue.party.sharedTitle')}</div>
               <div className="party-shared-xp">
-                {partyXp.toLocaleString()} XP <em>/ {nextLevelXp.toLocaleString()} to next</em>
+                {t('prologue.party.xp', { xp: partyXp.toLocaleString() })}{' '}
+                <em>{t('prologue.party.xpToNext', { n: nextLevelXp.toLocaleString() })}</em>
               </div>
               <div className="party-shared-bar">
                 <div
@@ -150,23 +153,23 @@ export const Prologue: React.FC<Props> = ({ campaign, characters, goto }) => {
         {/* SMALL DETAIL ROW */}
         <div className="prol-details">
           <div className="prol-detail">
-            <div className="k">In-world date</div>
+            <div className="k">{t('prologue.detail.inWorld')}</div>
             <div className="v">Yr 350, late spring</div>
           </div>
           <div className="prol-detail">
-            <div className="k">Currently in</div>
+            <div className="k">{t('prologue.detail.currentlyIn')}</div>
             <div className="v">Aureth, capital of Aurion</div>
           </div>
           <div className="prol-detail">
-            <div className="k">Holding</div>
+            <div className="k">{t('prologue.detail.holding')}</div>
             <div className="v">Awaiting the trial of Jayn’t</div>
           </div>
         </div>
 
         <div style={{ marginTop: 24, display: 'flex', gap: 12 }}>
-          <ChapterCue n="II" label="The Codex" onClick={() => goto(1)} />
-          <ChapterCue n="III" label="Chronicle" onClick={() => goto(2)} />
-          <ChapterCue n="IV" label="Party" onClick={() => goto(3)} />
+          <ChapterCue n="II" label={t('prologue.cue.codex')} onClick={() => goto(1)} />
+          <ChapterCue n="III" label={t('prologue.cue.chronicle')} onClick={() => goto(2)} />
+          <ChapterCue n="IV" label={t('prologue.cue.party')} onClick={() => goto(3)} />
         </div>
       </div>
     </div>

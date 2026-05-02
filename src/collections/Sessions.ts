@@ -41,9 +41,9 @@ export const Sessions: CollectionConfig = {
     afterDelete: [revalidateKorethDelete(() => ['/'])],
   },
   fields: [
-    { name: 'title', type: 'text', required: true },
+    { name: 'title', type: 'text', required: true, localized: true },
     { name: 'number', type: 'number', required: true, unique: true },
-    { name: 'inWorldDate', type: 'text' },
+    { name: 'inWorldDate', type: 'text', localized: true },
     { name: 'realDate', type: 'date' },
     { name: 'author', type: 'relationship', relationTo: 'users', required: true },
     {
@@ -51,9 +51,9 @@ export const Sessions: CollectionConfig = {
       type: 'text',
       admin: { description: 'In-world byline; may differ from the user account.' },
     },
-    { name: 'excerpt', type: 'textarea', admin: { description: 'The opening line — used as the dropcap.' } },
-    { name: 'body', type: 'richText', admin: { description: 'The folio body.' } },
-    { name: 'marginalia', type: 'richText', admin: { description: 'A note in the warmer hand, added later.' } },
+    { name: 'excerpt', type: 'textarea', localized: true, admin: { description: 'The opening line — used as the dropcap.' } },
+    { name: 'body', type: 'richText', localized: true, admin: { description: 'The folio body.' } },
+    { name: 'marginalia', type: 'richText', localized: true, admin: { description: 'A note in the warmer hand, added later.' } },
     {
       name: 'relatedEntities',
       type: 'relationship',

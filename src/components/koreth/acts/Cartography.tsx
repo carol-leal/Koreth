@@ -1,8 +1,10 @@
 'use client'
 
 import React from 'react'
+import { useT } from '@/i18n/LocaleContext'
 
 export const Cartography: React.FC = () => {
+  const { t } = useT()
   return (
     <div
       style={{
@@ -20,7 +22,7 @@ export const Cartography: React.FC = () => {
         className="eyebrow-sm"
         style={{ fontFamily: 'var(--mono)', fontSize: 11, letterSpacing: '0.22em', color: 'var(--ink-3)' }}
       >
-        Act V · Cartography
+        {t('carto.eyebrow')}
       </div>
       <h2
         style={{
@@ -32,7 +34,7 @@ export const Cartography: React.FC = () => {
           letterSpacing: '-0.02em',
         }}
       >
-        The map, <em style={{ color: 'var(--ink-2)' }}>still being drawn.</em>
+        {t('carto.headline.a')} <em style={{ color: 'var(--ink-2)' }}>{t('carto.headline.b')}</em>
       </h2>
       <p
         style={{
@@ -45,7 +47,7 @@ export const Cartography: React.FC = () => {
           marginTop: 8,
         }}
       >
-        coming soon — the cartographer is still inking the coastline.
+        {t('carto.sub')}
       </p>
     </div>
   )

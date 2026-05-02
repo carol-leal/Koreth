@@ -28,6 +28,14 @@ export default buildConfig({
     importMap: { baseDir: path.resolve(dirname) },
     user: Users.slug,
   },
+  localization: {
+    locales: [
+      { code: 'es', label: 'Español' },
+      { code: 'en', label: 'English' },
+    ],
+    defaultLocale: 'es',
+    fallback: true,
+  },
   editor: defaultLexical,
   db: postgresAdapter({
     pool: { connectionString: process.env.POSTGRES_URL || '' },

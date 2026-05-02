@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react'
 import { textToLexical, lexicalToText } from '../textLexical'
+import { useT } from '@/i18n/LocaleContext'
 import type { Character } from '@/payload-types'
 
 type Props = {
@@ -13,6 +14,7 @@ type Props = {
 const ABILITIES = ['STR', 'DEX', 'CON', 'INT', 'WIS', 'CHA'] as const
 
 export const AmendSheetModal: React.FC<Props> = ({ character: c, onClose, onSubmitted }) => {
+  const { t } = useT()
   const [name, setName] = useState(c.name)
   const [klass, setKlass] = useState(c.class)
   const [race, setRace] = useState(c.race || '')
@@ -68,7 +70,7 @@ export const AmendSheetModal: React.FC<Props> = ({ character: c, onClose, onSubm
       })
       if (!res.ok) {
         const j = await res.json().catch(() => ({}))
-        throw new Error(j?.errors?.[0]?.message || j?.message || 'Could not save sheet')
+        throw new Error(j?.errors?.[0]?.message || j?.message || t('sheet.err.generic'))
       }
       onSubmitted()
     } catch (e) {
@@ -96,11 +98,9 @@ export const AmendSheetModal: React.FC<Props> = ({ character: c, onClose, onSubm
                 textTransform: 'uppercase',
               }}
             >
-              Amend the sheet
+              {t('sheet.eye')}
             </div>
-            <h2>
-              {c.name} <em>· edit</em>
-            </h2>
+            <h2>{t('sheet.title', { name: c.name })}</h2>
           </div>
           <div className="modal2-close" onClick={onClose}>
             ✕
@@ -110,31 +110,36 @@ export const AmendSheetModal: React.FC<Props> = ({ character: c, onClose, onSubm
         <div className="modal2-body">
           <div className="f-row">
             <div>
-              <label className="f-label">Name</label>
+              <label className="f-label">{t('sheet.f.name')}</label>
               <input className="f-input" value={name} onChange={(e) => setName(e.target.value)} />
             </div>
             <div>
-              <label className="f-label">Class</label>
+              <label className="f-label">{t('sheet.f.class')}</label>
               <input className="f-input" value={klass} onChange={(e) => setKlass(e.target.value)} />
             </div>
           </div>
           <div className="f-row">
             <div>
-              <label className="f-label">Race</label>
+              <label className="f-label">{t('sheet.f.race')}</label>
               <input className="f-input" value={race} onChange={(e) => setRace(e.target.value)} />
             </div>
             <div>
-              <label className="f-label">Level</label>
+              <label className="f-label">{t('sheet.f.level')}</label>
               <input className="f-input" inputMode="numeric" value={level} onChange={(e) => setLevel(e.target.value)} />
             </div>
           </div>
           <div>
-            <label className="f-label">Quote (optional)</label>
-            <input className="f-input" value={quote} onChange={(e) => setQuote(e.target.value)} placeholder="A line they would say" />
+            <label className="f-label">{t('sheet.f.quote')}</label>
+            <input
+              className="f-input"
+              value={quote}
+              onChange={(e) => setQuote(e.target.value)}
+              placeholder={t('sheet.f.quotePlaceholder')}
+            />
           </div>
 
           <div>
-            <label className="f-label">Vitals</label>
+            <label className="f-label">{t('sheet.f.vitals')}</label>
             <div
               style={{
                 display: 'grid',
@@ -142,14 +147,14 @@ export const AmendSheetModal: React.FC<Props> = ({ character: c, onClose, onSubm
                 gap: 14,
               }}
             >
-              <Vital label="HP current" value={hpCur} onChange={setHpCur} />
-              <Vital label="HP max" value={hpMax} onChange={setHpMax} />
-              <Vital label="AC" value={ac} onChange={setAc} />
+              <Vital label={t('sheet.v.hpCur')} value={hpCur} onChange={setHpCur} />
+              <Vital label={t('sheet.v.hpMax')} value={hpMax} onChange={setHpMax} />
+              <Vital label={t('sheet.v.ac')} value={ac} onChange={setAc} />
             </div>
           </div>
 
           <div>
-            <label className="f-label">Ability scores</label>
+            <label className="f-label">{t('sheet.f.abilities')}</label>
             <div
               style={{
                 display: 'grid',
@@ -185,7 +190,7 @@ export const AmendSheetModal: React.FC<Props> = ({ character: c, onClose, onSubm
           </div>
 
           <div>
-            <label className="f-label">Backstory — paragraphs separated by a blank line</label>
+            <label className="f-label">{t('sheet.f.backstory')}</label>
             <textarea
               className="f-textarea"
               rows={6}
@@ -195,7 +200,7 @@ export const AmendSheetModal: React.FC<Props> = ({ character: c, onClose, onSubm
           </div>
 
           <div>
-            <label className="f-label">Gear &amp; relics — one item per line</label>
+            <label className="f-label">{t('sheet.f.gear')}</label>
             <textarea
               className="f-textarea"
               rows={5}
@@ -230,14 +235,14 @@ export const AmendSheetModal: React.FC<Props> = ({ character: c, onClose, onSubm
               textTransform: 'uppercase',
             }}
           >
-            saves to your sheet
+            {t('sheet.foot')}
           </span>
           <div style={{ display: 'flex', gap: 10 }}>
             <button className="btn3 btn3-ghost" onClick={onClose}>
-              Cancel
+              {t('sheet.btn.cancel')}
             </button>
             <button className="btn3 btn3-primary" onClick={submit} disabled={busy}>
-              {busy ? 'Saving…' : 'Save sheet'}
+              {busy ? t('sheet.btn.saving') : t('sheet.btn.save')}
             </button>
           </div>
         </div>

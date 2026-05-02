@@ -34,9 +34,9 @@ export const Regions: CollectionConfig = {
         { label: 'Islands', value: 'Islands' },
       ],
     },
-    { name: 'kind', type: 'text', required: true },
-    { name: 'tagline', type: 'text' },
-    { name: 'description', type: 'richText' },
+    { name: 'kind', type: 'text', required: true, localized: true },
+    { name: 'tagline', type: 'text', localized: true },
+    { name: 'description', type: 'richText', localized: true },
     {
       name: 'mapPosition',
       type: 'group',

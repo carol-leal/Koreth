@@ -23,15 +23,15 @@ export const Npcs: CollectionConfig = {
   },
   fields: [
     { name: 'name', type: 'text', required: true },
-    { name: 'title', type: 'text' },
+    { name: 'title', type: 'text', localized: true },
     {
       name: 'tags',
       type: 'array',
-      fields: [{ name: 'tag', type: 'text', required: true }],
+      fields: [{ name: 'tag', type: 'text', required: true, localized: true }],
     },
-    { name: 'bio', type: 'richText' },
+    { name: 'bio', type: 'richText', localized: true },
     { name: 'currentLocation', type: 'relationship', relationTo: 'locations' },
-    { name: 'currentLocationLabel', type: 'text' },
+    { name: 'currentLocationLabel', type: 'text', localized: true },
     { name: 'factions', type: 'relationship', relationTo: 'factions', hasMany: true },
     { name: 'regions', type: 'relationship', relationTo: 'regions', hasMany: true },
     {
