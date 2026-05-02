@@ -23,6 +23,7 @@ export default async function Home() {
     sessions,
     quests,
     leads,
+    events,
     user,
     entities,
   ] = await Promise.all([
@@ -37,6 +38,7 @@ export default async function Home() {
     payload.find({ collection: 'sessions', limit: 100, depth: 1, sort: '-number', locale, fallbackLocale: DEFAULT_LOCALE }),
     payload.find({ collection: 'quests', limit: 200, depth: 0, locale, fallbackLocale: DEFAULT_LOCALE }),
     payload.find({ collection: 'leads', limit: 200, depth: 1, sort: '-updatedAt', locale, fallbackLocale: DEFAULT_LOCALE }),
+    payload.find({ collection: 'events', limit: 500, depth: 1, sort: 'sortOrder', locale, fallbackLocale: DEFAULT_LOCALE }),
     getOptionalUser(),
     getCachedEntityIndex(locale),
   ])
@@ -65,6 +67,7 @@ export default async function Home() {
         sessions: sessions.docs as SessionDoc[],
         quests: quests.docs,
         leads: leads.docs,
+        events: events.docs,
       }}
       user={sessionUser}
       entities={entities}

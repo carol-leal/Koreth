@@ -9,6 +9,7 @@ import type {
   Session,
   Quest,
   Lead,
+  Event,
   Campaign,
 } from '@/payload-types'
 
@@ -24,6 +25,7 @@ export type KorethData = {
   sessions: Session[]
   quests: Quest[]
   leads: Lead[]
+  events: Event[]
 }
 
 export type CodexTabId = 'npcs' | 'regions' | 'locations' | 'factions' | 'items' | 'pantheon'
@@ -32,6 +34,7 @@ export const ACTS = [
   { id: 'prologue', labelKey: 'act.prologue' },
   { id: 'codex', labelKey: 'act.codex' },
   { id: 'chronicle', labelKey: 'act.chronicle' },
+  { id: 'timeline', labelKey: 'act.timeline' },
   { id: 'dramatis', labelKey: 'act.dramatis' },
   { id: 'quests', labelKey: 'act.quests' },
   { id: 'carto', labelKey: 'act.carto' },

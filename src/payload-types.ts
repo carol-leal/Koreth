@@ -79,6 +79,7 @@ export interface Config {
     sessions: Session;
     quests: Quest;
     leads: Lead;
+    events: Event;
     'payload-kv': PayloadKv;
     'payload-folders': FolderInterface;
     'payload-locked-documents': PayloadLockedDocument;
@@ -103,6 +104,7 @@ export interface Config {
     sessions: SessionsSelect<false> | SessionsSelect<true>;
     quests: QuestsSelect<false> | QuestsSelect<true>;
     leads: LeadsSelect<false> | LeadsSelect<true>;
+    events: EventsSelect<false> | EventsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-folders': PayloadFoldersSelect<false> | PayloadFoldersSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
@@ -743,6 +745,34 @@ export interface Lead {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "events".
+ */
+export interface Event {
+  id: number;
+  title: string;
+  /**
+   * Free-form, e.g. "Yr 350, late spring".
+   */
+  inWorldDate?: string | null;
+  /**
+   * Lower = earlier. Use to fix order when in-world dates are fuzzy.
+   */
+  sortOrder?: number | null;
+  kind?: ('event' | 'battle' | 'discovery' | 'death' | 'pact' | 'prophecy' | 'disaster') | null;
+  description?: string | null;
+  linkedSession?: (number | null) | Session;
+  relatedNpcs?: (number | Npc)[] | null;
+  relatedLocations?: (number | Location)[] | null;
+  relatedFactions?: (number | Faction)[] | null;
+  /**
+   * Auto-generated from name; edit only if you know what you are doing.
+   */
+  slug?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -812,6 +842,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'leads';
         value: number | Lead;
+      } | null)
+    | ({
+        relationTo: 'events';
+        value: number | Event;
       } | null)
     | ({
         relationTo: 'payload-folders';
@@ -1213,6 +1247,24 @@ export interface LeadsSelect<T extends boolean = true> {
         createdAt?: T;
         id?: T;
       };
+  slug?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "events_select".
+ */
+export interface EventsSelect<T extends boolean = true> {
+  title?: T;
+  inWorldDate?: T;
+  sortOrder?: T;
+  kind?: T;
+  description?: T;
+  linkedSession?: T;
+  relatedNpcs?: T;
+  relatedLocations?: T;
+  relatedFactions?: T;
   slug?: T;
   updatedAt?: T;
   createdAt?: T;

@@ -14,6 +14,7 @@ import { Codex } from './acts/Codex'
 import { Chronicle } from './acts/Chronicle'
 import { Dramatis } from './acts/Dramatis'
 import { Quests } from './acts/Quests'
+import { Timeline } from './acts/Timeline'
 import { Cartography } from './acts/Cartography'
 import { ACTS, type KorethData } from './types'
 import type { EntityIndexEntry } from '@/utilities/getEntityIndex'
@@ -118,6 +119,9 @@ const KorethShell: React.FC<{ data: KorethData }> = ({ data }) => {
           </div>
           <div className="act-pane">
             <Chronicle sel={chrSel} setSel={setChrSel} sessions={data.sessions} />
+          </div>
+          <div className="act-pane">
+            <Timeline events={data.events} />
           </div>
           <div className="act-pane">
             <Dramatis characters={data.characters} />
