@@ -70,7 +70,7 @@ export const en = {
 
   // Edit campaign modal (DM only)
   'campaign.edit.eye': 'Edit campaign',
-  'campaign.edit.title': 'Korêth · campaign details',
+  'campaign.edit.title': 'Koreth · campaign details',
   'campaign.edit.button': '✎ edit campaign',
   'campaign.f.tagline': 'Tagline',
   'campaign.f.tagSource': 'Tagline citation',
@@ -455,7 +455,8 @@ export const en = {
   'timeline.eyebrow': 'Timeline',
   'timeline.headline.a': 'How the world arrived',
   'timeline.headline.b': 'at this moment.',
-  'timeline.sub.canEdit': 'Click any field to amend. Set the order with the small chip at the bottom of each card.',
+  'timeline.sub.canEdit':
+    'Click any field to amend. Set the order with the small chip at the bottom of each card.',
   'timeline.sub.locked': 'Only the Chronicler keeps the timeline.',
   'timeline.empty': 'No events have been recorded yet.',
   'timeline.add': '+ new event',

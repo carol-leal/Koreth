@@ -70,7 +70,7 @@ export const es: Dictionary = {
 
   // Editar campaña (DM)
   'campaign.edit.eye': 'Editar campaña',
-  'campaign.edit.title': 'Korêth · detalles de la campaña',
+  'campaign.edit.title': 'Koreth · detalles de la campaña',
   'campaign.edit.button': '✎ editar campaña',
   'campaign.f.tagline': 'Lema',
   'campaign.f.tagSource': 'Cita del lema',

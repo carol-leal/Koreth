@@ -9,7 +9,7 @@ export const Lore: CollectionConfig = {
   admin: {
     useAsTitle: 'title',
     defaultColumns: ['title', 'kind', 'era'],
-    group: 'Korêth',
+    group: 'Koreth',
   },
   access: {
     read: anyone,

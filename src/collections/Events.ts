@@ -9,7 +9,7 @@ export const Events: CollectionConfig = {
   admin: {
     useAsTitle: 'title',
     defaultColumns: ['title', 'inWorldDate', 'kind', 'sortOrder'],
-    group: 'Korêth',
+    group: 'Koreth',
   },
   access: {
     read: anyone,
@@ -40,10 +40,12 @@ export const Events: CollectionConfig = {
       name: 'kind',
       type: 'select',
       defaultValue: 'event',
-      options: ['event', 'battle', 'discovery', 'death', 'pact', 'prophecy', 'disaster'].map((v) => ({
-        label: v,
-        value: v,
-      })),
+      options: ['event', 'battle', 'discovery', 'death', 'pact', 'prophecy', 'disaster'].map(
+        (v) => ({
+          label: v,
+          value: v,
+        }),
+      ),
     },
     { name: 'description', type: 'textarea', localized: true },
     { name: 'linkedSession', type: 'relationship', relationTo: 'sessions' },
