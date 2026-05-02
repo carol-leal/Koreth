@@ -1,0 +1,270 @@
+'use client'
+
+import React, { useState } from 'react'
+import { textToLexical, lexicalToText } from '../textLexical'
+import type { Character } from '@/payload-types'
+
+type Props = {
+  character: Character
+  onClose: () => void
+  onSubmitted: () => void
+}
+
+const ABILITIES = ['STR', 'DEX', 'CON', 'INT', 'WIS', 'CHA'] as const
+
+export const AmendSheetModal: React.FC<Props> = ({ character: c, onClose, onSubmitted }) => {
+  const [name, setName] = useState(c.name)
+  const [klass, setKlass] = useState(c.class)
+  const [race, setRace] = useState(c.race || '')
+  const [level, setLevel] = useState(String(c.level ?? 1))
+  const [quote, setQuote] = useState(c.quote || '')
+  const [hpCur, setHpCur] = useState(String(c.vitals?.hpCurrent ?? ''))
+  const [hpMax, setHpMax] = useState(String(c.vitals?.hpMax ?? ''))
+  const [ac, setAc] = useState(String(c.vitals?.ac ?? ''))
+  const initialStats = (c.stats as Record<string, number> | null | undefined) ?? {}
+  const [stats, setStats] = useState<Record<string, string>>(
+    Object.fromEntries(ABILITIES.map((k) => [k, String(initialStats[k] ?? 10)])),
+  )
+  const [backstory, setBackstory] = useState(lexicalToText(c.backstory))
+  const initialGear = (c.gear || []).map((g) => g.name).join('\n')
+  const [gear, setGear] = useState(initialGear)
+  const [busy, setBusy] = useState(false)
+  const [err, setErr] = useState('')
+
+  const num = (s: string): number | null => {
+    const n = Number(s)
+    return Number.isFinite(n) ? n : null
+  }
+
+  const submit = async () => {
+    if (!name.trim()) return
+    setBusy(true)
+    setErr('')
+    try {
+      const data: Record<string, unknown> = {
+        name: name.trim(),
+        class: klass.trim(),
+        race: race.trim(),
+        level: num(level) ?? 1,
+        quote: quote.trim(),
+        vitals: {
+          hpCurrent: num(hpCur),
+          hpMax: num(hpMax),
+          ac: num(ac),
+        },
+        stats: Object.fromEntries(ABILITIES.map((k) => [k, num(stats[k]) ?? 10])),
+        backstory: textToLexical(backstory),
+        gear: gear
+          .split('\n')
+          .map((g) => g.trim())
+          .filter(Boolean)
+          .map((g) => ({ name: g })),
+      }
+      const res = await fetch(`/api/characters/${c.id}`, {
+        method: 'PATCH',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      })
+      if (!res.ok) {
+        const j = await res.json().catch(() => ({}))
+        throw new Error(j?.errors?.[0]?.message || j?.message || 'Could not save sheet')
+      }
+      onSubmitted()
+    } catch (e) {
+      setErr((e as Error).message)
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  return (
+    <div className="modal-bg2" onClick={onClose}>
+      <div
+        className="modal2"
+        onClick={(e) => e.stopPropagation()}
+        style={{ width: 'min(720px, 92vw)' }}
+      >
+        <div className="modal2-head">
+          <div>
+            <div
+              style={{
+                fontFamily: 'var(--mono)',
+                fontSize: 10,
+                letterSpacing: '.22em',
+                color: 'var(--ink-3)',
+                textTransform: 'uppercase',
+              }}
+            >
+              Amend the sheet
+            </div>
+            <h2>
+              {c.name} <em>· edit</em>
+            </h2>
+          </div>
+          <div className="modal2-close" onClick={onClose}>
+            ✕
+          </div>
+        </div>
+
+        <div className="modal2-body">
+          <div className="f-row">
+            <div>
+              <label className="f-label">Name</label>
+              <input className="f-input" value={name} onChange={(e) => setName(e.target.value)} />
+            </div>
+            <div>
+              <label className="f-label">Class</label>
+              <input className="f-input" value={klass} onChange={(e) => setKlass(e.target.value)} />
+            </div>
+          </div>
+          <div className="f-row">
+            <div>
+              <label className="f-label">Race</label>
+              <input className="f-input" value={race} onChange={(e) => setRace(e.target.value)} />
+            </div>
+            <div>
+              <label className="f-label">Level</label>
+              <input className="f-input" inputMode="numeric" value={level} onChange={(e) => setLevel(e.target.value)} />
+            </div>
+          </div>
+          <div>
+            <label className="f-label">Quote (optional)</label>
+            <input className="f-input" value={quote} onChange={(e) => setQuote(e.target.value)} placeholder="A line they would say" />
+          </div>
+
+          <div>
+            <label className="f-label">Vitals</label>
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(3, 1fr)',
+                gap: 14,
+              }}
+            >
+              <Vital label="HP current" value={hpCur} onChange={setHpCur} />
+              <Vital label="HP max" value={hpMax} onChange={setHpMax} />
+              <Vital label="AC" value={ac} onChange={setAc} />
+            </div>
+          </div>
+
+          <div>
+            <label className="f-label">Ability scores</label>
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(6, 1fr)',
+                gap: 8,
+              }}
+            >
+              {ABILITIES.map((k) => (
+                <div key={k}>
+                  <div
+                    style={{
+                      fontFamily: 'var(--mono)',
+                      fontSize: 9,
+                      letterSpacing: '0.16em',
+                      color: 'var(--ink-4)',
+                      textTransform: 'uppercase',
+                      textAlign: 'center',
+                      marginBottom: 4,
+                    }}
+                  >
+                    {k}
+                  </div>
+                  <input
+                    className="f-input"
+                    inputMode="numeric"
+                    style={{ textAlign: 'center', fontFamily: 'var(--display)', fontSize: 18 }}
+                    value={stats[k]}
+                    onChange={(e) => setStats({ ...stats, [k]: e.target.value })}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <label className="f-label">Backstory — paragraphs separated by a blank line</label>
+            <textarea
+              className="f-textarea"
+              rows={6}
+              value={backstory}
+              onChange={(e) => setBackstory(e.target.value)}
+            />
+          </div>
+
+          <div>
+            <label className="f-label">Gear &amp; relics — one item per line</label>
+            <textarea
+              className="f-textarea"
+              rows={5}
+              value={gear}
+              onChange={(e) => setGear(e.target.value)}
+              placeholder="Sundered Censer (focus)\nStar-iron mace"
+            />
+          </div>
+
+          {err && (
+            <div
+              style={{
+                color: 'oklch(0.7 0.16 28)',
+                fontSize: 13,
+                fontFamily: 'var(--mono)',
+                letterSpacing: '0.12em',
+                textTransform: 'uppercase',
+              }}
+            >
+              {err}
+            </div>
+          )}
+        </div>
+
+        <div className="modal2-foot">
+          <span
+            style={{
+              fontFamily: 'var(--mono)',
+              fontSize: 10,
+              letterSpacing: '.18em',
+              color: 'var(--ink-4)',
+              textTransform: 'uppercase',
+            }}
+          >
+            saves to your sheet
+          </span>
+          <div style={{ display: 'flex', gap: 10 }}>
+            <button className="btn3 btn3-ghost" onClick={onClose}>
+              Cancel
+            </button>
+            <button className="btn3 btn3-primary" onClick={submit} disabled={busy}>
+              {busy ? 'Saving…' : 'Save sheet'}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+const Vital: React.FC<{ label: string; value: string; onChange: (v: string) => void }> = ({ label, value, onChange }) => (
+  <div>
+    <div
+      style={{
+        fontFamily: 'var(--mono)',
+        fontSize: 9,
+        letterSpacing: '0.16em',
+        color: 'var(--ink-4)',
+        textTransform: 'uppercase',
+        marginBottom: 4,
+      }}
+    >
+      {label}
+    </div>
+    <input
+      className="f-input"
+      inputMode="numeric"
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+    />
+  </div>
+)

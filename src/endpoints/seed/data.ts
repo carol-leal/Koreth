@@ -1,0 +1,138 @@
+/* Korêth seed data, transcribed from Design/data.js. */
+
+export type Tier = 'Primordial' | 'Greater' | 'Lesser' | 'Dark'
+export type DeityStatus = 'withdrawn' | 'silent' | 'alive' | 'rising' | 'exiled'
+
+export const DATA = {
+  campaign: {
+    name: 'Korêth',
+    tagline: 'The gods do not die — they are forgotten. And forgetting is a fate worse than death.',
+    source: '— Fragment of the Book of Ashes',
+    summary:
+      'A high-fantasy chronicle set 350 years after Los Valientes de Eberron defeated Nyvil. Peace reigns — and beneath it, the Greater Gods grow silent while the Lesser Gods stir. The execution of Jayn’t, the last Valiente, draws near.',
+    session: 14,
+    party: 'The Unbroken Choir',
+    partyLevel: 7,
+    partyXP: 23400,
+    nextLevelXP: 34000,
+  },
+
+  pantheon: [
+    { name: 'Nyx', tier: 'Primordial' as Tier, domain: 'The endless night', status: 'withdrawn' as DeityStatus, lastSeen: 'Beyond the planes', symbol: '☾', alignment: 'Neutral' },
+    { name: 'Gaia', tier: 'Primordial' as Tier, domain: 'Root of all existence', status: 'withdrawn' as DeityStatus, lastSeen: 'Beyond the planes', symbol: '❀', alignment: 'Neutral Good' },
+    { name: 'Tartarus', tier: 'Primordial' as Tier, domain: 'The abyss', status: 'withdrawn' as DeityStatus, lastSeen: 'Beyond the planes', symbol: '▽', alignment: 'Neutral Evil' },
+    { name: 'Typhon', tier: 'Primordial' as Tier, domain: 'The storm that destroys', status: 'withdrawn' as DeityStatus, lastSeen: 'A spark fell on Vaasa', symbol: '⚡', alignment: 'Chaotic Neutral' },
+    { name: 'Lathander', tier: 'Greater' as Tier, domain: 'Dawn, renewal', status: 'silent' as DeityStatus, lastSeen: 'Aureth, the Sacred Sun', symbol: '☀', alignment: 'Neutral Good' },
+    { name: 'Mystra', tier: 'Greater' as Tier, domain: 'The Weave of magic', status: 'silent' as DeityStatus, lastSeen: 'Vael Tiriath', symbol: '✦', alignment: 'Neutral Good' },
+    { name: 'Tyr', tier: 'Greater' as Tier, domain: 'Justice, divine law', status: 'silent' as DeityStatus, lastSeen: 'The Divine Tribunal', symbol: '⚖', alignment: 'Lawful Good' },
+    { name: 'Oghma', tier: 'Greater' as Tier, domain: 'Knowledge, neutrality', status: 'alive' as DeityStatus, lastSeen: 'Crypts of Vael Tiriath', symbol: '✧', alignment: 'Neutral' },
+    { name: 'Moradin', tier: 'Greater' as Tier, domain: 'The forge, creation', status: 'alive' as DeityStatus, lastSeen: 'Thaldrim’s eldest forge', symbol: '⚒', alignment: 'Lawful Good' },
+    { name: 'Kelemvor', tier: 'Greater' as Tier, domain: 'The dead, judgement', status: 'alive' as DeityStatus, lastSeen: 'Necropolis of Serathen', symbol: '☥', alignment: 'Lawful Neutral' },
+    { name: 'Silvanus', tier: 'Greater' as Tier, domain: 'Natural balance', status: 'alive' as DeityStatus, lastSeen: 'Forests of Myr', symbol: '❦', alignment: 'Neutral' },
+    { name: 'Chauntea', tier: 'Greater' as Tier, domain: 'Life, the harvest', status: 'alive' as DeityStatus, lastSeen: 'Valmere', symbol: '✿', alignment: 'Neutral Good' },
+    { name: 'Selûne', tier: 'Greater' as Tier, domain: 'Compassion, the moon', status: 'alive' as DeityStatus, lastSeen: 'Northern Selene', symbol: '☽', alignment: 'Chaotic Good' },
+    { name: 'Shar', tier: 'Greater' as Tier, domain: 'Loss, the void', status: 'rising' as DeityStatus, lastSeen: 'Southern Selene', symbol: '●', alignment: 'Neutral Evil' },
+    { name: 'Helm', tier: 'Lesser' as Tier, domain: 'Vigilance', status: 'rising' as DeityStatus, lastSeen: 'Temple of the Sacred Sun', symbol: '◉', alignment: 'Lawful Neutral' },
+    { name: 'Ilmater', tier: 'Lesser' as Tier, domain: 'Suffering, compassion', status: 'alive' as DeityStatus, lastSeen: 'Serathen', symbol: '✚', alignment: 'Lawful Good' },
+    { name: 'Mielikki', tier: 'Lesser' as Tier, domain: 'The wild that protects', status: 'alive' as DeityStatus, lastSeen: 'Heart of Myr', symbol: '❧', alignment: 'Neutral Good' },
+    { name: 'Eldath', tier: 'Lesser' as Tier, domain: 'Still waters, peace', status: 'alive' as DeityStatus, lastSeen: 'Valenor', symbol: '≈', alignment: 'Neutral Good' },
+    { name: 'Waukeen', tier: 'Lesser' as Tier, domain: 'Coin, commerce', status: 'rising' as DeityStatus, lastSeen: 'The Circle of Oros', symbol: '◎', alignment: 'Neutral' },
+    { name: 'Tymora', tier: 'Lesser' as Tier, domain: 'Luck', status: 'rising' as DeityStatus, lastSeen: 'The Circle of Oros', symbol: '✶', alignment: 'Chaotic Good' },
+    { name: 'Gond', tier: 'Lesser' as Tier, domain: 'Invention', status: 'alive' as DeityStatus, lastSeen: 'Thaldrim', symbol: '✜', alignment: 'Neutral' },
+    { name: 'The Devastator', tier: 'Dark' as Tier, domain: 'Elemental fury', status: 'exiled' as DeityStatus, lastSeen: 'Whispered on northern winds', symbol: '✷', alignment: 'Chaotic Evil' },
+    { name: 'The Fury', tier: 'Dark' as Tier, domain: 'Pain, madness', status: 'exiled' as DeityStatus, lastSeen: 'Lower planes', symbol: '✴', alignment: 'Chaotic Evil' },
+    { name: 'The Keeper', tier: 'Dark' as Tier, domain: 'Endless greed', status: 'exiled' as DeityStatus, lastSeen: 'Lower planes', symbol: '◆', alignment: 'Neutral Evil' },
+    { name: 'The Mocker', tier: 'Dark' as Tier, domain: 'Betrayal incarnate', status: 'exiled' as DeityStatus, lastSeen: 'Lower planes', symbol: '◇', alignment: 'Chaotic Evil' },
+    { name: 'The Shadow', tier: 'Dark' as Tier, domain: 'Forbidden magic', status: 'exiled' as DeityStatus, lastSeen: 'Lower planes', symbol: '▼', alignment: 'Neutral Evil' },
+    { name: 'The Traveler', tier: 'Dark' as Tier, domain: 'Chaos in all forms', status: 'exiled' as DeityStatus, lastSeen: 'The roads between', symbol: '✕', alignment: 'Chaotic Neutral' },
+  ],
+
+  regions: [
+    { id: 'thaldrim', name: 'Thaldrim', area: 'North', x: 38, y: 14, kind: 'Dwarven kingdom', tagline: 'Carved in fire and hammer into living rock.', desc: 'Realm of the dwarves. Forges that have burned for millennia; smiths who consider themselves priests. Venerates Moradin, the Forge-Father, and Gond, his heir in invention. Whispers of the exiled Devourer corrupt the high winds.' },
+    { id: 'vaasa', name: 'Vaasa', area: 'North', x: 52, y: 18, kind: 'Goliath highlands', tagline: 'Where law is weaker than tradition.', desc: 'Hostile mountains and frost-cut tundras. The goliath clans unite under Clan Mizar, governing through ritual combat at the Throne of the Protector. They worship not a god but the highest mountain — the God of the Mountain.' },
+    { id: 'serathen', name: 'Serathen', area: 'North', x: 68, y: 12, kind: 'Glacier port', tagline: 'A lighthouse and a tomb at once.', desc: 'The northernmost civilized port. Beneath its ice walls lies the Necropolis of Kelemvor — the City of a Thousand Silences. Sailors swear every gust is a prayer spoken by the dead. Also worships Ilmater.' },
+    { id: 'aethra', name: 'Aethra', area: 'Centre', x: 50, y: 44, kind: 'Theocratic heart', tagline: 'The heart of the world, where politics and faith are one.', desc: 'Centre of the continent. Capital Vael Tiriath shines over a sacred lake; below its towers, scribes of Oghma and mages of Mystra guard forbidden knowledge. The Council of Magic and the Divine Tribunal wage a silent war.' },
+    { id: 'aurion', name: 'Aurion', area: 'Centre', x: 56, y: 60, kind: 'Solar empire', tagline: 'Darkness is not reasoned with — it is extinguished.', desc: 'Theocracy of Lathander. Capital Aureth glows with the Sacred Sun, an eternal flame in the Temple of Helm. The Dawn-Bearers march under golden banners; the Solar Inquisition purges unauthorized magic.' },
+    { id: 'myr', name: 'Forests of Myr', area: 'Centre', x: 28, y: 48, kind: 'Druidic wilderness', tagline: 'Stone temples eaten by root.', desc: 'Endless western forest. Worship of Silvanus, Mielikki, and Eldath. Older druids quietly venerate Vestiges and fragments of the Devourer. Ruins beneath the canopy that even Mystra’s clerics forbid excavation of.' },
+    { id: 'oros', name: 'The Circle of Oros', area: 'South', x: 74, y: 64, kind: 'Merchant league', tagline: 'Where faith can be bought — and sold.', desc: 'A network of city-states bound by gold rather than creed. Merchants worship Waukeen and Tymora; Mask’s shadow and the whispers of The Traveler move between the stalls. Banks are temples; contracts are prayers.' },
+    { id: 'valenor', name: 'Valenor', area: 'South', x: 36, y: 76, kind: 'Pastoral kingdom', tagline: 'Where prayer is work, and magic is silence.', desc: 'Fertile southern land. Capital Valmere. Magic forbidden for generations under the Edict of Silence after an arcane plague. The faithful pray at dawn and dusk; pilgrims come to be cleansed of the Weave.' },
+    { id: 'selene', name: 'Selene', area: 'Islands', x: 88, y: 48, kind: 'Lunar archipelago', tagline: 'A capital split between the moon and the void.', desc: 'Eastern islands divided between Selûne in the north and her sister-enemy Shar in the south. The capital Eryndor is a single city severed by an uncrossed canal. During eclipses, both faiths pray together — afraid the sky might break again.' },
+  ],
+
+  locations: [
+    { id: 'vael-tiriath', name: 'Vael Tiriath', region: 'Aethra', x: 50, y: 42, kind: 'City-Temple', desc: 'Capital of Aethra. Towers reflecting the dawn over a sacred lake. The crypts hold knowledge no surface mortal is meant to read.' },
+    { id: 'aureth', name: 'Aureth', region: 'Aurion', x: 56, y: 60, kind: 'Imperial Capital', desc: 'Capital of Aurion. The Sacred Sun burns eternal in the Temple of Helm. Seat of the Council of Dawn.' },
+    { id: 'valmere', name: 'Valmere', region: 'Valenor', x: 36, y: 76, kind: 'Capital', desc: 'Capital of Valenor. Magic does not work here — by edict, and increasingly, by something older.' },
+    { id: 'eryndor', name: 'Eryndor', region: 'Selene', x: 88, y: 48, kind: 'Severed City', desc: 'Capital of Selene. White and luminous in the north; black and silent in the south. A canal splits it; nothing crosses.' },
+    { id: 'throne-protector', name: 'Throne of the Protector', region: 'Vaasa', x: 52, y: 18, kind: 'Stone Arena', desc: 'Where the goliath clans renew leadership through ritual combat.' },
+    { id: 'necropolis-kelemvor', name: 'Necropolis of Kelemvor', region: 'Serathen', x: 68, y: 12, kind: 'Burial City', desc: 'Beneath Serathen’s ice walls. The City of a Thousand Silences.' },
+    { id: 'thousand-voices', name: 'Temple of the Thousand Voices', region: 'Aethra', x: 46, y: 38, kind: 'Holy Site', desc: 'Sages here believe the Vestiges are echoes of the first creation, awaiting a new cycle of faith.' },
+    { id: 'underdeep-gate', name: 'Underdeep Gate', region: 'Forests of Myr', x: 24, y: 52, kind: 'Sealed Ruin', desc: 'A descent into the old Elemental Chaos. Even Mystra’s clerics forbid digging here.' },
+    { id: 'three-roads', name: 'Three Roads Inn', region: 'Aethra', x: 44, y: 50, kind: 'Refuge', desc: 'Crossroads inn. Run by Kell. Famously neutral, allegedly.' },
+    { id: 'library-of-ash', name: 'Library of Ash', region: 'Aethra', x: 54, y: 50, kind: 'Sanctuary', desc: 'The world’s last archive of fading gods, kept by the Ember Accord.' },
+  ],
+
+  factions: [
+    { id: 'dawn-bearers', name: 'The Dawn-Bearers', tone: 'Antagonist', desc: 'Warrior-priests of Lathander. March under golden banners with the word and the sword. Based in Aurion.' },
+    { id: 'solar-inquisition', name: 'The Solar Inquisition', tone: 'Antagonist', desc: 'Aurion’s purifiers. Hunt unauthorized magic, lesser cults, and foreigners. Even some Dawn-Bearers find them excessive.' },
+    { id: 'council-of-magic', name: 'The Council of Magic', tone: 'Neutral', desc: 'Devotees of Mystra. Govern the Weave from Vael Tiriath. Locked in a silent war with the Divine Tribunal.' },
+    { id: 'divine-tribunal', name: 'The Divine Tribunal', tone: 'Neutral', desc: 'Servants of Tyr. Claim the final word on truth and law in Aethra.' },
+    { id: 'ember-accord', name: 'The Ember Accord', tone: 'Ally', desc: 'Custodians of dead-god lore. Operate the Library of Ash. Take no side in the coming war.' },
+    { id: 'clan-mizar', name: 'Clan Mizar', tone: 'Neutral', desc: 'Goliath council ruling Vaasa by force and honour. Renews leadership in the arena.' },
+    { id: 'valientes-eberron', name: 'Los Valientes de Eberron', tone: 'Historical', desc: 'The chosen who slew Nyvil, three and a half centuries ago. Only one remains: Jayn’t, awaiting execution.' },
+    { id: 'six-dark', name: 'The Six Dark', tone: 'Antagonist', desc: 'The exiled gods. Cults persist in the deep places of Korêth. Many believe they whispered to Nyvil — and now whisper anew.' },
+  ],
+
+  npcs: [
+    { id: 'jaynt', name: 'Jayn’t', title: 'Last of Los Valientes de Eberron', tags: ['Historical', 'Prisoner', 'Chosen'], bio: 'Three and a half centuries old. Chosen by the gods themselves to slay Nyvil. Now stands accused of high treason; awaits public execution. The temples have gone silent on his case.', relations: ['valientes-eberron', 'aurion'], location: 'Awaiting execution', hue: 50 },
+    { id: 'isene', name: 'Isene Vallow', title: 'Voice of the Solar Inquisition', tags: ['Antagonist', 'Cleric'], bio: 'Believes the Twilight is heresy made flesh. Will burn the world to deny it. Has signed the writ for Jayn’t’s execution.', relations: ['solar-inquisition', 'aurion'], location: 'Aureth', hue: 18 },
+    { id: 'vellra', name: 'Vellra Anhaut', title: 'Hierarch of the Drowned Court', tags: ['Antagonist', 'Faction Leader'], bio: 'Once a priestess of a fading sea-aspect. Inherited a god she did not ask for. Holds court in a flooded cathedral.', relations: ['selene'], location: 'Eryndor (south)', hue: 215 },
+    { id: 'iorven', name: 'Iorven the Ninefold', title: 'Pact-keeper of the Ember Accord', tags: ['Ally', 'Wizard'], bio: 'Has lived nine deaths. Each return costs him a memory; he no longer recalls the colour of his own eyes.', relations: ['ember-accord', 'library-of-ash'], location: 'Library of Ash', hue: 28 },
+    { id: 'kell', name: 'Kell of Three Roads', title: 'Innkeeper, Information Broker', tags: ['Ally', 'Civilian'], bio: 'Knows everyone’s name, half their secrets, and exactly how much they cost.', relations: [], location: 'Three Roads Inn', hue: 110 },
+    { id: 'saelis', name: 'Saelis Brynhart', title: 'Marshal of the Cinderwatch', tags: ['Ally', 'Soldier'], bio: 'Career officer turned reluctant prophet after a divine vision at the Siege of Aren. Refuses to repeat what she saw.', relations: [], location: 'Aren', hue: 12 },
+    { id: 'mirenne', name: 'Mirenne the Unsung', title: 'Bard, Witness', tags: ['Ally', 'Bard'], bio: 'The party’s chronicler. Has not sung since the silence of the Greater Gods began. Carries the silent harp.', relations: [], location: 'Travelling', hue: 320 },
+    { id: 'tovrik', name: 'Tovrik Halen-Sek', title: 'Smith of Cold Iron', tags: ['Ally', 'Artisan'], bio: 'Forges weapons that bite at divine flesh. Charges a price he refuses to name aloud.', relations: ['thaldrim'], location: 'Thaldrim', hue: 200 },
+    { id: 'the-mourner', name: 'The Mourner', title: 'Unknown', tags: ['Mystery', 'Recurring'], bio: 'Appears at every funeral the party attends, even those held in secret. Never speaks. Always weeps.', relations: [], location: 'Wherever the dead are gathered', hue: 285 },
+  ],
+
+  characters: [
+    { id: 'ashryn', name: 'Ashryn Vael', player: 'Dani', class: 'Twilight Cleric', level: 7, race: 'Half-elf', hp: { cur: 48, max: 56 }, ac: 18, stats: { STR: 11, DEX: 14, CON: 15, INT: 12, WIS: 18, CHA: 15 }, hue: 285, pronouns: 'she/her', backstory: 'Devotee of a fading aspect of Selûne. Channels twilight as both shield and indictment — proof that even gods cast shadows.', spells: [{ name: 'Spirit Guardians', level: 3, school: 'Conjuration', desc: 'Spectral choir, radiant damage to enemies who linger.' }, { name: 'Twilight Sanctuary', level: 0, school: 'Channel Divinity', desc: '30-ft sphere of dim violet light — shelter and shaved fear.' }, { name: 'Aura of Vitality', level: 3, school: 'Evocation', desc: 'Knit wounds at a touch, each turn for 60 seconds.' }, { name: 'Bless', level: 1, school: 'Enchantment', desc: 'Three allies gain a d4 bonus to attacks and saves.' }, { name: 'Guiding Bolt', level: 1, school: 'Evocation', desc: 'Lance of luminous violet — advantage on the next attack.' }], gear: ['Sundered Censer (focus)', 'Star-iron mace', 'Plate of Ilmater’s Vigil', 'Cloak of moths'] },
+    { id: 'halren', name: 'Halren Stoke', player: 'Mateo', class: 'Echo Knight', level: 7, race: 'Goliath of Vaasa', hp: { cur: 62, max: 72 }, ac: 19, stats: { STR: 18, DEX: 12, CON: 16, INT: 10, WIS: 13, CHA: 9 }, hue: 30, pronouns: 'he/him', backstory: 'Walks accompanied by the silhouette of a self that did not survive Clan Mizar’s last contest.', spells: [{ name: 'Manifest Echo', level: 0, school: 'Maneuver', desc: 'Summon a translucent twin within 30 ft to swap with at will.' }, { name: 'Unleash Incarnation', level: 0, school: 'Maneuver', desc: 'Echo strikes alongside you, doubling reach.' }], gear: ['Wartrace greatsword', 'Heavy plate, salt-rusted', 'Echo-bound horn'] },
+    { id: 'veska', name: 'Veska Tho', player: 'Priya', class: 'Whisper Bard', level: 7, race: 'Tiefling', hp: { cur: 38, max: 49 }, ac: 15, stats: { STR: 9, DEX: 16, CON: 13, INT: 14, WIS: 12, CHA: 18 }, hue: 340, pronouns: 'they/them', backstory: 'Stole their first lyre from a fading god of song. Has been paying interest ever since, in verses no one is permitted to repeat.', spells: [{ name: 'Hypnotic Pattern', level: 3, school: 'Illusion', desc: 'Swirling violet pattern fascinates creatures in a 30-ft cube.' }, { name: 'Dissonant Whispers', level: 1, school: 'Enchantment', desc: 'Whispers cause psychic damage; target flees on a failed save.' }, { name: 'Counterspell', level: 3, school: 'Abjuration', desc: 'Interrupt another caster mid-incantation.' }, { name: 'Vicious Mockery', level: 0, school: 'Enchantment', desc: 'A scathing line of verse — disadvantage on next attack.' }], gear: ['Silent Harp of Mirenne', 'Throwing knives, six', 'Mask of the Unsung'] },
+    { id: 'drevan', name: 'Drevan Kor', player: 'Sam', class: 'Gloom Stalker Ranger', level: 7, race: 'Wood elf of Myr', hp: { cur: 51, max: 58 }, ac: 17, stats: { STR: 12, DEX: 18, CON: 14, INT: 11, WIS: 16, CHA: 8 }, hue: 150, pronouns: 'he/him', backstory: 'Walked out of a sealed Underdeep crevice with a god’s bones in a satchel. Will not say whose.', spells: [{ name: 'Hunter’s Mark', level: 1, school: 'Divination', desc: 'Mark a quarry; bonus damage on weapon hits.' }, { name: 'Pass Without Trace', level: 2, school: 'Abjuration', desc: 'Allies leave no mark; +10 to Stealth.' }, { name: 'Disguise Self', level: 1, school: 'Illusion', desc: 'Alter appearance for one hour.' }], gear: ['Longbow of cold sights', 'Cloak of the Underdeep', 'Two short swords'] },
+  ],
+
+  items: [
+    { id: 'sundered-censer', name: 'Sundered Censer', kind: 'Focus', rarity: 'Very rare', owner: 'Ashryn Vael', desc: 'A divine focus that smokes violet whenever a god grows quieter. Has smoked four times this year.' },
+    { id: 'silent-harp', name: 'Silent Harp of Mirenne', kind: 'Instrument', rarity: 'Legendary', owner: 'Veska Tho', desc: 'A harp that produces no audible sound, yet causes listeners to weep.' },
+    { id: 'wartrace', name: 'Wartrace', kind: 'Greatsword', rarity: 'Rare', owner: 'Halren Stoke', desc: 'A greatsword that remembers every blow it has struck. Halren grips it in two hands; the echo grips it in one.' },
+    { id: 'cold-iron-blade', name: 'Cold Iron Blade', kind: 'Shortsword', rarity: 'Very rare', owner: 'Drevan Kor', desc: 'Forged by Tovrik Halen-Sek. Bites at divine flesh; ordinary against mortals.' },
+    { id: 'mask-of-unsung', name: 'Mask of the Unsung', kind: 'Wondrous', rarity: 'Rare', owner: 'Veska Tho', desc: 'Whoever wears it cannot be sung about by name.' },
+    { id: 'cloak-of-moths', name: 'Cloak of Moths', kind: 'Wondrous', rarity: 'Uncommon', owner: 'Ashryn Vael', desc: 'A cloak that rests in moth-shape until worn. Warmer than it has any business being.' },
+    { id: 'underdeep-sigil', name: 'Underdeep Sigil', kind: 'Trinket', rarity: 'Unknown', owner: 'Drevan Kor', desc: 'A coin-sized sigil retrieved from the Underdeep. Drevan refuses to name what is on its second face.' },
+    { id: 'book-of-ashes', name: 'The Book of Ashes', kind: 'Tome', rarity: 'Legendary', owner: 'Ember Accord', desc: 'The fragmentary chronicle from which the campaign’s epigraph is drawn. Pages add themselves.' },
+  ],
+
+  spellsCodex: [
+    { name: 'Twilight Sanctuary', level: 1, school: 'Channel Divinity', time: 'Bonus action', range: '30 ft', duration: '1 minute', desc: 'A sphere of dim violet light shelters allies and grinds down fear.' },
+    { name: 'Spirit Guardians', level: 3, school: 'Conjuration', time: 'Action', range: 'Self (15 ft)', duration: '10 minutes', desc: 'A choir of ancestral spirits deals radiant damage each turn.' },
+    { name: 'Hypnotic Pattern', level: 3, school: 'Illusion', time: 'Action', range: '120 ft', duration: '1 minute', desc: 'A whorl of violet light fascinates creatures in a 30-ft cube.' },
+    { name: 'Counterspell', level: 3, school: 'Abjuration', time: 'Reaction', range: '60 ft', duration: 'Instant', desc: 'Halt another caster’s incantation mid-syllable.' },
+  ],
+
+  sessions: [
+    { id: 's14', title: 'Silence at the Sun', n: 14, date: 'Yr 350, late spring', author: 'Mirenne the Unsung', excerpt: 'We reached Aureth on the second day of the trial. Lathander did not speak; the Sacred Sun burned without prayer behind it. Isene Vallow watched us from the gallery with the calm of someone who has already won.', tags: ['Aureth', 'Jayn’t', 'Isene Vallow'] },
+    { id: 's13', title: 'The Edict of Silence', n: 13, date: 'Yr 350, mid spring', author: 'Mirenne the Unsung', excerpt: 'In Valmere they would not let Veska tune their lyre. The Edict, they said. Then they brought us bread and salt, and apologised, and asked that we leave by dawn.', tags: ['Valenor', 'Veska Tho'] },
+    { id: 's12', title: 'Ash and the Ninefold', n: 12, date: 'Yr 350, early spring', author: 'Drevan Kor', excerpt: 'Iorven taught us how to read a god’s shadow on a wall. Veska wrote it down. Ashryn refused. The Library of Ash is colder than anyone tells you; bring two cloaks.', tags: ['Iorven the Ninefold', 'Library of Ash'] },
+    { id: 's11', title: 'Three Roads, Three Choices', n: 11, date: 'Yr 350, late winter', author: 'Halren Stoke', excerpt: 'Kell offered us three contracts, three names, and one warning. We took the second. He called us cowards and laughed. I think he meant it kindly.', tags: ['Kell of Three Roads'] },
+    { id: 's10', title: 'An Eclipse Over Eryndor', n: 10, date: 'Yr 350, midwinter', author: 'Veska Tho', excerpt: 'We crossed the canal. Nobody crosses the canal. The Mourner was already on the other side, waiting.', tags: ['Selene', 'The Mourner'] },
+  ],
+
+  quests: [
+    { id: 'q1', title: 'Halt the execution of Jayn’t', status: 'active', priority: 'main', summary: 'The last Valiente will burn at dawn unless the Choir intervenes.', steps: ['Reach Aureth before the third dawn', 'Secure an audience with the Council of Dawn', 'Find leverage against Isene Vallow'] },
+    { id: 'q2', title: 'Recover the silent harp’s lost string', status: 'active', priority: 'side', summary: 'Veska’s harp lost a string in the canal of Eryndor. The Mourner may know.', steps: ['Return to Eryndor', 'Speak to the Mourner without naming the dead'] },
+    { id: 'q3', title: 'Map the sealed Underdeep Gate', status: 'active', priority: 'side', summary: 'Drevan walked out of it once. Mystra’s clerics will pay handsomely for a true map.', steps: ['Find Iorven for the warding sigils', 'Survey without descending'] },
+    { id: 'q4', title: 'The Mourner’s name', status: 'open', priority: 'mystery', summary: 'Who is the figure that weeps at every funeral?', steps: [] },
+    { id: 'q5', title: 'Defeat Nyvil’s first champion', status: 'complete', priority: 'main', summary: 'Slain in session 09, beneath the Necropolis of Kelemvor.', steps: [] },
+  ],
+}
