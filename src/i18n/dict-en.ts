@@ -18,7 +18,6 @@ export const en = {
 
   // Rail / shell
   'rail.brandSub': 'A Reader · Session {n}',
-  'rail.live': 'live',
   'foot.turnPage': 'turn the page',
 
   // Acts
@@ -32,7 +31,7 @@ export const en = {
   // Persona pill
   'pill.signin': 'Sign in',
   'pill.readonly': 'read-only',
-  'pill.dm': 'Chronicler · DM',
+  'pill.dm': 'DM',
   'pill.player': 'Player',
   'pill.signout': 'Sign out',
   'pill.account': 'Account',
@@ -40,7 +39,7 @@ export const en = {
   // Login
   'login.eyebrow': 'A reader · for the chronicle of',
   'login.sub': 'Sign in to read, write, and amend the book.',
-  'login.foot': 'New here? Ask your Chronicler for an account.',
+  'login.foot': 'New here? Ask your DM for an account.',
   'login.email': 'Email',
   'login.password': 'Password',
   'login.signin': 'Sign in',
@@ -58,6 +57,15 @@ export const en = {
   'prologue.next.eye': 'Next session — planned',
   'prologue.next.k.when': 'When',
   'prologue.next.k.where': 'Where',
+  'prologue.next.empty.title': 'Untitled session',
+  'prologue.next.empty.when': 'TBA',
+  'prologue.next.empty.where': 'TBA',
+  'prologue.next.empty.plan': 'No hook written yet.',
+  'prologue.next.click': 'click to edit',
+  'prologue.next.placeholder.title': 'e.g. The Trial Begins',
+  'prologue.next.placeholder.when': 'e.g. Next Saturday · 8pm',
+  'prologue.next.placeholder.where': "e.g. Mateo's flat (or VTT if rain)",
+  'prologue.next.placeholder.plan': 'A short paragraph: where the Choir picks up next.',
   'prologue.party.defaultName': 'The Choir',
   'prologue.party.rosterEm': 'current roster',
   'prologue.party.sharedMeta': 'shared level',
@@ -106,7 +114,7 @@ export const en = {
   'codex.kv.bearer': 'Bearer',
   'codex.connections': 'Connections',
   'codex.amend': 'amend entry',
-  'codex.amend.title': 'Chronicler may amend this entry',
+  'codex.amend.title': 'DM may amend this entry',
 
   // Pantheon
   'pantheon.deity': 'deity',
@@ -216,7 +224,7 @@ export const en = {
   'party.section.gear': 'Gear & relics',
   'party.amend.your': '✎ amend your sheet',
   'party.amend.other': '✎ amend sheet',
-  'party.amend.locked': 'amended only by {name} or the Chronicler',
+  'party.amend.locked': 'amended only by {name} or the DM',
 
   // Amend sheet modal
   'sheet.eye': 'Amend the sheet',
@@ -245,8 +253,9 @@ export const en = {
   'quests.headline.a': 'Threads',
   'quests.headline.b': 'currently held',
   'quests.headline.c': 'by the Choir.',
-  'quests.sub.canEdit': 'Click any field to edit. Steps cross off when met. Hover a card for actions.',
-  'quests.sub.locked': 'Sign in as a player or the Chronicler to amend.',
+  'quests.sub.canEdit':
+    'Click any field to edit. Steps cross off when met. Hover a card for actions.',
+  'quests.sub.locked': 'Sign in as a player or the DM to amend.',
   'quests.section.active.title': 'Active',
   'quests.section.active.sub': 'in pursuit, not yet ended',
   'quests.section.open.title': 'Open threads',

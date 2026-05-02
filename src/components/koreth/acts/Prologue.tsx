@@ -1,8 +1,10 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { LinkText } from '../LinkText'
 import { useTip } from '../TipContext'
+import { useAuth3 } from '../AuthContext'
 import { useT } from '@/i18n/LocaleContext'
 import type { Character, Campaign } from '@/payload-types'
 
@@ -12,18 +14,35 @@ type Props = {
   goto: (idx: number) => void
 }
 
-// Hardcoded in V3 source (app-v3.jsx:208-214); kept here verbatim.
-const NEXT_SESSION = {
-  when: 'Next Saturday · 8pm',
-  where: "Mateo's flat (or VTT if rain)",
-  title: 'The Trial Begins',
-  plan:
-    "The Choir takes their seats in the Solar Inquisition's gallery. Isene Vallow speaks for the prosecution; Jayn't has refused counsel.",
-}
+type NextSessionField = 'title' | 'when' | 'where' | 'plan'
 
 export const Prologue: React.FC<Props> = ({ campaign, characters, goto }) => {
   const { show, hide } = useTip()
   const { t } = useT()
+  const auth = useAuth3()
+  const router = useRouter()
+  const canEdit = auth.canEditAny
+  const [next, setNext] = useState<NonNullable<Campaign['nextSession']>>(campaign.nextSession ?? {})
+  const [editing, setEditing] = useState<NextSessionField | null>(null)
+
+  const saveNext = async (field: NextSessionField, value: string) => {
+    const trimmed = value.trim()
+    if ((next[field] || '') === trimmed) {
+      setEditing(null)
+      return
+    }
+    const optimistic = { ...next, [field]: trimmed }
+    setNext(optimistic)
+    setEditing(null)
+    await fetch('/api/globals/campaign', {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ nextSession: optimistic }),
+    })
+    router.refresh()
+  }
+
   const currentSession = campaign.currentSession ?? 0
   const partyLevel = campaign.partyLevel ?? Math.round(characters.reduce((a, c) => a + (c.level ?? 0), 0) / Math.max(1, characters.length))
   const partyXp = campaign.partyXp ?? 0
@@ -72,20 +91,101 @@ export const Prologue: React.FC<Props> = ({ campaign, characters, goto }) => {
             <div className="next-eye">{t('prologue.next.eye')}</div>
             <div className="next-num">№ {String(currentSession + 1).padStart(2, '0')}</div>
           </div>
-          <h3 className="next-title">{NEXT_SESSION.title}</h3>
+
+          {editing === 'title' ? (
+            <input
+              className="next-edit-input next-edit-title"
+              defaultValue={next.title || ''}
+              autoFocus
+              placeholder={t('prologue.next.placeholder.title')}
+              onBlur={(e) => saveNext('title', e.currentTarget.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') (e.target as HTMLInputElement).blur()
+                if (e.key === 'Escape') setEditing(null)
+              }}
+            />
+          ) : (
+            <h3
+              className={'next-title' + (canEdit ? ' next-editable' : '')}
+              onClick={canEdit ? () => setEditing('title') : undefined}
+              title={canEdit ? t('prologue.next.click') : ''}
+            >
+              {next.title || t('prologue.next.empty.title')}
+            </h3>
+          )}
+
           <div className="next-meta-row">
             <div className="next-meta">
               <div className="k">{t('prologue.next.k.when')}</div>
-              <div className="v">{NEXT_SESSION.when}</div>
+              {editing === 'when' ? (
+                <input
+                  className="next-edit-input"
+                  defaultValue={next.when || ''}
+                  autoFocus
+                  placeholder={t('prologue.next.placeholder.when')}
+                  onBlur={(e) => saveNext('when', e.currentTarget.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') (e.target as HTMLInputElement).blur()
+                    if (e.key === 'Escape') setEditing(null)
+                  }}
+                />
+              ) : (
+                <div
+                  className={'v' + (canEdit ? ' next-editable' : '')}
+                  onClick={canEdit ? () => setEditing('when') : undefined}
+                  title={canEdit ? t('prologue.next.click') : ''}
+                >
+                  {next.when || t('prologue.next.empty.when')}
+                </div>
+              )}
             </div>
             <div className="next-meta">
               <div className="k">{t('prologue.next.k.where')}</div>
-              <div className="v">{NEXT_SESSION.where}</div>
+              {editing === 'where' ? (
+                <input
+                  className="next-edit-input"
+                  defaultValue={next.where || ''}
+                  autoFocus
+                  placeholder={t('prologue.next.placeholder.where')}
+                  onBlur={(e) => saveNext('where', e.currentTarget.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') (e.target as HTMLInputElement).blur()
+                    if (e.key === 'Escape') setEditing(null)
+                  }}
+                />
+              ) : (
+                <div
+                  className={'v' + (canEdit ? ' next-editable' : '')}
+                  onClick={canEdit ? () => setEditing('where') : undefined}
+                  title={canEdit ? t('prologue.next.click') : ''}
+                >
+                  {next.where || t('prologue.next.empty.where')}
+                </div>
+              )}
             </div>
           </div>
-          <div className="next-plan">
-            <LinkText text={NEXT_SESSION.plan} />
-          </div>
+
+          {editing === 'plan' ? (
+            <textarea
+              className="next-edit-input next-edit-plan"
+              defaultValue={next.plan || ''}
+              autoFocus
+              rows={3}
+              placeholder={t('prologue.next.placeholder.plan')}
+              onBlur={(e) => saveNext('plan', e.currentTarget.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Escape') setEditing(null)
+              }}
+            />
+          ) : (
+            <div
+              className={'next-plan' + (canEdit ? ' next-editable' : '') + (!next.plan ? ' next-plan-empty' : '')}
+              onClick={canEdit ? () => setEditing('plan') : undefined}
+              title={canEdit ? t('prologue.next.click') : ''}
+            >
+              {next.plan ? <LinkText text={next.plan} /> : t('prologue.next.empty.plan')}
+            </div>
+          )}
         </div>
 
         {/* PARTY ROSTER */}

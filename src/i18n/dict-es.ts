@@ -8,7 +8,7 @@ import type { Dictionary } from './dict-en'
  */
 export const es: Dictionary = {
   // Page metadata
-  'meta.title': 'Korêth — Un lector para la crónica',
+  'meta.title': 'Koreth — Un lector para la crónica',
   'meta.description': 'Una crónica de fantasía épica en curso.',
 
   // Locale switcher
@@ -17,8 +17,7 @@ export const es: Dictionary = {
   'locale.en': 'English',
 
   // Rail / shell
-  'rail.brandSub': 'Un Lector · Sesión {n}',
-  'rail.live': 'en vivo',
+  'rail.brandSub': 'Sesión {n}',
   'foot.turnPage': 'pasar la página',
 
   // Acts
@@ -32,15 +31,15 @@ export const es: Dictionary = {
   // Persona pill
   'pill.signin': 'Iniciar sesión',
   'pill.readonly': 'sólo lectura',
-  'pill.dm': 'Cronista · DM',
-  'pill.player': 'Jugadora',
+  'pill.dm': 'DM',
+  'pill.player': 'Jugador',
   'pill.signout': 'Cerrar sesión',
   'pill.account': 'Cuenta',
 
   // Login
   'login.eyebrow': 'Un lector · para la crónica de',
   'login.sub': 'Inicia sesión para leer, escribir y enmendar el libro.',
-  'login.foot': '¿Eres nueva? Pídele una cuenta a tu Cronista.',
+  'login.foot': '¿Eres nueva? Pídele una cuenta a tu DM.',
   'login.email': 'Correo',
   'login.password': 'Contraseña',
   'login.signin': 'Iniciar sesión',
@@ -58,7 +57,16 @@ export const es: Dictionary = {
   'prologue.next.eye': 'Próxima sesión — planeada',
   'prologue.next.k.when': 'Cuándo',
   'prologue.next.k.where': 'Dónde',
-  'prologue.party.defaultName': 'El Coro',
+  'prologue.next.empty.title': 'Sesión sin título',
+  'prologue.next.empty.when': 'Por anunciar',
+  'prologue.next.empty.where': 'Por anunciar',
+  'prologue.next.empty.plan': 'Aún no se ha escrito el gancho.',
+  'prologue.next.click': 'pulsa para editar',
+  'prologue.next.placeholder.title': 'p. ej. Comienza el juicio',
+  'prologue.next.placeholder.when': 'p. ej. Próximo sábado · 20:00',
+  'prologue.next.placeholder.where': 'p. ej. Casa de Mateo (o VTT si llueve)',
+  'prologue.next.placeholder.plan': 'Un párrafo corto: dónde retoma la historia el Coro.',
+  'prologue.party.defaultName': 'La Party',
   'prologue.party.rosterEm': 'plantilla actual',
   'prologue.party.sharedMeta': 'nivel compartido',
   'prologue.party.sharedTitle': 'Nivel de la Party · compartido',
@@ -106,7 +114,7 @@ export const es: Dictionary = {
   'codex.kv.bearer': 'Portador',
   'codex.connections': 'Conexiones',
   'codex.amend': 'enmendar entrada',
-  'codex.amend.title': 'la Cronista puede enmendar esta entrada',
+  'codex.amend.title': 'la DM puede enmendar esta entrada',
 
   // Pantheon
   'pantheon.deity': 'deidad',
@@ -141,9 +149,9 @@ export const es: Dictionary = {
   'chronicle.eyebrow': 'Acto III · La Crónica',
   'chronicle.headline.a': 'Sesiones',
   'chronicle.headline.b': 'recientemente recogidas,',
-  'chronicle.headline.c': 'en la voz del Coro.',
+  'chronicle.headline.c': 'en la voz de la Party.',
   'chronicle.intro':
-    'Cada sesión la escribe alguien del Coro, en presente, antes de dormir. Las marginalia, en una mano más cálida, son ocurrencias de escribas añadidas al día siguiente. Cualquiera del Coro puede enmendar un folio — toda enmienda queda en el historial.',
+    'Cada sesión la escribe alguien de la Party, en presente, antes de dormir. Las marginalia, en una mano más cálida, son ocurrencias de escribas añadidas al día siguiente. Cualquiera de la Party puede enmendar un folio — toda enmienda queda en el historial.',
   'chronicle.empty.title': 'El libro está vacío.',
   'chronicle.empty.sub': 'Aún no se ha inscrito ningún folio.',
   'chronicle.stat.kept': 'Sesiones recogidas',
@@ -193,7 +201,7 @@ export const es: Dictionary = {
 
   // Party / Dramatis
   'party.eyebrow': 'Acto IV · Party',
-  'party.headline.a': 'El Coro',
+  'party.headline.a': 'La Party',
   'party.headline.b': 'Inquebrantable,',
   'party.headline.c': 'tal como se',
   'party.headline.d': 'vio por última vez.',
@@ -216,7 +224,7 @@ export const es: Dictionary = {
   'party.section.gear': 'Equipo y reliquias',
   'party.amend.your': '✎ enmendar tu hoja',
   'party.amend.other': '✎ enmendar hoja',
-  'party.amend.locked': 'sólo {name} o la Cronista pueden enmendar',
+  'party.amend.locked': 'sólo {name} o la DM pueden enmendar',
 
   // Amend sheet modal
   'sheet.eye': 'Enmendar la hoja',
@@ -243,11 +251,11 @@ export const es: Dictionary = {
   // Quests
   'quests.eyebrow': 'Acto VI · Misiones',
   'quests.headline.a': 'Hilos',
-  'quests.headline.b': 'que el Coro',
+  'quests.headline.b': 'que La Party',
   'quests.headline.c': 'tiene en mano.',
   'quests.sub.canEdit':
     'Pulsa cualquier campo para editar. Los pasos se tachan al cumplirse. Pasa el ratón por una tarjeta para ver acciones.',
-  'quests.sub.locked': 'Inicia sesión como jugadora o Cronista para enmendar.',
+  'quests.sub.locked': 'Inicia sesión como jugadora o DM para enmendar.',
   'quests.section.active.title': 'Activas',
   'quests.section.active.sub': 'en marcha, aún sin terminar',
   'quests.section.open.title': 'Hilos abiertos',
@@ -280,7 +288,7 @@ export const es: Dictionary = {
   'leads.headline.b': 'e hilos que perderíamos',
   'leads.headline.c': 'si nadie los anotara.',
   'leads.sub.canEdit':
-    'Cualquiera del Coro puede añadir o enmendar una pista. Hazla avanzar a medida que se aclare la imagen.',
+    'Cualquiera de la Party puede añadir o enmendar una pista. Hazla avanzar a medida que se aclare la imagen.',
   'leads.sub.locked': 'Inicia sesión para garabatear una corazonada.',
   'leads.filter.all': 'todas',
   'leads.status.open': 'abierta',

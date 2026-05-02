@@ -27,5 +27,16 @@ export const Campaign: GlobalConfig = {
     { name: 'partyLevel', type: 'number' },
     { name: 'partyXp', type: 'number' },
     { name: 'nextLevelXp', type: 'number' },
+    {
+      name: 'nextSession',
+      type: 'group',
+      admin: { description: 'Card shown in the Prologue. Editable inline by the DM.' },
+      fields: [
+        { name: 'title', type: 'text', localized: true, admin: { description: 'Working title of the upcoming session.' } },
+        { name: 'when', type: 'text', localized: true, admin: { description: 'When it will run (free text, e.g. "Next Saturday · 8pm").' } },
+        { name: 'where', type: 'text', localized: true, admin: { description: 'Where it will run (free text).' } },
+        { name: 'plan', type: 'textarea', localized: true, admin: { description: 'Planned hook / opening beat (one paragraph).' } },
+      ],
+    },
   ],
 }

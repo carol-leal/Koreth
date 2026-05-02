@@ -8,7 +8,7 @@ const main = async () => {
   await seed({ payload })
   // eslint-disable-next-line no-console
   console.log('\nSeed complete. Logins:')
-  console.log('  nora@koreth.tale  · admin (Chronicler / DM)')
+  console.log('  nora@koreth.tale  · admin (DM)')
   console.log('  dani@koreth.tale  · player (Ashryn Vael)')
   console.log('  mateo@koreth.tale · player (Halren Stoke)')
   console.log('  priya@koreth.tale · player (Veska Tho)')

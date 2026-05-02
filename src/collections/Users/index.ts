@@ -19,14 +19,18 @@ export const Users: CollectionConfig = {
   auth: true,
   fields: [
     { name: 'name', type: 'text' },
-    { name: 'displayLabel', type: 'text', admin: { description: 'Optional folio byline override.' } },
+    {
+      name: 'displayLabel',
+      type: 'text',
+      admin: { description: 'Optional folio byline override.' },
+    },
     {
       name: 'role',
       type: 'select',
       required: true,
       defaultValue: 'player',
       options: [
-        { label: 'Admin (DM / Chronicler)', value: 'admin' },
+        { label: 'Admin (DM)', value: 'admin' },
         { label: 'Player', value: 'player' },
       ],
       access: {

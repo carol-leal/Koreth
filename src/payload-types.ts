@@ -1301,6 +1301,27 @@ export interface Campaign {
   partyLevel?: number | null;
   partyXp?: number | null;
   nextLevelXp?: number | null;
+  /**
+   * Card shown in the Prologue. Editable inline by the DM.
+   */
+  nextSession?: {
+    /**
+     * Working title of the upcoming session.
+     */
+    title?: string | null;
+    /**
+     * When it will run (free text, e.g. "Next Saturday · 8pm").
+     */
+    when?: string | null;
+    /**
+     * Where it will run (free text).
+     */
+    where?: string | null;
+    /**
+     * Planned hook / opening beat (one paragraph).
+     */
+    plan?: string | null;
+  };
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -1318,6 +1339,14 @@ export interface CampaignSelect<T extends boolean = true> {
   partyLevel?: T;
   partyXp?: T;
   nextLevelXp?: T;
+  nextSession?:
+    | T
+    | {
+        title?: T;
+        when?: T;
+        where?: T;
+        plan?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

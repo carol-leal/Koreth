@@ -39,7 +39,7 @@ const KorethShell: React.FC<{ data: KorethData }> = ({ data }) => {
   const [act, setAct] = useState(0)
   const spreadRef = useRef<HTMLDivElement>(null)
   const sortedSessions = [...data.sessions].sort((a, b) => (b.number ?? 0) - (a.number ?? 0))
-  const [chrSel, setChrSel] = useState<number | null>(sortedSessions[0]?.id as number ?? null)
+  const [chrSel, setChrSel] = useState<number | null>((sortedSessions[0]?.id as number) ?? null)
 
   useEffect(() => {
     const el = spreadRef.current
@@ -82,7 +82,9 @@ const KorethShell: React.FC<{ data: KorethData }> = ({ data }) => {
             <div className="rail-mark" />
             <div>
               <div className="rail-name">Koreth</div>
-              <div className="rail-sub">{t('rail.brandSub', { n: data.campaign.currentSession ?? 0 })}</div>
+              <div className="rail-sub">
+                {t('rail.brandSub', { n: data.campaign.currentSession ?? 0 })}
+              </div>
             </div>
           </div>
           <div className="acts">
@@ -98,7 +100,6 @@ const KorethShell: React.FC<{ data: KorethData }> = ({ data }) => {
             ))}
           </div>
           <div className="rail-meta">
-            <span className="v live">{t('rail.live')}</span>
             <PersonaPill />
             <LocaleSwitcher />
           </div>

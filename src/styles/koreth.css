@@ -2986,3 +2986,42 @@ body {
   color: var(--accent);
   background: var(--accent-faint);
 }
+
+/* ============================================================ */
+/* PROLOGUE next-session card — DM inline edit                   */
+/* ============================================================ */
+.next-editable {
+  cursor: text;
+  border-radius: 4px;
+  transition: background 160ms;
+}
+.next-editable:hover {
+  background: var(--accent-faint);
+}
+.next-plan-empty {
+  color: var(--ink-4);
+  font-style: italic;
+}
+.next-edit-input {
+  width: 100%;
+  background: oklch(1 0 0 / 0.04);
+  border: 1px solid var(--accent-soft);
+  border-radius: 6px;
+  color: var(--ink);
+  font-family: var(--display);
+  font-size: 15px;
+  padding: 6px 8px;
+  outline: none;
+  margin: 2px 0;
+}
+.next-edit-input:focus { border-color: var(--accent); }
+.next-edit-title {
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 1.15;
+}
+.next-edit-plan {
+  resize: vertical;
+  min-height: 60px;
+  line-height: 1.45;
+}
