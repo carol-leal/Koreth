@@ -348,7 +348,7 @@ export const es: Dictionary = {
   'party.k.hp': 'PV',
   'party.k.ac': 'CA',
   'party.k.level': 'Nivel',
-  'party.k.player': 'Jugadora',
+  'party.k.player': 'Jugador',
   'party.section.abilities': 'Puntuaciones de característica',
   'party.section.backstory': 'Trasfondo',
   'party.section.gear': 'Equipo y reliquias',
@@ -385,7 +385,7 @@ export const es: Dictionary = {
   'quests.headline.c': 'tiene en mano.',
   'quests.sub.canEdit':
     'Pulsa cualquier campo para editar. Los pasos se tachan al cumplirse. Pasa el ratón por una tarjeta para ver acciones.',
-  'quests.sub.locked': 'Inicia sesión como jugadora o DM para enmendar.',
+  'quests.sub.locked': 'Inicia sesión como jugador o DM para enmendar.',
   'quests.section.active.title': 'Activas',
   'quests.section.active.sub': 'en marcha, aún sin terminar',
   'quests.section.open.title': 'Hilos abiertos',
