@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth3 } from '../AuthContext'
 import { LeadsBoard } from './LeadsBoard'
@@ -61,6 +61,12 @@ const QuestsBoard: React.FC<{ quests: Quest[] }> = ({ quests: initial }) => {
   const canEdit = auth.isDM || auth.isPlayer
   const router = useRouter()
   const [quests, setQuests] = useState<Quest[]>(initial)
+
+  // Sync local state from the prop after every server refresh so edits made
+  // here (or elsewhere) are reflected without a page reload.
+  useEffect(() => {
+    setQuests(initial)
+  }, [initial])
 
   const patch = async (id: number, data: Partial<Quest>) => {
     setQuests((qs) => qs.map((q) => (q.id === id ? ({ ...q, ...data } as Quest) : q)))

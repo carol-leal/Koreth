@@ -15,33 +15,54 @@ const TIERS: { id: Deity['tier']; titleKey: DictKey; subKey: DictKey; hue: numbe
   { id: 'Dark', titleKey: 'pantheon.tier.dark.title', subKey: 'pantheon.tier.dark.sub', hue: 25 },
 ]
 
+type OpenSpec = { id: number; hue: number; edit: boolean; fallback: Deity }
+
 export const PantheonByTier: React.FC<{ pantheon: Deity[] }> = ({ pantheon }) => {
   const { t } = useT()
   const auth = useAuth3()
   const router = useRouter()
-  const [openGod, setOpenGod] = useState<(Deity & { hue: number }) | null>(null)
+  const [openSpec, setOpenSpec] = useState<OpenSpec | null>(null)
   const [busy, setBusy] = useState(false)
+
+  // Re-derive the modal's deity from the latest pantheon list each render so
+  // edits flow in as soon as router.refresh() resolves. Falls back to the
+  // captured doc for the brief window before a freshly-created deity appears
+  // in the refreshed list.
+  const openGod = openSpec
+    ? {
+        ...(pantheon.find((g) => g.id === openSpec.id) ?? openSpec.fallback),
+        hue: openSpec.hue,
+      }
+    : null
 
   const createDeity = async () => {
     if (busy) return
     setBusy(true)
     try {
+      const base = t('pantheon.new.untitled')
+      const taken = new Set(pantheon.map((d) => d.name))
+      let name = base
+      for (let n = 2; taken.has(name); n++) name = `${base} ${n}`
       const res = await fetch('/api/deities', {
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          name: t('pantheon.new.untitled'),
+          name,
           tier: 'Lesser',
           domain: '',
         }),
       })
-      if (res.ok) {
-        const j = await res.json()
-        const doc = (j.doc || j) as Deity
-        setOpenGod({ ...doc, hue: 145 })
-        router.refresh()
+      if (!res.ok) {
+        const j = await res.json().catch(() => ({}))
+        throw new Error(j?.errors?.[0]?.message || j?.message || res.statusText)
       }
+      const j = await res.json()
+      const doc = (j.doc || j) as Deity
+      setOpenSpec({ id: doc.id as number, hue: 145, edit: true, fallback: doc })
+      router.refresh()
+    } catch (e) {
+      alert((e as Error).message)
     } finally {
       setBusy(false)
     }
@@ -76,7 +97,13 @@ export const PantheonByTier: React.FC<{ pantheon: Deity[] }> = ({ pantheon }) =>
               <div className="th">{t('pantheon.col.domain')}</div>
               <div className="th">{t('pantheon.col.alignment')}</div>
               {gods.map((g) => (
-                <div className="pantheon-row" key={g.id} onClick={() => setOpenGod({ ...g, hue: tier.hue })}>
+                <div
+                  className="pantheon-row"
+                  key={g.id}
+                  onClick={() =>
+                    setOpenSpec({ id: g.id as number, hue: tier.hue, edit: false, fallback: g })
+                  }
+                >
                   <div className="pn-symbol">{g.symbol || '·'}</div>
                   <div className="pn-name">{g.name}</div>
                   <div className="pn-domain">{g.domain}</div>
@@ -87,7 +114,14 @@ export const PantheonByTier: React.FC<{ pantheon: Deity[] }> = ({ pantheon }) =>
           </div>
         )
       })}
-      {openGod && <GodModal god={openGod} onClose={() => setOpenGod(null)} />}
+      {openGod && openSpec && (
+        <GodModal
+          key={openSpec.id}
+          god={openGod}
+          initialEditing={openSpec.edit}
+          onClose={() => setOpenSpec(null)}
+        />
+      )}
     </div>
   )
 }

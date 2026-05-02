@@ -1396,6 +1396,11 @@ body {
   font-family: var(--sans); font-size: 13.5px;
   outline: none;
   transition: border-color 120ms, background 120ms;
+  color-scheme: dark;
+}
+.f-input option, .f-select option {
+  background: var(--bg-1);
+  color: var(--ink);
 }
 .f-textarea { resize: vertical; min-height: 110px; line-height: 1.6; font-family: var(--display); font-size: 16px; }
 .f-input:focus, .f-textarea:focus, .f-select:focus {

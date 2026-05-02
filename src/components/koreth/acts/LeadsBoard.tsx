@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth3 } from '../AuthContext'
 import { LinkText } from '../LinkText'
@@ -50,6 +50,14 @@ export const LeadsBoard: React.FC<{ leads: Lead[]; sessions: Session[] }> = ({ l
   const [filter, setFilter] = useState<Status | 'all'>('all')
   const [editingTitle, setEditingTitle] = useState<number | null>(null)
   const [editingBody, setEditingBody] = useState<number | null>(null)
+
+  // Sync local state from the prop after every server refresh so edits made
+  // here (or elsewhere) are reflected without a page reload. Optimistic
+  // updates land immediately; this catches the authoritative server state
+  // when router.refresh() resolves.
+  useEffect(() => {
+    setLeads(initial)
+  }, [initial])
 
   const visible = filter === 'all' ? leads : leads.filter((l) => l.status === filter)
 

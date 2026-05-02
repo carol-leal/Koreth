@@ -42,10 +42,10 @@ export const Pantheon: CollectionConfig = {
     { name: 'lastSeen', type: 'text', localized: true },
     { name: 'lastSeenLocation', type: 'relationship', relationTo: 'locations' },
     { name: 'symbol', type: 'text' },
+    { name: 'holySymbol', type: 'text', localized: true },
     { name: 'alignment', type: 'text', localized: true },
     { name: 'description', type: 'richText', localized: true },
     { name: 'accentHue', type: 'number', min: 0, max: 360 },
-    { name: 'portrait', type: 'upload', relationTo: 'media' },
     ...slugField('name'),
   ],
 }

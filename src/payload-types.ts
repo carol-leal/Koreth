@@ -577,6 +577,7 @@ export interface Deity {
   lastSeen?: string | null;
   lastSeenLocation?: (number | null) | Location;
   symbol?: string | null;
+  holySymbol?: string | null;
   alignment?: string | null;
   description?: {
     root: {
@@ -594,7 +595,6 @@ export interface Deity {
     [k: string]: unknown;
   } | null;
   accentHue?: number | null;
-  portrait?: (number | null) | Media;
   /**
    * Auto-generated from name; edit only if you know what you are doing.
    */
@@ -1165,10 +1165,10 @@ export interface DeitiesSelect<T extends boolean = true> {
   lastSeen?: T;
   lastSeenLocation?: T;
   symbol?: T;
+  holySymbol?: T;
   alignment?: T;
   description?: T;
   accentHue?: T;
-  portrait?: T;
   slug?: T;
   updatedAt?: T;
   createdAt?: T;

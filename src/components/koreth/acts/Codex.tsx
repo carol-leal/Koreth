@@ -87,7 +87,10 @@ export const Codex: React.FC<{ data: KorethData }> = ({ data }) => {
   const router = useRouter()
   const [tab, setTab] = useState<CodexTabId>('npcs')
   const [q, setQ] = useState('')
-  const [selByTab, setSelByTab] = useState<Record<string, any>>({})
+  // Store only the selected id per tab — re-deriving the item from the live
+  // list on every render means edits flow in as soon as router.refresh()
+  // resolves, instead of the detail view staying frozen on a stale snapshot.
+  const [selIdByTab, setSelIdByTab] = useState<Record<string, number>>({})
   const [createOpen, setCreateOpen] = useState(false)
 
   const tabDef = CODEX_TABS.find((td) => td.id === tab)!
@@ -117,8 +120,9 @@ export const Codex: React.FC<{ data: KorethData }> = ({ data }) => {
     return list.filter((it) => JSON.stringify(it).toLowerCase().includes(Q))
   }, [q, list, tab])
 
-  const sel = selByTab[tab] || filtered[0]
-  const setSel = (item: any) => setSelByTab({ ...selByTab, [tab]: item })
+  const selId = selIdByTab[tab]
+  const sel = (selId != null ? list.find((it: any) => it.id === selId) : null) || filtered[0]
+  const setSel = (item: any) => setSelIdByTab({ ...selIdByTab, [tab]: item.id as number })
 
   const Tabs = (
     <div className="codex2-kinds" role="tablist">
@@ -233,7 +237,7 @@ export const Codex: React.FC<{ data: KorethData }> = ({ data }) => {
               tab={tab}
               data={data}
               onDeleted={() => {
-                setSelByTab((s) => {
+                setSelIdByTab((s) => {
                   const next = { ...s }
                   delete next[tab]
                   return next

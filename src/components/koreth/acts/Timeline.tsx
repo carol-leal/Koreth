@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth3 } from '../AuthContext'
 import { LinkText } from '../LinkText'
@@ -41,6 +41,14 @@ export const Timeline: React.FC<{ events: Event[] }> = ({ events: initial }) => 
   const [events, setEvents] = useState<Event[]>(initial)
   const [editing, setEditing] = useState<{ id: number; field: Field } | null>(null)
 
+  // Sync local state from the prop after every server refresh so edits made
+  // here (or elsewhere) are reflected without a page reload. Optimistic
+  // updates land immediately; this catches the authoritative server state
+  // when router.refresh() resolves.
+  useEffect(() => {
+    setEvents(initial)
+  }, [initial])
+
   const sorted = [...events].sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0))
 
   const patch = async (id: number, data: Partial<Event>) => {
@@ -58,23 +66,33 @@ export const Timeline: React.FC<{ events: Event[] }> = ({ events: initial }) => 
   const create = async () => {
     // Default new events to the end of the timeline.
     const maxOrder = events.reduce((m, e) => Math.max(m, e.sortOrder ?? 0), 0)
-    const res = await fetch('/api/events', {
-      method: 'POST',
-      credentials: 'include',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        title: t('timeline.untitled'),
-        inWorldDate: '',
-        kind: 'event',
-        sortOrder: maxOrder + 10,
-      }),
-    })
-    if (res.ok) {
+    const base = t('timeline.untitled')
+    const taken = new Set(events.map((e) => e.title))
+    let title = base
+    for (let n = 2; taken.has(title); n++) title = `${base} ${n}`
+    try {
+      const res = await fetch('/api/events', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title,
+          inWorldDate: '',
+          kind: 'event',
+          sortOrder: maxOrder + 10,
+        }),
+      })
+      if (!res.ok) {
+        const j = await res.json().catch(() => ({}))
+        throw new Error(j?.errors?.[0]?.message || j?.message || res.statusText)
+      }
       const j = await res.json()
       const doc = (j.doc || j) as Event
       setEvents((es) => [...es, doc])
       setEditing({ id: doc.id as number, field: 'title' })
       router.refresh()
+    } catch (e) {
+      alert((e as Error).message)
     }
   }
 
