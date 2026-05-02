@@ -18,7 +18,9 @@ const para = (text: string) => ({
         format: '',
         indent: 0,
         textFormat: 0,
-        children: [{ type: 'text', version: 1, text: p, format: 0, detail: 0, mode: 'normal', style: '' }],
+        children: [
+          { type: 'text', version: 1, text: p, format: 0, detail: 0, mode: 'normal', style: '' },
+        ],
       })),
   },
 })
@@ -26,7 +28,7 @@ const para = (text: string) => ({
 type IdMap = Record<string, number | string>
 
 export const seed = async ({ payload, req }: { payload: Payload; req?: PayloadRequest }) => {
-  payload.logger.info('Seeding Korêth…')
+  payload.logger.info('Seeding Koreth…')
 
   // 0. Wipe existing rows for idempotent reseeds.
   for (const slug of [
@@ -45,7 +47,12 @@ export const seed = async ({ payload, req }: { payload: Payload; req?: PayloadRe
     try {
       const docs = await payload.find({ collection: slug, limit: 1000 })
       for (const d of docs.docs) {
-        await payload.delete({ collection: slug, id: d.id, req, context: { disableRevalidate: true } })
+        await payload.delete({
+          collection: slug,
+          id: d.id,
+          req,
+          context: { disableRevalidate: true },
+        })
       }
     } catch (e) {
       payload.logger.warn(`Could not clear ${slug}: ${(e as Error).message}`)
@@ -325,5 +332,5 @@ export const seed = async ({ payload, req }: { payload: Payload; req?: PayloadRe
     context: { disableRevalidate: true },
   })
 
-  payload.logger.info('Korêth seed complete.')
+  payload.logger.info('Koreth seed complete.')
 }

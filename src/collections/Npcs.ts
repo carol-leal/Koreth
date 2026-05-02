@@ -9,7 +9,7 @@ export const Npcs: CollectionConfig = {
   admin: {
     useAsTitle: 'name',
     defaultColumns: ['name', 'title', 'status'],
-    group: 'Korêth',
+    group: 'Koreth',
   },
   access: {
     read: anyone,
@@ -38,7 +38,10 @@ export const Npcs: CollectionConfig = {
       name: 'status',
       type: 'select',
       defaultValue: 'alive',
-      options: ['alive', 'missing', 'imprisoned', 'dead', 'unknown'].map((v) => ({ label: v, value: v })),
+      options: ['alive', 'missing', 'imprisoned', 'dead', 'unknown'].map((v) => ({
+        label: v,
+        value: v,
+      })),
     },
     { name: 'portrait', type: 'upload', relationTo: 'media' },
     { name: 'accentHue', type: 'number', min: 0, max: 360 },

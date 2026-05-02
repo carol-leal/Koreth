@@ -44,7 +44,9 @@ export const Prologue: React.FC<Props> = ({ campaign, characters, goto }) => {
   }
 
   const currentSession = campaign.currentSession ?? 0
-  const partyLevel = campaign.partyLevel ?? Math.round(characters.reduce((a, c) => a + (c.level ?? 0), 0) / Math.max(1, characters.length))
+  const partyLevel =
+    campaign.partyLevel ??
+    Math.round(characters.reduce((a, c) => a + (c.level ?? 0), 0) / Math.max(1, characters.length))
   const partyXp = campaign.partyXp ?? 0
   const nextLevelXp = campaign.nextLevelXp ?? 0
 
@@ -53,7 +55,7 @@ export const Prologue: React.FC<Props> = ({ campaign, characters, goto }) => {
       <div className="prologue-left">
         <div className="eyebrow-sm">{t('prologue.eyebrow')}</div>
         <h1 className="prologue-title">
-          <span className="prologue-title-main">Korêth</span>
+          <span className="prologue-title-main">Koreth</span>
           <span className="prologue-title-sub">
             <em>{t('prologue.subtitle')}</em>
           </span>
@@ -179,7 +181,11 @@ export const Prologue: React.FC<Props> = ({ campaign, characters, goto }) => {
             />
           ) : (
             <div
-              className={'next-plan' + (canEdit ? ' next-editable' : '') + (!next.plan ? ' next-plan-empty' : '')}
+              className={
+                'next-plan' +
+                (canEdit ? ' next-editable' : '') +
+                (!next.plan ? ' next-plan-empty' : '')
+              }
               onClick={canEdit ? () => setEditing('plan') : undefined}
               title={canEdit ? t('prologue.next.click') : ''}
             >
@@ -192,7 +198,8 @@ export const Prologue: React.FC<Props> = ({ campaign, characters, goto }) => {
         <div className="party-card">
           <div className="party-card-head">
             <h3>
-              {campaign.partyName || t('prologue.party.defaultName')} <em>· {t('prologue.party.rosterEm')}</em>
+              {campaign.partyName || t('prologue.party.defaultName')}{' '}
+              <em>· {t('prologue.party.rosterEm')}</em>
             </h3>
             <span className="party-card-meta">{t('prologue.party.sharedMeta')}</span>
           </div>
@@ -208,7 +215,9 @@ export const Prologue: React.FC<Props> = ({ campaign, characters, goto }) => {
               <div className="party-shared-bar">
                 <div
                   className="fill"
-                  style={{ width: nextLevelXp > 0 ? Math.round((partyXp / nextLevelXp) * 100) + '%' : '0%' }}
+                  style={{
+                    width: nextLevelXp > 0 ? Math.round((partyXp / nextLevelXp) * 100) + '%' : '0%',
+                  }}
                 />
               </div>
             </div>
@@ -228,7 +237,10 @@ export const Prologue: React.FC<Props> = ({ campaign, characters, goto }) => {
                   onMouseLeave={hide}
                 >
                   <div className="roster-portrait" style={{ background: portrait }}>
-                    {c.name.split(' ').map((w) => w[0]).join('')}
+                    {c.name
+                      .split(' ')
+                      .map((w) => w[0])
+                      .join('')}
                   </div>
                   <div className="roster-text">
                     <div className="roster-name">{c.name}</div>
@@ -276,7 +288,11 @@ export const Prologue: React.FC<Props> = ({ campaign, characters, goto }) => {
   )
 }
 
-const ChapterCue: React.FC<{ n: string; label: string; onClick: () => void }> = ({ n, label, onClick }) => (
+const ChapterCue: React.FC<{ n: string; label: string; onClick: () => void }> = ({
+  n,
+  label,
+  onClick,
+}) => (
   <div
     onClick={onClick}
     style={{

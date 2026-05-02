@@ -11,7 +11,7 @@ export default async function LoginPage() {
       <div className="login-card">
         <div className="login-mark" />
         <div className="login-eye">{t('login.eyebrow')}</div>
-        <h1 className="login-title">Korêth</h1>
+        <h1 className="login-title">Koreth</h1>
         <div className="login-sub">{t('login.sub')}</div>
         <LoginForm />
         <div className="login-foot">{t('login.foot')}</div>

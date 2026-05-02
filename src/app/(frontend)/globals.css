@@ -1,7 +1,7 @@
-/* The Korêth design system is the single source of truth — it sets :root
+/* The Koreth design system is the single source of truth — it sets :root
    tokens, body styles, and the entire component scale. Tailwind is still
    loaded so shadcn/Radix primitives (used inside the Payload admin) keep
-   working, but Korêth pages do not depend on Tailwind classes. */
+   working, but Koreth pages do not depend on Tailwind classes. */
 
 @import 'tailwindcss';
 @import '../../styles/koreth.css';

@@ -8,7 +8,7 @@
  */
 export const en = {
   // Page metadata
-  'meta.title': 'Korêth — A reader for the chronicle',
+  'meta.title': 'Koreth — A reader for the chronicle',
   'meta.description': 'A high-fantasy chronicle in progress.',
 
   // Locale switcher
@@ -90,7 +90,7 @@ export const en = {
   'codex.tab.items': 'Items',
   'codex.tab.pantheon': 'Pantheon',
   'codex.plural.npcs': 'non-player characters',
-  'codex.plural.regions': 'lands of Korêth',
+  'codex.plural.regions': 'lands of Koreth',
   'codex.plural.locations': 'cities, ruins, hideouts',
   'codex.plural.factions': 'orders & cabals',
   'codex.plural.items': 'weapons & relics',
@@ -98,7 +98,7 @@ export const en = {
   'codex.search.placeholder': 'Search {what}…',
   'codex.empty': 'No entries match "{q}".',
   'codex.eyebrowFor.npcs': 'non-player character',
-  'codex.eyebrowFor.regions': 'region of Korêth',
+  'codex.eyebrowFor.regions': 'region of Koreth',
   'codex.eyebrowFor.locations': 'place',
   'codex.eyebrowFor.factions': 'faction',
   'codex.eyebrowFor.items': 'item',

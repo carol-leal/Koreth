@@ -10,7 +10,7 @@ export const Characters: CollectionConfig = {
   admin: {
     useAsTitle: 'name',
     defaultColumns: ['name', 'class', 'level', 'playerLabel'],
-    group: 'Korêth',
+    group: 'Koreth',
   },
   access: {
     read: anyone,
@@ -24,7 +24,12 @@ export const Characters: CollectionConfig = {
   },
   fields: [
     { name: 'name', type: 'text', required: true },
-    { name: 'player', type: 'relationship', relationTo: 'users', admin: { description: 'Owning user; only that user (or admin) can edit this PC.' } },
+    {
+      name: 'player',
+      type: 'relationship',
+      relationTo: 'users',
+      admin: { description: 'Owning user; only that user (or admin) can edit this PC.' },
+    },
     { name: 'playerLabel', type: 'text' },
     { name: 'class', type: 'text', required: true, localized: true },
     { name: 'subclass', type: 'text', localized: true },

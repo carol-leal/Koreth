@@ -9,7 +9,7 @@ export const Factions: CollectionConfig = {
   admin: {
     useAsTitle: 'name',
     defaultColumns: ['name', 'tone'],
-    group: 'Korêth',
+    group: 'Koreth',
   },
   access: {
     read: anyone,
@@ -28,7 +28,10 @@ export const Factions: CollectionConfig = {
       type: 'select',
       required: true,
       defaultValue: 'Neutral',
-      options: ['Ally', 'Antagonist', 'Neutral', 'Historical', 'Mystery'].map((v) => ({ label: v, value: v })),
+      options: ['Ally', 'Antagonist', 'Neutral', 'Historical', 'Mystery'].map((v) => ({
+        label: v,
+        value: v,
+      })),
     },
     { name: 'description', type: 'richText', localized: true },
     { name: 'seatLocation', type: 'relationship', relationTo: 'locations' },

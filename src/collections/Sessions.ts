@@ -9,7 +9,7 @@ export const Sessions: CollectionConfig = {
   admin: {
     useAsTitle: 'title',
     defaultColumns: ['number', 'title', 'authorLabel', 'inWorldDate'],
-    group: 'Korêth',
+    group: 'Koreth',
   },
   access: {
     read: anyone,
@@ -51,9 +51,19 @@ export const Sessions: CollectionConfig = {
       type: 'text',
       admin: { description: 'In-world byline; may differ from the user account.' },
     },
-    { name: 'excerpt', type: 'textarea', localized: true, admin: { description: 'The opening line — used as the dropcap.' } },
+    {
+      name: 'excerpt',
+      type: 'textarea',
+      localized: true,
+      admin: { description: 'The opening line — used as the dropcap.' },
+    },
     { name: 'body', type: 'richText', localized: true, admin: { description: 'The folio body.' } },
-    { name: 'marginalia', type: 'richText', localized: true, admin: { description: 'A note in the warmer hand, added later.' } },
+    {
+      name: 'marginalia',
+      type: 'richText',
+      localized: true,
+      admin: { description: 'A note in the warmer hand, added later.' },
+    },
     {
       name: 'relatedEntities',
       type: 'relationship',

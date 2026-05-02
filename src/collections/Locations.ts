@@ -9,7 +9,7 @@ export const Locations: CollectionConfig = {
   admin: {
     useAsTitle: 'name',
     defaultColumns: ['name', 'region', 'kind'],
-    group: 'Korêth',
+    group: 'Koreth',
   },
   access: {
     read: anyone,

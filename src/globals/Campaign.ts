@@ -9,7 +9,7 @@ import { revalidateCampaign } from '@/hooks/revalidateKoreth'
  */
 export const Campaign: GlobalConfig = {
   slug: 'campaign',
-  admin: { group: 'Korêth' },
+  admin: { group: 'Koreth' },
   access: {
     read: () => true,
     update: isAdmin,
@@ -18,9 +18,14 @@ export const Campaign: GlobalConfig = {
     afterChange: [revalidateCampaign],
   },
   fields: [
-    { name: 'name', type: 'text', defaultValue: 'Korêth' },
+    { name: 'name', type: 'text', defaultValue: 'Koreth' },
     { name: 'tagline', type: 'textarea', localized: true },
-    { name: 'tagSource', type: 'text', localized: true, admin: { description: 'Citation rendered under the tagline.' } },
+    {
+      name: 'tagSource',
+      type: 'text',
+      localized: true,
+      admin: { description: 'Citation rendered under the tagline.' },
+    },
     { name: 'summary', type: 'richText', localized: true },
     { name: 'currentSession', type: 'number' },
     { name: 'partyName', type: 'text', localized: true },
@@ -32,10 +37,30 @@ export const Campaign: GlobalConfig = {
       type: 'group',
       admin: { description: 'Card shown in the Prologue. Editable inline by the DM.' },
       fields: [
-        { name: 'title', type: 'text', localized: true, admin: { description: 'Working title of the upcoming session.' } },
-        { name: 'when', type: 'text', localized: true, admin: { description: 'When it will run (free text, e.g. "Next Saturday · 8pm").' } },
-        { name: 'where', type: 'text', localized: true, admin: { description: 'Where it will run (free text).' } },
-        { name: 'plan', type: 'textarea', localized: true, admin: { description: 'Planned hook / opening beat (one paragraph).' } },
+        {
+          name: 'title',
+          type: 'text',
+          localized: true,
+          admin: { description: 'Working title of the upcoming session.' },
+        },
+        {
+          name: 'when',
+          type: 'text',
+          localized: true,
+          admin: { description: 'When it will run (free text, e.g. "Next Saturday · 8pm").' },
+        },
+        {
+          name: 'where',
+          type: 'text',
+          localized: true,
+          admin: { description: 'Where it will run (free text).' },
+        },
+        {
+          name: 'plan',
+          type: 'textarea',
+          localized: true,
+          admin: { description: 'Planned hook / opening beat (one paragraph).' },
+        },
       ],
     },
   ],

@@ -9,7 +9,7 @@ export const Pantheon: CollectionConfig = {
   admin: {
     useAsTitle: 'name',
     defaultColumns: ['name', 'tier', 'domain', 'status'],
-    group: 'Korêth',
+    group: 'Koreth',
   },
   access: {
     read: anyone,
@@ -34,7 +34,10 @@ export const Pantheon: CollectionConfig = {
       name: 'status',
       type: 'select',
       defaultValue: 'alive',
-      options: ['withdrawn', 'silent', 'alive', 'rising', 'exiled', 'dead'].map((v) => ({ label: v, value: v })),
+      options: ['withdrawn', 'silent', 'alive', 'rising', 'exiled', 'dead'].map((v) => ({
+        label: v,
+        value: v,
+      })),
     },
     { name: 'lastSeen', type: 'text', localized: true },
     { name: 'lastSeenLocation', type: 'relationship', relationTo: 'locations' },

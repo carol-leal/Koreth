@@ -1,4 +1,8 @@
-import type { CollectionAfterChangeHook, CollectionAfterDeleteHook, GlobalAfterChangeHook } from 'payload'
+import type {
+  CollectionAfterChangeHook,
+  CollectionAfterDeleteHook,
+  GlobalAfterChangeHook,
+} from 'payload'
 import { revalidatePath, revalidateTag } from 'next/cache'
 
 const TAG = 'koreth-entities'
@@ -27,7 +31,7 @@ export const revalidateKorethEntity =
   (paths: (slug: string) => string[]): CollectionAfterChangeHook =>
   ({ doc, req: { payload, context } }) => {
     if (context?.disableRevalidate) return doc
-    payload.logger.info(`Revalidating Korêth entity: ${doc.slug ?? doc.id}`)
+    payload.logger.info(`Revalidating Koreth entity: ${doc.slug ?? doc.id}`)
     safeTag(TAG)
     if (typeof doc.slug === 'string') {
       for (const p of paths(doc.slug)) safePath(p)

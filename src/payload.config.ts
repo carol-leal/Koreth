@@ -38,7 +38,11 @@ export default buildConfig({
   },
   editor: defaultLexical,
   db: postgresAdapter({
-    pool: { connectionString: process.env.POSTGRES_URL || '' },
+    pool: {
+      connectionString: process.env.POSTGRES_URL || '',
+      max: 5,
+      idleTimeoutMillis: 30_000,
+    },
   }),
   collections: [
     Media,

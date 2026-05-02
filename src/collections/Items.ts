@@ -9,7 +9,7 @@ export const Items: CollectionConfig = {
   admin: {
     useAsTitle: 'name',
     defaultColumns: ['name', 'kind', 'rarity', 'ownerLabel'],
-    group: 'Korêth',
+    group: 'Koreth',
   },
   access: {
     read: anyone,
@@ -28,13 +28,21 @@ export const Items: CollectionConfig = {
       name: 'rarity',
       type: 'select',
       defaultValue: 'Common',
-      options: ['Common', 'Uncommon', 'Rare', 'Very rare', 'Legendary', 'Unknown'].map((v) => ({ label: v, value: v })),
+      options: ['Common', 'Uncommon', 'Rare', 'Very rare', 'Legendary', 'Unknown'].map((v) => ({
+        label: v,
+        value: v,
+      })),
     },
     { name: 'description', type: 'richText', localized: true },
     { name: 'ownerCharacter', type: 'relationship', relationTo: 'characters' },
     { name: 'ownerFaction', type: 'relationship', relationTo: 'factions' },
     { name: 'ownerNpc', type: 'relationship', relationTo: 'npcs' },
-    { name: 'ownerLabel', type: 'text', localized: true, admin: { description: 'Display fallback when no relation is set' } },
+    {
+      name: 'ownerLabel',
+      type: 'text',
+      localized: true,
+      admin: { description: 'Display fallback when no relation is set' },
+    },
     { name: 'portrait', type: 'upload', relationTo: 'media' },
     ...slugField('name'),
   ],

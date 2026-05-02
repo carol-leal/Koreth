@@ -9,7 +9,7 @@ export const Regions: CollectionConfig = {
   admin: {
     useAsTitle: 'name',
     defaultColumns: ['name', 'area', 'kind'],
-    group: 'Korêth',
+    group: 'Koreth',
   },
   access: {
     read: anyone,

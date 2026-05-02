@@ -9,7 +9,7 @@ export const Leads: CollectionConfig = {
   admin: {
     useAsTitle: 'title',
     defaultColumns: ['title', 'status', 'authorLabel'],
-    group: 'Korêth',
+    group: 'Koreth',
   },
   access: {
     read: anyone,

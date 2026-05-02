@@ -9,7 +9,7 @@ export const Quests: CollectionConfig = {
   admin: {
     useAsTitle: 'title',
     defaultColumns: ['title', 'status', 'priority'],
-    group: 'Korêth',
+    group: 'Koreth',
   },
   access: {
     read: anyone,

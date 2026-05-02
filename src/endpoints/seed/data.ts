@@ -1,11 +1,11 @@
-/* Korêth seed data, transcribed from Design/data.js. */
+/* Koreth seed data, transcribed from Design/data.js. */
 
 export type Tier = 'Primordial' | 'Greater' | 'Lesser' | 'Dark'
 export type DeityStatus = 'withdrawn' | 'silent' | 'alive' | 'rising' | 'exiled'
 
 export const DATA = {
   campaign: {
-    name: 'Korêth',
+    name: 'Koreth',
     tagline: 'The gods do not die — they are forgotten. And forgetting is a fate worse than death.',
     source: '— Fragment of the Book of Ashes',
     summary:
@@ -496,7 +496,7 @@ export const DATA = {
       id: 'six-dark',
       name: 'The Six Dark',
       tone: 'Antagonist',
-      desc: 'The exiled gods. Cults persist in the deep places of Korêth. Many believe they whispered to Nyvil — and now whisper anew.',
+      desc: 'The exiled gods. Cults persist in the deep places of Koreth. Many believe they whispered to Nyvil — and now whisper anew.',
     },
   ],
 

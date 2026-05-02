@@ -36,7 +36,7 @@ const main = async () => {
     await payload.updateGlobal({
       slug: 'campaign',
       data: {
-        name: 'Korêth',
+        name: 'Koreth',
         tagline: null,
         tagSource: null,
         summary: null,
