@@ -1,4 +1,4 @@
-import type { Field } from 'payload'
+import type { Field, Where } from 'payload'
 
 const slugify = (input: string): string =>
   input
@@ -41,8 +41,10 @@ export const slugField = (sourceField: string = 'name'): Field[] => [
           const ownId = operation === 'update' ? originalDoc?.id : undefined
           let candidate = base
           for (let n = 2; ; n++) {
-            const where: Record<string, unknown> = { slug: { equals: candidate } }
-            if (ownId != null) where.id = { not_equals: ownId }
+            const where: Where =
+              ownId != null
+                ? { and: [{ slug: { equals: candidate } }, { id: { not_equals: ownId } }] }
+                : { slug: { equals: candidate } }
             const existing = await payload.find({
               collection: collectionSlug as Parameters<typeof payload.find>[0]['collection'],
               where,
