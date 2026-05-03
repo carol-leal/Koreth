@@ -44,6 +44,9 @@ const initials = (name: string) =>
 const stableHash = (s: string) =>
   [...s].reduce((a, c) => (a * 31 + c.charCodeAt(0)) | 0, 0)
 
+// Lore docs label themselves with `title`; everything else uses `name`.
+const displayName = (it: any): string => it?.name || it?.title || ''
+
 const hueOf = (item: { name: string; accentHue?: number | null }, fallbackIdx: number) =>
   item.accentHue ?? (fallbackIdx * 47) % 360
 
@@ -204,12 +207,13 @@ export const Codex: React.FC<{ data: KorethData }> = ({ data }) => {
           <div className="codex-rows">
             {filtered.length === 0 && <div className="codex-empty">{t('codex.empty', { q })}</div>}
             {filtered.map((it: any, i: number) => {
-              const id = it.id ?? it.name
-              const isActive = sel && (sel.id ?? sel.name) === id
+              const id = it.id ?? displayName(it)
+              const isActive = sel && (sel.id ?? displayName(sel)) === id
               const sub = subOf(it, tab)
               const meta = metaOf(it, tab)
               const hue = hueOf(it, i)
               const bg = `linear-gradient(135deg, oklch(0.42 0.16 ${hue}), oklch(0.18 0.06 ${(hue + 60) % 360}))`
+              const label = displayName(it)
               return (
                 <div
                   key={id}
@@ -217,10 +221,10 @@ export const Codex: React.FC<{ data: KorethData }> = ({ data }) => {
                   onClick={() => setSel(it)}
                 >
                   <div className="ico" style={{ background: bg, color: 'white' }}>
-                    {initials(it.name)}
+                    {initials(label)}
                   </div>
                   <div>
-                    <div className="nm">{it.name}</div>
+                    <div className="nm">{label}</div>
                     {sub && <div className="sub">{sub}</div>}
                   </div>
                   {meta && <div className="meta">{meta}</div>}
@@ -230,7 +234,7 @@ export const Codex: React.FC<{ data: KorethData }> = ({ data }) => {
           </div>
         </div>
 
-        <div className="codex-detail" key={(sel?.id ?? sel?.name) + tab}>
+        <div className="codex-detail" key={(sel?.id ?? displayName(sel)) + tab}>
           {sel && (
             <CodexDetail
               item={sel}
@@ -285,7 +289,8 @@ const CodexDetail: React.FC<{
   const { show, hide, index } = useTip()
   const [amendOpen, setAmendOpen] = useState(false)
 
-  const hue = item.accentHue ?? stableHash(item.name) % 360
+  const label = displayName(item)
+  const hue = item.accentHue ?? stableHash(label) % 360
   const bg = `linear-gradient(135deg, oklch(0.45 0.18 ${hue}), oklch(0.16 0.06 ${(hue + 60) % 360}))`
 
   const subtitle =
@@ -321,7 +326,7 @@ const CodexDetail: React.FC<{
 
   const related: { name: string; kind: string }[] = []
   for (const [name, ent] of Object.entries(index)) {
-    if (name === item.name) continue
+    if (name === label) continue
     if (related.length >= 8) break
     if (bodyText.includes(name)) related.push({ name, kind: ent.kind })
   }
@@ -331,14 +336,14 @@ const CodexDetail: React.FC<{
       <div className="cd-hero" style={{ ['--cd-bg' as string]: bg, background: bg } as React.CSSProperties}>
         <div className="cd-portrait">
           {portraitUrl(item.portrait) ? (
-            <img className="cd-portrait-image" src={portraitUrl(item.portrait)!} alt={item.name} />
+            <img className="cd-portrait-image" src={portraitUrl(item.portrait)!} alt={label} />
           ) : (
-            <CodexPortrait name={item.name} hue={hue} kind={tab} symbol={item.symbol} />
+            <CodexPortrait name={label} hue={hue} kind={tab} symbol={item.symbol} />
           )}
         </div>
         <div className="cd-hero-text">
           <div className="cd-hero-eye">{t(EYEBROW_KEY[tab])}</div>
-          <h1>{item.name}</h1>
+          <h1>{label}</h1>
           {subtitle && <div className="sub">{subtitle}</div>}
         </div>
         {auth?.canEditAny && tab !== 'pantheon' && (

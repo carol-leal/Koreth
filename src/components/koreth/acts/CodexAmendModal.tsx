@@ -47,8 +47,8 @@ export const CodexAmendModal: React.FC<Props> = ({ item, tab, data, onClose, onS
   const isCreate = !item || !item.id
   const seed = item || {}
 
-  // Common
-  const [name, setName] = useState<string>(seed.name || '')
+  // Common — lore stores its label under `title`, every other tab uses `name`.
+  const [name, setName] = useState<string>(seed.name || seed.title || '')
   const [accentHue, setAccentHue] = useState<string>(String(seed.accentHue ?? ''))
   const [portrait, setPortrait] = useState<Media | number | string | null | undefined>(seed.portrait ?? null)
   const [portraitId, setPortraitId] = useState<number | null>(
@@ -128,10 +128,12 @@ export const CodexAmendModal: React.FC<Props> = ({ item, tab, data, onClose, onS
     try {
       const collection = COLLECTION_BY_TAB[tab as Exclude<CodexTabId, 'pantheon'>]
       const body: Record<string, unknown> = {
-        name: name.trim(),
         accentHue: accentHue ? num(accentHue) : null,
         portrait: portraitId,
       }
+      // Lore's required label is `title`; everything else uses `name`.
+      if (tab === 'lore') body.title = name.trim()
+      else body.name = name.trim()
       const lexical = description.trim() ? textToLexical(description) : null
 
       if (tab === 'npcs') {
@@ -206,7 +208,7 @@ export const CodexAmendModal: React.FC<Props> = ({ item, tab, data, onClose, onS
                 t('codex.create.title', { kind: t(KIND_LABEL_KEY[tab] as any) })
               ) : (
                 <>
-                  {item.name} <em>{t('folio.titleEdit')}</em>
+                  {item.name || item.title} <em>{t('folio.titleEdit')}</em>
                 </>
               )}
             </h2>
