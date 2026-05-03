@@ -21,7 +21,7 @@
   --tide: oklch(0.62 0.10 220);
 
   --display: "Cormorant Garamond", Georgia, serif;
-  --hand: "Caveat", "Reenie Beanie", cursive;
+  --hand: "Kalam", "Caveat", "Reenie Beanie", cursive;
   --sans: "Inter", -apple-system, system-ui, sans-serif;
   --mono: "JetBrains Mono", ui-monospace, monospace;
 }
@@ -481,6 +481,23 @@ body {
 .chr-byline::before, .chr-byline::after {
   content: ""; flex: 1; height: 1px; background: var(--line);
 }
+/* Per-author folio block, stacked when a session has multiple voices. */
+.chr-folio-block { margin-bottom: 36px; }
+.chr-folio-sep {
+  margin: 36px auto 28px;
+  width: 60%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--line) 30%, var(--line) 70%, transparent);
+}
+.chr-empty-folios {
+  margin: 24px 0 32px;
+  display: flex; flex-direction: column; align-items: flex-start; gap: 14px;
+  font-family: var(--display); font-size: 17px;
+}
+.chr-add-folio-row {
+  margin: 16px 0 28px;
+  display: flex; justify-content: flex-start;
+}
 .chr-body {
   font-family: var(--display); font-size: 19px;
   line-height: 1.65; color: var(--ink);
@@ -504,11 +521,14 @@ body {
   padding: 14px 18px 14px 22px;
   border-left: 2px solid var(--accent-soft);
   font-family: var(--hand);
-  font-size: 19px;
-  line-height: 1.45;
+  font-size: 20px;
+  line-height: 1.55;
+  letter-spacing: 0.01em;
   color: var(--warm);
   max-width: 24ch;
   font-weight: 400;
+  transform: rotate(-0.6deg);
+  transform-origin: top left;
 }
 .chr-marg::before {
   content: "marginalia";
@@ -1209,7 +1229,7 @@ body {
   height: 280px;
   background: var(--cd-bg, linear-gradient(135deg, oklch(0.4 0.18 285), oklch(0.16 0.06 285)));
   display: flex; align-items: flex-end;
-  padding: 44px 56px;
+  padding: 44px clamp(28px, 4vw, 72px);
   border-bottom: 1px solid var(--line);
   overflow: hidden;
 }
@@ -1246,8 +1266,10 @@ body {
 }
 
 .cd-body {
-  padding: 36px 56px 80px;
-  max-width: 720px;
+  /* Detail panel takes the right 1fr column of .codex2-body (its parent grid).
+     Use the full width with fluid side padding; cap only the prose paragraphs
+     for readability so structural blocks (kv grid, related, tags) breathe. */
+  padding: 36px clamp(28px, 4vw, 72px) 80px;
 }
 .cd-tags {
   display: flex; gap: 8px; flex-wrap: wrap;
@@ -1266,6 +1288,7 @@ body {
 .cd-prose {
   font-family: var(--display); font-size: 19px; line-height: 1.65;
   color: var(--ink);
+  max-width: 72ch;
 }
 .cd-prose p { margin: 0 0 16px; }
 
@@ -1275,6 +1298,7 @@ body {
   gap: 0;
   margin-top: 32px;
   border-top: 1px solid var(--line);
+  max-width: 1100px;
 }
 .cd-kv {
   padding: 14px 0;

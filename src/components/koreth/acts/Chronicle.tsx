@@ -7,12 +7,13 @@ import { useAuth3 } from '../AuthContext'
 import { lexicalToText } from '../textLexical'
 import { FolioModal } from './FolioModal'
 import { useT } from '@/i18n/LocaleContext'
-import type { Session } from '@/payload-types'
+import type { Session, Folio } from '@/payload-types'
 
 type Props = {
   sel: number | null
   setSel: (id: number) => void
   sessions: Session[]
+  folios: Folio[]
 }
 
 const formatRelative = (iso?: string | null) => {
@@ -30,12 +31,21 @@ const formatRelative = (iso?: string | null) => {
   return new Date(iso).toLocaleDateString()
 }
 
-export const Chronicle: React.FC<Props> = ({ sel, setSel, sessions }) => {
+/** A folio's session can be a relationship doc or a bare id depending on depth. */
+const folioSessionId = (f: Folio): number | null => {
+  const s = f.session
+  if (typeof s === 'object' && s) return (s.id as number) ?? null
+  if (typeof s === 'number') return s
+  return null
+}
+
+export const Chronicle: React.FC<Props> = ({ sel, setSel, sessions, folios }) => {
   const auth = useAuth3()
   const router = useRouter()
   const { t } = useT()
-  const [amendOpen, setAmendOpen] = useState(false)
-  const [addOpen, setAddOpen] = useState(false)
+  const [editFolio, setEditFolio] = useState<Folio | null>(null)
+  const [addFolioFor, setAddFolioFor] = useState<Session | null>(null)
+  const [addSessionOpen, setAddSessionOpen] = useState(false)
 
   const closeAndRefresh = (close: () => void) => () => {
     close()
@@ -44,6 +54,21 @@ export const Chronicle: React.FC<Props> = ({ sel, setSel, sessions }) => {
 
   const sorted = [...sessions].sort((a, b) => (b.number ?? 0) - (a.number ?? 0))
   const s = sorted.find((x) => x.id === sel) || sorted[0]
+  // Folios for the selected session, oldest first.
+  const folioBySession = (sessionId: number | undefined) =>
+    folios
+      .filter((f) => folioSessionId(f) === sessionId)
+      .sort(
+        (a, b) =>
+          new Date(a.createdAt || 0).getTime() - new Date(b.createdAt || 0).getTime(),
+      )
+  const sessionFolios = s ? folioBySession(s.id as number) : []
+
+  // Counts for the TOC stat row.
+  const totalFolios = folios.length
+  const lastFolio = [...folios].sort(
+    (a, b) => new Date(b.updatedAt || 0).getTime() - new Date(a.updatedAt || 0).getTime(),
+  )[0]
 
   if (!s) {
     return (
@@ -54,7 +79,7 @@ export const Chronicle: React.FC<Props> = ({ sel, setSel, sessions }) => {
           <p className="chr-toc-intro">{t('chronicle.empty.sub')}</p>
           <div className="chr-add-row">
             {auth?.canAddSession ? (
-              <button className="btn3 btn3-primary" onClick={() => setAddOpen(true)}>
+              <button className="btn3 btn3-primary" onClick={() => setAddSessionOpen(true)}>
                 {t('chronicle.add')}
               </button>
             ) : (
@@ -62,21 +87,17 @@ export const Chronicle: React.FC<Props> = ({ sel, setSel, sessions }) => {
             )}
           </div>
         </div>
-        {addOpen && (
-          <FolioModal onClose={() => setAddOpen(false)} onSubmitted={closeAndRefresh(() => setAddOpen(false))} />
+        {addSessionOpen && (
+          <FolioModal
+            onClose={() => setAddSessionOpen(false)}
+            onSubmitted={closeAndRefresh(() => setAddSessionOpen(false))}
+          />
         )}
       </div>
     )
   }
 
   const i = sorted.findIndex((x) => x.id === s.id)
-  const authorName = s.authorLabel || (typeof s.author === 'object' && s.author ? s.author.name || '' : '')
-  const bodyText = lexicalToText(s.body)
-  const bodyParas = bodyText.split(/\n\n+/).filter(Boolean)
-  const marginText = lexicalToText(s.marginalia)
-  const lastAmendedLabel = s.lastAmendedByLabel || (typeof s.lastAmendedBy === 'object' && s.lastAmendedBy ? s.lastAmendedBy.name || '' : '')
-  const lastAmendedRel = formatRelative(s.lastAmendedAt)
-  const wasAmended = !!s.lastAmendedAt && lastAmendedLabel && lastAmendedLabel !== authorName
 
   return (
     <div className="chronicle">
@@ -96,7 +117,7 @@ export const Chronicle: React.FC<Props> = ({ sel, setSel, sessions }) => {
           </div>
           <div className="chr-stat">
             <div className="k">{t('chronicle.stat.lastEntry')}</div>
-            <div className="v">{formatRelative(sorted[0]?.updatedAt) || '—'}</div>
+            <div className="v">{formatRelative(lastFolio?.updatedAt) || '—'}</div>
           </div>
           <div className="chr-stat">
             <div className="k">{t('chronicle.stat.inWorld')}</div>
@@ -106,7 +127,7 @@ export const Chronicle: React.FC<Props> = ({ sel, setSel, sessions }) => {
 
         <div className="chr-add-row">
           {auth?.canAddSession ? (
-            <button className="btn3 btn3-primary" onClick={() => setAddOpen(true)}>
+            <button className="btn3 btn3-primary" onClick={() => setAddSessionOpen(true)}>
               {t('chronicle.add')}
             </button>
           ) : (
@@ -121,8 +142,14 @@ export const Chronicle: React.FC<Props> = ({ sel, setSel, sessions }) => {
 
         <div className="chr-list">
           {sorted.map((x) => {
-            const xAuthor = x.authorLabel || (typeof x.author === 'object' && x.author ? x.author.name || '' : '')
-            const mine = !!auth?.isPlayer && auth.user?.name === xAuthor
+            const xFolios = folioBySession(x.id as number)
+            const mine =
+              !!auth?.isPlayer &&
+              xFolios.some((f) => {
+                const a = f.author
+                if (typeof a === 'object' && a) return a.id === auth.user?.id
+                return a === auth.user?.id
+              })
             return (
               <div
                 key={x.id}
@@ -140,7 +167,11 @@ export const Chronicle: React.FC<Props> = ({ sel, setSel, sessions }) => {
                       </span>
                     )}
                   </div>
-                  <div className="chr-by">{t('chronicle.scribedBy', { name: xAuthor })}</div>
+                  <div className="chr-by">
+                    {xFolios.length === 0
+                      ? t('chronicle.session.noFolios')
+                      : t('chronicle.session.folioCount', { n: xFolios.length })}
+                  </div>
                 </div>
                 <div className="chr-date">{(x.inWorldDate || '').split(',')[0]}</div>
               </div>
@@ -155,42 +186,93 @@ export const Chronicle: React.FC<Props> = ({ sel, setSel, sessions }) => {
           <span>
             {t('chronicle.folioMeta', { num: String(s.number ?? 0).padStart(2, '0'), date: s.inWorldDate || '' })}
           </span>
-          <span>{authorName}</span>
+          <span>{sessionFolios.length} {sessionFolios.length === 1 ? t('chronicle.folio') : t('chronicle.folios')}</span>
         </div>
         <h1 className="chr-headline">{s.title}</h1>
-        <div className="chr-byline">
-          <span>{t('chronicle.scribedBy', { name: authorName })}</span>
-          {wasAmended && (
-            <span style={{ fontSize: 13, color: 'var(--ink-4)', marginLeft: 14 }}>
-              {t('chronicle.lastAmendedBy')} <em>{lastAmendedLabel}</em>
-              {lastAmendedRel && <span style={{ marginLeft: 6 }}>{lastAmendedRel}</span>}
-            </span>
-          )}
-          {auth?.canAddSession && (
-            <span className="chr-amend" title={t('chronicle.amend.title')} onClick={() => setAmendOpen(true)}>
-              {t('chronicle.amend')}
-            </span>
-          )}
-        </div>
 
-        <div className="chr-body">
-          {bodyParas.length === 0 ? (
-            <p className="dropcap" style={{ color: 'var(--ink-3)', fontStyle: 'italic' }}>
-              {s.excerpt || t('chronicle.unfinished')}
-            </p>
-          ) : (
-            bodyParas.map((p, idx) => (
-              <p key={idx} className={idx === 0 ? 'dropcap' : undefined}>
-                <LinkText text={p} />
-              </p>
-            ))
-          )}
-          {marginText && (
-            <div className="chr-marg">
-              <LinkText text={marginText} />
-            </div>
-          )}
-        </div>
+        {sessionFolios.length === 0 ? (
+          <div className="chr-empty-folios">
+            <p style={{ color: 'var(--ink-3)', fontStyle: 'italic' }}>{t('chronicle.session.empty')}</p>
+            {auth?.user && (
+              <button className="btn3 btn3-primary" onClick={() => setAddFolioFor(s)}>
+                {t('chronicle.folio.addFirst')}
+              </button>
+            )}
+          </div>
+        ) : (
+          sessionFolios.map((f, fi) => {
+            const fAuthor =
+              f.authorLabel || (typeof f.author === 'object' && f.author ? f.author.name || '' : '')
+            const bodyText = lexicalToText(f.body)
+            const bodyParas = bodyText.split(/\n\n+/).filter(Boolean)
+            const marginText = lexicalToText(f.marginalia)
+            const lastAmendedLabel =
+              f.lastAmendedByLabel ||
+              (typeof f.lastAmendedBy === 'object' && f.lastAmendedBy ? f.lastAmendedBy.name || '' : '')
+            const lastAmendedRel = formatRelative(f.lastAmendedAt)
+            const wasAmended = !!f.lastAmendedAt && lastAmendedLabel && lastAmendedLabel !== fAuthor
+            const folioOwn =
+              !!auth?.user &&
+              ((typeof f.author === 'object' && f.author && f.author.id === auth.user.id) ||
+                f.author === auth.user.id)
+            const canAmend = auth?.canEditAny || folioOwn
+
+            return (
+              <div className="chr-folio-block" key={f.id}>
+                {fi > 0 && <div className="chr-folio-sep" />}
+                <div className="chr-byline">
+                  <span>{t('chronicle.scribedBy', { name: fAuthor })}</span>
+                  {wasAmended && (
+                    <span style={{ fontSize: 13, color: 'var(--ink-4)', marginLeft: 14 }}>
+                      {t('chronicle.lastAmendedBy')} <em>{lastAmendedLabel}</em>
+                      {lastAmendedRel && <span style={{ marginLeft: 6 }}>{lastAmendedRel}</span>}
+                    </span>
+                  )}
+                  {canAmend && (
+                    <span
+                      className="chr-amend"
+                      title={t('chronicle.amend.title')}
+                      onClick={() => setEditFolio(f)}
+                    >
+                      {t('chronicle.amend')}
+                    </span>
+                  )}
+                </div>
+
+                <div className="chr-body">
+                  {bodyParas.length === 0 ? (
+                    <p className="dropcap" style={{ color: 'var(--ink-3)', fontStyle: 'italic' }}>
+                      {f.excerpt || t('chronicle.unfinished')}
+                    </p>
+                  ) : (
+                    bodyParas.map((p, idx) => (
+                      <p key={idx} className={idx === 0 ? 'dropcap' : undefined}>
+                        <LinkText text={p} />
+                      </p>
+                    ))
+                  )}
+                  {marginText && (
+                    <div className="chr-marg">
+                      <LinkText text={marginText} />
+                    </div>
+                  )}
+                </div>
+              </div>
+            )
+          })
+        )}
+
+        {sessionFolios.length > 0 && auth?.user && (
+          <div className="chr-add-folio-row">
+            <button
+              className="btn3 btn3-ghost"
+              onClick={() => setAddFolioFor(s)}
+              title={t('chronicle.folio.addAnother.title')}
+            >
+              {t('chronicle.folio.addAnother')}
+            </button>
+          </div>
+        )}
 
         <div className="chr-foot">
           <span>
@@ -205,16 +287,26 @@ export const Chronicle: React.FC<Props> = ({ sel, setSel, sessions }) => {
         </div>
       </div>
 
-      {amendOpen && (
+      {editFolio && (
         <FolioModal
-          session={s}
-          onClose={() => setAmendOpen(false)}
-          onSubmitted={closeAndRefresh(() => setAmendOpen(false))}
-          onDeleted={closeAndRefresh(() => setAmendOpen(false))}
+          folio={editFolio}
+          onClose={() => setEditFolio(null)}
+          onSubmitted={closeAndRefresh(() => setEditFolio(null))}
+          onDeleted={closeAndRefresh(() => setEditFolio(null))}
         />
       )}
-      {addOpen && (
-        <FolioModal onClose={() => setAddOpen(false)} onSubmitted={closeAndRefresh(() => setAddOpen(false))} />
+      {addFolioFor && (
+        <FolioModal
+          session={addFolioFor}
+          onClose={() => setAddFolioFor(null)}
+          onSubmitted={closeAndRefresh(() => setAddFolioFor(null))}
+        />
+      )}
+      {addSessionOpen && (
+        <FolioModal
+          onClose={() => setAddSessionOpen(false)}
+          onSubmitted={closeAndRefresh(() => setAddSessionOpen(false))}
+        />
       )}
     </div>
   )

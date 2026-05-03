@@ -20,23 +20,8 @@ export const Sessions: CollectionConfig = {
     delete: authenticated,
   },
   defaultSort: '-number',
-  // Each amend snapshots the prior state; "lastAmendedBy" is set in beforeChange.
   versions: { drafts: false, maxPerDoc: 100 },
   hooks: {
-    beforeChange: [
-      ({ data, req: { user }, operation }) => {
-        if (operation === 'create' && !data.author && user?.id) {
-          data.author = user.id
-          if (!data.authorLabel) data.authorLabel = user.displayLabel || user.name || user.email
-        }
-        if (operation === 'update' && user?.id) {
-          data.lastAmendedBy = user.id
-          data.lastAmendedByLabel = user.displayLabel || user.name || user.email
-          data.lastAmendedAt = new Date().toISOString()
-        }
-        return data
-      },
-    ],
     afterChange: [revalidateKorethEntity(() => ['/'])],
     afterDelete: [revalidateKorethDelete(() => ['/'])],
   },
@@ -45,37 +30,27 @@ export const Sessions: CollectionConfig = {
     { name: 'number', type: 'number', required: true, unique: true },
     { name: 'inWorldDate', type: 'text', localized: true },
     { name: 'realDate', type: 'date' },
-    { name: 'author', type: 'relationship', relationTo: 'users', required: true },
-    {
-      name: 'authorLabel',
-      type: 'text',
-      admin: { description: 'In-world byline; may differ from the user account.' },
-    },
-    {
-      name: 'excerpt',
-      type: 'textarea',
-      localized: true,
-      admin: { description: 'The opening line — used as the dropcap.' },
-    },
-    { name: 'body', type: 'richText', localized: true, admin: { description: 'The folio body.' } },
-    {
-      name: 'marginalia',
-      type: 'richText',
-      localized: true,
-      admin: { description: 'A note in the warmer hand, added later.' },
-    },
     {
       name: 'relatedEntities',
       type: 'relationship',
       relationTo: ['npcs', 'locations', 'factions', 'deities', 'items'],
       hasMany: true,
     },
+    // ----- Legacy single-folio fields -----
+    // Per-author prose now lives on the Folios collection. These fields are
+    // retained so existing data isn't lost; run the /next/migrate-folios
+    // endpoint once to copy them into Folio rows. Safe to remove afterwards.
     {
-      name: 'lastAmendedBy',
+      name: 'author',
       type: 'relationship',
       relationTo: 'users',
-      admin: { readOnly: true, position: 'sidebar' },
+      admin: { readOnly: true, description: 'Legacy — use Folios.' },
     },
+    { name: 'authorLabel', type: 'text', admin: { readOnly: true, description: 'Legacy — use Folios.' } },
+    { name: 'excerpt', type: 'textarea', localized: true, admin: { readOnly: true, description: 'Legacy — use Folios.' } },
+    { name: 'body', type: 'richText', localized: true, admin: { readOnly: true, description: 'Legacy — use Folios.' } },
+    { name: 'marginalia', type: 'richText', localized: true, admin: { readOnly: true, description: 'Legacy — use Folios.' } },
+    { name: 'lastAmendedBy', type: 'relationship', relationTo: 'users', admin: { readOnly: true, position: 'sidebar' } },
     { name: 'lastAmendedByLabel', type: 'text', admin: { readOnly: true, position: 'sidebar' } },
     { name: 'lastAmendedAt', type: 'date', admin: { readOnly: true, position: 'sidebar' } },
     ...slugField('title'),

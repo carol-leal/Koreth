@@ -118,7 +118,12 @@ const KorethShell: React.FC<{ data: KorethData }> = ({ data }) => {
             <Codex data={data} />
           </div>
           <div className="act-pane">
-            <Chronicle sel={chrSel} setSel={setChrSel} sessions={data.sessions} />
+            <Chronicle
+              sel={chrSel}
+              setSel={setChrSel}
+              sessions={data.sessions}
+              folios={data.folios}
+            />
           </div>
           <div className="act-pane">
             <Timeline events={data.events} />

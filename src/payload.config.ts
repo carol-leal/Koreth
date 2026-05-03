@@ -15,6 +15,7 @@ import { Items } from './collections/Items'
 import { Pantheon } from './collections/Pantheon'
 import { Characters } from './collections/Characters'
 import { Sessions } from './collections/Sessions'
+import { Folios } from './collections/Folios'
 import { Quests } from './collections/Quests'
 import { Leads } from './collections/Leads'
 import { Events } from './collections/Events'
@@ -25,6 +26,26 @@ import { getServerSideURL } from './utilities/getURL'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
+
+/**
+ * pg-connection-string v3 / pg v9 will stop treating sslmode=prefer|require|
+ * verify-ca as aliases for verify-full and switch to weaker libpq semantics.
+ * To preserve our current strong-cert-verification behavior (and silence the
+ * deprecation warning), promote those modes to verify-full explicitly.
+ */
+const normalizePgUrl = (url: string): string => {
+  if (!url) return url
+  try {
+    const u = new URL(url)
+    const mode = u.searchParams.get('sslmode')
+    if (!mode || mode === 'prefer' || mode === 'require' || mode === 'verify-ca') {
+      u.searchParams.set('sslmode', 'verify-full')
+    }
+    return u.toString()
+  } catch {
+    return url
+  }
+}
 
 export default buildConfig({
   admin: {
@@ -42,7 +63,7 @@ export default buildConfig({
   editor: defaultLexical,
   db: postgresAdapter({
     pool: {
-      connectionString: process.env.POSTGRES_URL || '',
+      connectionString: normalizePgUrl(process.env.POSTGRES_URL || ''),
       max: 5,
       idleTimeoutMillis: 30_000,
     },
@@ -58,6 +79,7 @@ export default buildConfig({
     Pantheon,
     Characters,
     Sessions,
+    Folios,
     Quests,
     Leads,
     Events,

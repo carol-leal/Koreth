@@ -289,7 +289,7 @@ export const es: Dictionary = {
   'chronicle.headline.b': 'recientemente recogidas,',
   'chronicle.headline.c': 'en la voz de la Party.',
   'chronicle.intro':
-    'Cada sesión la escribe alguien de la Party, en presente, antes de dormir. Las marginalia, en una mano más cálida, son ocurrencias de escribas añadidas al día siguiente. Cualquiera de la Party puede enmendar un folio — toda enmienda queda en el historial.',
+    'Cada sesión la escribe alguien de la Party. Cualquiera de la Party puede enmendar un folio — toda enmienda queda en el historial.',
   'chronicle.empty.title': 'El libro está vacío.',
   'chronicle.empty.sub': 'Aún no se ha inscrito ningún folio.',
   'chronicle.stat.kept': 'Sesiones recogidas',
@@ -311,6 +311,14 @@ export const es: Dictionary = {
   'chronicle.next': 'siguiente · sesión {num}',
   'chronicle.current': 'actual',
   'chronicle.folioOf': 'folio {i} de {n}',
+  'chronicle.folio': 'folio',
+  'chronicle.folios': 'folios',
+  'chronicle.session.noFolios': 'aún sin folios',
+  'chronicle.session.folioCount': '{n} folios',
+  'chronicle.session.empty': 'Aún sin folios — la página espera su primera mano.',
+  'chronicle.folio.addFirst': '+ inscribir el primer folio',
+  'chronicle.folio.addAnother': '+ añadir un folio',
+  'chronicle.folio.addAnother.title': 'añade tu propio relato de esta sesión',
 
   // Folio modal
   'folio.new': 'Nuevo folio',

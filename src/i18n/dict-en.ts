@@ -289,7 +289,7 @@ export const en = {
   'chronicle.headline.b': 'recently kept,',
   'chronicle.headline.c': 'in the voice of the Choir.',
   'chronicle.intro':
-    "Each session is written by one of the Choir, in present tense, before they sleep. Marginalia in the warmer hand are scribes' afterthoughts, added the next day. Any of the Choir may amend a folio — every amendment is kept in the version history.",
+    'Each session is written by one of the Choir. Any of the Choir may amend a folio — every amendment is kept in the version history.',
   'chronicle.empty.title': 'The book is empty.',
   'chronicle.empty.sub': 'No folio has been inscribed yet.',
   'chronicle.stat.kept': 'Sessions kept',
@@ -311,6 +311,14 @@ export const en = {
   'chronicle.next': 'next · session {num}',
   'chronicle.current': 'current',
   'chronicle.folioOf': 'folio {i} of {n}',
+  'chronicle.folio': 'folio',
+  'chronicle.folios': 'folios',
+  'chronicle.session.noFolios': 'no folios yet',
+  'chronicle.session.folioCount': '{n} folios',
+  'chronicle.session.empty': 'No folios yet — the page awaits its first hand.',
+  'chronicle.folio.addFirst': '+ inscribe the first folio',
+  'chronicle.folio.addAnother': '+ add a folio',
+  'chronicle.folio.addAnother.title': 'add your own writeup of this session',
 
   // Folio modal (add + amend)
   'folio.new': 'New folio',

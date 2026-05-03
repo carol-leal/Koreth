@@ -7,6 +7,7 @@ import type {
   Deity,
   Character,
   Session,
+  Folio,
   Quest,
   Lead,
   Event,
@@ -24,6 +25,7 @@ export type KorethData = {
   pantheon: Deity[]
   characters: Character[]
   sessions: Session[]
+  folios: Folio[]
   quests: Quest[]
   leads: Lead[]
   events: Event[]

@@ -77,6 +77,7 @@ export interface Config {
     deities: Deity;
     characters: Character;
     sessions: Session;
+    folios: Folio;
     quests: Quest;
     leads: Lead;
     events: Event;
@@ -103,6 +104,7 @@ export interface Config {
     deities: DeitiesSelect<false> | DeitiesSelect<true>;
     characters: CharactersSelect<false> | CharactersSelect<true>;
     sessions: SessionsSelect<false> | SessionsSelect<true>;
+    folios: FoliosSelect<false> | FoliosSelect<true>;
     quests: QuestsSelect<false> | QuestsSelect<true>;
     leads: LeadsSelect<false> | LeadsSelect<true>;
     events: EventsSelect<false> | EventsSelect<true>;
@@ -612,6 +614,95 @@ export interface Session {
   number: number;
   inWorldDate?: string | null;
   realDate?: string | null;
+  relatedEntities?:
+    | (
+        | {
+            relationTo: 'npcs';
+            value: number | Npc;
+          }
+        | {
+            relationTo: 'locations';
+            value: number | Location;
+          }
+        | {
+            relationTo: 'factions';
+            value: number | Faction;
+          }
+        | {
+            relationTo: 'deities';
+            value: number | Deity;
+          }
+        | {
+            relationTo: 'items';
+            value: number | Item;
+          }
+      )[]
+    | null;
+  /**
+   * Legacy — use Folios.
+   */
+  author?: (number | null) | User;
+  /**
+   * Legacy — use Folios.
+   */
+  authorLabel?: string | null;
+  /**
+   * Legacy — use Folios.
+   */
+  excerpt?: string | null;
+  /**
+   * Legacy — use Folios.
+   */
+  body?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Legacy — use Folios.
+   */
+  marginalia?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  lastAmendedBy?: (number | null) | User;
+  lastAmendedByLabel?: string | null;
+  lastAmendedAt?: string | null;
+  /**
+   * Auto-generated from name; edit only if you know what you are doing.
+   */
+  slug?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "folios".
+ */
+export interface Folio {
+  id: number;
+  session: number | Session;
   author: number | User;
   /**
    * In-world byline; may differ from the user account.
@@ -657,37 +748,9 @@ export interface Session {
     };
     [k: string]: unknown;
   } | null;
-  relatedEntities?:
-    | (
-        | {
-            relationTo: 'npcs';
-            value: number | Npc;
-          }
-        | {
-            relationTo: 'locations';
-            value: number | Location;
-          }
-        | {
-            relationTo: 'factions';
-            value: number | Faction;
-          }
-        | {
-            relationTo: 'deities';
-            value: number | Deity;
-          }
-        | {
-            relationTo: 'items';
-            value: number | Item;
-          }
-      )[]
-    | null;
   lastAmendedBy?: (number | null) | User;
   lastAmendedByLabel?: string | null;
   lastAmendedAt?: string | null;
-  /**
-   * Auto-generated from name; edit only if you know what you are doing.
-   */
-  slug?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -866,6 +929,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'sessions';
         value: number | Session;
+      } | null)
+    | ({
+        relationTo: 'folios';
+        value: number | Folio;
       } | null)
     | ({
         relationTo: 'quests';
@@ -1228,16 +1295,33 @@ export interface SessionsSelect<T extends boolean = true> {
   number?: T;
   inWorldDate?: T;
   realDate?: T;
+  relatedEntities?: T;
   author?: T;
   authorLabel?: T;
   excerpt?: T;
   body?: T;
   marginalia?: T;
-  relatedEntities?: T;
   lastAmendedBy?: T;
   lastAmendedByLabel?: T;
   lastAmendedAt?: T;
   slug?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "folios_select".
+ */
+export interface FoliosSelect<T extends boolean = true> {
+  session?: T;
+  author?: T;
+  authorLabel?: T;
+  excerpt?: T;
+  body?: T;
+  marginalia?: T;
+  lastAmendedBy?: T;
+  lastAmendedByLabel?: T;
+  lastAmendedAt?: T;
   updatedAt?: T;
   createdAt?: T;
 }

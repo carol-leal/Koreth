@@ -289,6 +289,17 @@ export const seed = async ({ payload, req }: { payload: Payload; req?: PayloadRe
         slug: s.id,
         number: s.n,
         inWorldDate: s.date,
+      },
+      context: { disableRevalidate: true },
+    })
+    sessionId[s.id] = doc.id
+    // Each seeded session gets one initial folio in its author's voice. Add
+    // more in the UI to capture other players' viewpoints.
+    await payload.create({
+      collection: 'folios',
+      req,
+      data: {
+        session: doc.id as number,
         author: authorRef,
         authorLabel,
         excerpt: s.excerpt,
@@ -296,7 +307,6 @@ export const seed = async ({ payload, req }: { payload: Payload; req?: PayloadRe
       },
       context: { disableRevalidate: true },
     })
-    sessionId[s.id] = doc.id
   }
 
   // 12. Quests

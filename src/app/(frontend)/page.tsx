@@ -5,7 +5,7 @@ import { getOptionalUser } from '@/utilities/getOptionalUser'
 import { getCachedEntityIndex } from '@/utilities/getEntityIndex'
 import { getServerLocale } from '@/i18n/getServerLocale'
 import { DEFAULT_LOCALE } from '@/i18n'
-import type { Character, Session as SessionDoc } from '@/payload-types'
+import type { Character, Session as SessionDoc, Folio } from '@/payload-types'
 import type { SessionUser } from '@/components/koreth/AuthContext'
 
 export default async function Home() {
@@ -21,6 +21,7 @@ export default async function Home() {
     pantheon,
     characters,
     sessions,
+    folios,
     quests,
     leads,
     events,
@@ -37,6 +38,7 @@ export default async function Home() {
     payload.find({ collection: 'deities', limit: 200, depth: 1, sort: 'name', locale, fallbackLocale: DEFAULT_LOCALE }),
     payload.find({ collection: 'characters', limit: 50, depth: 2, sort: 'name', locale, fallbackLocale: DEFAULT_LOCALE }),
     payload.find({ collection: 'sessions', limit: 100, depth: 1, sort: '-number', locale, fallbackLocale: DEFAULT_LOCALE }),
+    payload.find({ collection: 'folios', limit: 500, depth: 1, sort: 'createdAt', locale, fallbackLocale: DEFAULT_LOCALE }),
     payload.find({ collection: 'quests', limit: 200, depth: 0, locale, fallbackLocale: DEFAULT_LOCALE }),
     payload.find({ collection: 'leads', limit: 200, depth: 1, sort: '-updatedAt', locale, fallbackLocale: DEFAULT_LOCALE }),
     payload.find({ collection: 'events', limit: 500, depth: 1, sort: 'sortOrder', locale, fallbackLocale: DEFAULT_LOCALE }),
@@ -66,6 +68,7 @@ export default async function Home() {
         pantheon: pantheon.docs,
         characters: characters.docs as Character[],
         sessions: sessions.docs as SessionDoc[],
+        folios: folios.docs as Folio[],
         quests: quests.docs,
         leads: leads.docs,
         events: events.docs,
