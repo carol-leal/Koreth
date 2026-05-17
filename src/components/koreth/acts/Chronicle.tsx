@@ -240,17 +240,20 @@ export const Chronicle: React.FC<Props> = ({ sel, setSel, sessions, folios }) =>
                 </div>
 
                 <div className="chr-body">
-                  {bodyParas.length === 0 ? (
-                    <p className="dropcap" style={{ color: 'var(--ink-3)', fontStyle: 'italic' }}>
-                      {f.excerpt || t('chronicle.unfinished')}
+                  {f.excerpt ? (
+                    <p className="dropcap">
+                      <LinkText text={f.excerpt} />
                     </p>
-                  ) : (
-                    bodyParas.map((p, idx) => (
-                      <p key={idx} className={idx === 0 ? 'dropcap' : undefined}>
-                        <LinkText text={p} />
-                      </p>
-                    ))
-                  )}
+                  ) : bodyParas.length === 0 ? (
+                    <p className="dropcap" style={{ color: 'var(--ink-3)', fontStyle: 'italic' }}>
+                      {t('chronicle.unfinished')}
+                    </p>
+                  ) : null}
+                  {bodyParas.map((p, idx) => (
+                    <p key={idx} className={!f.excerpt && idx === 0 ? 'dropcap' : undefined}>
+                      <LinkText text={p} />
+                    </p>
+                  ))}
                   {marginText && (
                     <div className="chr-marg">
                       <LinkText text={marginText} />
